@@ -6,6 +6,10 @@
     import Verse4 from "../components/pages/verse4.svelte";
 
     let verses = [Verse1, Verse2, Verse3, Verse4];
+    let keyframe = 0;
+
+    // TODO: fix keyframing (tie to scroll position and pass to verse as prop)
+    // TODO: add scroll bar
 </script>
 
 <div class="h-screen snap-y snap-mandatory overflow-y-scroll">
@@ -18,7 +22,7 @@
             class="flex h-screen snap-center flex-row items-center justify-center gap-24"
             id={`verse${index}`}
         >
-            <svelte:component this={verse} />
+            <svelte:component this={verse} {keyframe} />
         </div>
     {/each}
 </div>
