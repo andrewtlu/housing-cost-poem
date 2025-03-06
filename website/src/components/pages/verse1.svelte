@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { Keyframes } from "$lib/keyframe";
+    import Example from "../graphs/example.svelte";
 
     let { keyframe }: { keyframe: number } = $props();
     let keyframes: Keyframes = {
@@ -20,3 +21,5 @@
         <li>{line}</li>
     {/each}
 </ul>
+
+<Example />

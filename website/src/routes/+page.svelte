@@ -9,17 +9,17 @@
     let keyframe = 0;
 
     // TODO: fix keyframing (tie to scroll position and pass to verse as prop)
-    // TODO: add scroll bar
+    // TODO: add scroll (button) bar
 </script>
 
-<div class="h-screen snap-y snap-mandatory overflow-y-scroll">
-    <div class="flex h-screen snap-center items-center justify-center" id="title">
+<div class="flex h-screen snap-x snap-mandatory flex-row overflow-x-scroll">
+    <div class="flex h-screen w-screen shrink-0 snap-center items-center justify-center" id="title">
         <h1>Affording an Abode: Affordable Housing in Urban America</h1>
     </div>
 
     {#each verses as verse, index}
         <div
-            class="flex h-screen snap-center flex-row items-center justify-center gap-24"
+            class="flex h-screen w-screen shrink-0 snap-center flex-row items-center justify-center gap-24"
             id={`verse${index}`}
         >
             <svelte:component this={verse} {keyframe} />
