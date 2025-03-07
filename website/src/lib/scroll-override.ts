@@ -24,13 +24,17 @@ export function overrideScroll(content: Element) {
             scrollPosition.target = Math.min(
                 nearestVerseScroll + window.innerWidth,
                 content.scrollWidth
-            ); // negative scroll
+            );
+        // negative scroll
         else scrollPosition.target = Math.max(nearestVerseScroll - window.innerWidth, 0);
     };
 
     const handleResize = () => {
-        scrollPosition.set(Math.round(scrollPosition.current / window.innerWidth) * window.innerWidth, { duration: 0 });
-    }
+        scrollPosition.set(
+            Math.round(scrollPosition.current / window.innerWidth) * window.innerWidth,
+            { duration: 0 }
+        );
+    };
 
     content.addEventListener("wheel", scrollOverride);
     window.addEventListener("resize", handleResize);

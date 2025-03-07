@@ -34,6 +34,7 @@
 
     // TODO: fix keyframing (tie to scroll position and pass to verse as prop)
     // TODO: add scroll (button) bar
+    // TODO: image scale may be broken on chrome, make sure to check
 </script>
 
 {#if content}
@@ -42,7 +43,7 @@
 
 <!-- Each element within this div MUST have w-screen due to the tweened scroll positioning -->
 <div
-    class="relative flex h-screen flex-row overflow-x-scroll bg-gray-50/50"
+    class="relative flex h-screen flex-row overflow-x-hidden bg-gray-50/50"
     id="content"
     bind:this={content}
 >
