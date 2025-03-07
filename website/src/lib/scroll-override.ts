@@ -2,7 +2,7 @@ import { quadOut } from "svelte/easing";
 import { Tween } from "svelte/motion";
 
 /** Overrides default behavior and returns a tweened scrollPosition value to use for transform instead */
-export default function overrideScroll(content: Element) {
+export function overrideScroll(content: Element) {
     /** Tweened scrollLeft value */
     let scrollPosition = new Tween(0, {
         duration: 500,
