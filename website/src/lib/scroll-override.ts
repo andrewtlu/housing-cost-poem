@@ -13,7 +13,7 @@ export function overrideScroll(content: Element) {
     /** Because current is current at instance target is changed, we need to set scroll target to be from the nearest verse */
     let nearestVerseScroll;
 
-    const debouncedScrollOverride = (event: Event) => {
+    const scrollOverride = (event: Event) => {
         event.preventDefault();
         wheelEvent = event as WheelEvent;
         nearestVerseScroll =
@@ -28,12 +28,18 @@ export function overrideScroll(content: Element) {
         else scrollPosition.target = Math.max(nearestVerseScroll - window.innerWidth, 0);
     };
 
-    content.addEventListener("wheel", debouncedScrollOverride);
+    const handleResize = () => {
+        scrollPosition.set(Math.round(scrollPosition.current / window.innerWidth) * window.innerWidth, { duration: 0 });
+    }
+
+    content.addEventListener("wheel", scrollOverride);
+    window.addEventListener("resize", handleResize);
 
     return {
         scrollPosition: scrollPosition,
         unmount: () => {
-            content.removeEventListener("wheel", debouncedScrollOverride);
+            content.removeEventListener("wheel", scrollOverride);
+            window.removeEventListener("resize", handleResize);
         }
     };
 }
