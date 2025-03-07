@@ -40,7 +40,7 @@ Parallax component, used to render the city skyline in the background of the poe
     <img
         src="/city.png"
         alt="background parallax city"
-        class="scale-200 absolute bottom-0 left-0 -translate-y-1/2"
+        class="absolute bottom-0 left-0 -translate-y-1/2 scale-200"
         style={`transform: translateX(${25 - (scrollLeft / maxScroll) * 50}%)`}
     />
 </div>
