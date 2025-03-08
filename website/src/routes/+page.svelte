@@ -1,12 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import "../app.css";
-    import Verse1 from "../components/pages/verse1.svelte";
-    import Verse2 from "../components/pages/verse2.svelte";
-    import Verse3 from "../components/pages/verse3.svelte";
-    import Verse4 from "../components/pages/verse4.svelte";
-    import Parallax from "../components/parallax.svelte";
     import { overrideScroll } from "$lib";
+    import { Verse1, Verse2, Verse3, Verse4, Parallax } from "$lib/components";
 
     /** Main content DOM element */
     let content: Element | null = $state(null);

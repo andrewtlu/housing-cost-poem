@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Example from "../graphs/example.svelte";
-    import Example2 from "../graphs/example2.svelte";
+    import Example from "./example.svelte";
+    import Example2 from "./example2.svelte";
 
     let keyframe = $props();
 
