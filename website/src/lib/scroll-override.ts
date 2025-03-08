@@ -1,45 +1,46 @@
 import { quadOut } from "svelte/easing";
 import { Tween } from "svelte/motion";
-import { getTotalFramesCount } from "./keyframe";
-
-// NOW THAT KEYFRAMES ARE CONNECTED, NEED TO MAKE SURE THEY'RE STILL CONNECTED TO THE SCROLL POSITION! CURRENTLY VERY FINICKY
+import { getFramesCount, getTotalFramesCount, keyframes } from "./keyframe";
 
 /**
  * Overrides default behavior and returns a tweened scrollPosition value to use for transform instead.
- * Automatically updates keyframes.
- * `keyframe` is wrapped in an object so that keyframe in the calling context can be modified
+ * Scroll updates keyframes, and the verse & scroll position derived from keyframe
  */
-export function overrideScroll(content: Element, { keyframe }: { keyframe: number }) {
-    /** Tweened scrollLeft value */
-    let scrollPosition = new Tween(0, {
-        duration: 500,
-        easing: quadOut
-    });
+export function overrideScroll(content: Element, { verse, keyframe }: { verse: number, keyframe: number }) {
+    /** Master scroll duration */
+    let duration = 500;
     /** TS doesn't allow wheelevent in addEventListener callback, so we assert type */
     let wheelEvent: WheelEvent;
-    /** Because current is current at instance target is changed, we need to set scroll target to be from the nearest verse */
-    let nearestVerseScroll;
+    /** Track debounce */
+    let timer: number | null;
 
-    const scrollOverride = (event: Event) => {
-        event.preventDefault();
-        wheelEvent = event as WheelEvent;
-        nearestVerseScroll =
-            Math.round(scrollPosition.current / window.innerWidth) * window.innerWidth;
+    /** Tweened scrollLeft value */
+    let scrollPosition = new Tween(0, {
+        duration: duration,
+        easing: quadOut
+    });
 
-        if (Math.sign(wheelEvent.deltaX + wheelEvent.deltaY) >= 0) {
-            // positive scroll
-            scrollPosition.target = Math.min(
-                nearestVerseScroll + window.innerWidth,
-                content.scrollWidth
-            );
-            keyframe = keyframe < getTotalFramesCount() - 1 ? keyframe + 1 : getTotalFramesCount() - 1;
+    const debouncedScrollOverride = (event: Event) => {
+        if (!timer) {
+            event.preventDefault();
+            wheelEvent = event as WheelEvent;
+            let totalFramesCount = getTotalFramesCount();
+            let countUpToVerse = getTotalFramesCount(verse);
+            let verseFramesCount = getFramesCount(keyframes[verse]);
+
+            // update keyframe
+            keyframe += Math.sign(wheelEvent.deltaX + wheelEvent.deltaY);
+            if (keyframe >= totalFramesCount - 1) keyframe = totalFramesCount - 1;
+            else if (keyframe < 0) keyframe = 0;
+
+            // if new verse update verse
+            if (keyframe >= countUpToVerse) verse++;
+            else if (keyframe < countUpToVerse - verseFramesCount) verse--;
+
+            // add verse change * width of screen
+            scrollPosition.target = verse * window.innerWidth;
+            timer = setTimeout(() => { timer = null }, duration / 2)
         }
-        // negative scroll
-        else {
-            scrollPosition.target = Math.max(nearestVerseScroll - window.innerWidth, 0);
-            keyframe = keyframe > 0 ? keyframe - 1 : 0;
-        }
-        console.log(keyframe);
     };
 
     const handleResize = () => {
@@ -49,13 +50,15 @@ export function overrideScroll(content: Element, { keyframe }: { keyframe: numbe
         );
     };
 
-    content.addEventListener("wheel", scrollOverride);
+    // yes wheel event is not widely supported but this will have to do
+    // to have wide support we can instead listen to mwheel/trackpad/touch
+    content.addEventListener("wheel", debouncedScrollOverride);
     window.addEventListener("resize", handleResize);
 
     return {
         scrollPosition: scrollPosition,
         unmount: () => {
-            content.removeEventListener("wheel", scrollOverride);
+            content.removeEventListener("wheel", debouncedScrollOverride);
             window.removeEventListener("resize", handleResize);
         }
     };

@@ -16,11 +16,12 @@
     let unmount: ReturnType<typeof overrideScroll>["unmount"];
 
     let verses = [Verse1, Verse2, Verse3, Verse4];
+    let verse = 0;
     let keyframe = 0;
 
     onMount(() => {
         // when mounted, content will not be null
-        let override = overrideScroll(content!, { keyframe });
+        let override = overrideScroll(content!, { verse, keyframe });
         scrollPosition = override.scrollPosition;
         unmount = override.unmount;
 
@@ -32,8 +33,11 @@
         content!.scrollLeft = scrollPosition.current ?? 0;
     });
 
-    // TODO: fix keyframing (tie to scroll position and pass to verse as prop)
     // TODO: add scroll (button) bar
+    // TODO: simplify keyframes, ie separate from index in keyframes
+    // instead have keyframe track bold, call functions, and verse
+    // this should be in a naive list
+    // more simple, less expensive :)
     // TODO: image scale may be broken on chrome, make sure to check
 </script>
 

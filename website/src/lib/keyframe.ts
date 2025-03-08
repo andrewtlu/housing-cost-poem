@@ -91,9 +91,14 @@ export function getFramesCount(keyframe: Keyframes) {
     return keyframe.frames.length;
 }
 
-export function getTotalFramesCount() {
+export function getTotalFramesCount(upToVerse?: number) {
     let count = 0;
-    keyframes.forEach((frame: Keyframes) => (count += frame.frames.length));
+    let verse = 0;
+    for (let keyframe of keyframes) {
+        count += keyframe.frames.length
+        if (verse == upToVerse) return count;
+        verse++;
+    }
     return count;
 }
 
