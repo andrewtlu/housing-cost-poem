@@ -27,7 +27,7 @@
 
 <div class="flex flex-col items-center gap-5 align-middle">
     <svg width="300" height="300" viewBox="0 0 250 250" class="bg-gray-400">
-        {#each data as d, i}
+        {#each data as d, i (i)}
             {#if i === 0}
                 <circle cx={d.x} cy={d.y} r={d.r + 4} stroke="white" fill="none" />
                 <circle cx={d.x} cy={d.y} r={d.r} fill={d.fill} />

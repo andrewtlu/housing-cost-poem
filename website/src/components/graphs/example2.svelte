@@ -47,7 +47,7 @@
     <svg {width} {height}>
         <!-- 4. Design the bars -->
         <g class="bars">
-            {#each points as point, i}
+            {#each points as point, i (i)}
                 <rect
                     x={xScale(i) + 2}
                     y={yScale(point.birthrate)}
@@ -61,7 +61,7 @@
         </g>
         <!-- Design y axis -->
         <g class="axis y-axis">
-            {#each yTicks as tick}
+            {#each yTicks as tick (tick)}
                 <g class="tick tick-{tick}" transform="translate(0, {yScale(tick)})">
                     <line x2="100%" />
                     <text y="-4">{tick} {tick === 20 ? " per 1,000 population" : ""}</text>
@@ -71,7 +71,7 @@
 
         <!-- Design x axis -->
         <g class="axis x-axis">
-            {#each points as point, i}
+            {#each points as point, i (i)}
                 <g class="tick" transform="translate({xScale(i)}, {height})">
                     <text x={barWidth / 2} y="-4">
                         {width > 380 ? point.year : formatMobile(point.year)}</text

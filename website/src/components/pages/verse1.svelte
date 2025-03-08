@@ -14,7 +14,7 @@
 </script>
 
 <ul>
-    {#each lines as line, index}
+    {#each lines as line, index (index)}
         <li>{line}</li>
     {/each}
 </ul>

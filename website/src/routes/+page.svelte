@@ -16,12 +16,11 @@
     let unmount: ReturnType<typeof overrideScroll>["unmount"];
 
     let verses = [Verse1, Verse2, Verse3, Verse4];
-    let verse = 0;
     let keyframe = 0;
 
     onMount(() => {
         // when mounted, content will not be null
-        let override = overrideScroll(content!, { verse, keyframe });
+        let override = overrideScroll(content!, { keyframe });
         scrollPosition = override.scrollPosition;
         unmount = override.unmount;
 
@@ -30,14 +29,10 @@
 
     // update content's scroll with scrollPosition, content won't be null
     $effect(() => {
-        content!.scrollLeft = scrollPosition.current ?? 0;
+        content!.scrollLeft = scrollPosition.current;
     });
 
     // TODO: add scroll (button) bar
-    // TODO: simplify keyframes, ie separate from index in keyframes
-    // instead have keyframe track bold, call functions, and verse
-    // this should be in a naive list
-    // more simple, less expensive :)
     // TODO: image scale may be broken on chrome, make sure to check
 </script>
 
@@ -55,7 +50,7 @@
         <h1>Affording an Abode: Affordable Housing in Urban America</h1>
     </div>
 
-    {#each verses as Verse, index}
+    {#each verses as Verse, index (index)}
         <div
             class="flex h-screen w-screen shrink-0 snap-center flex-row items-center justify-center gap-24"
             id={`verse${index}`}

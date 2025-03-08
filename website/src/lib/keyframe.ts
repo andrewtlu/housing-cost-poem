@@ -4,116 +4,75 @@
  * - functions to run
  */
 export type Keyframe = {
-    bolded: (0 | 1 | 2 | 3)[]; // lines to be bolded
+    verse: number;
+    bolded: number[]; // lines to be bolded
     toRun: (() => void)[];
 };
 
 /**
- * Stores a list of keyframes for a specific verse
- * frames[] must contain at least 1 frame (default)
+ * The keyframes for the poem.
+ * Not automatically sorted, but can be easily implemented with .toSorted()
  */
-export type Keyframes = {
-    frames: [Keyframe, ...Keyframe[]];
-};
-
-
-/**
- * Frames within title
- */
-export const titleFrames: Keyframes = {
-    frames: [
-        {
-            bolded: [],
-            toRun: []
-        },
-    ]
-}
-
-/**
- * Frames within verse 1
- */
-export const verse1Frames: Keyframes = {
-    frames: [
-        {
-            bolded: [],
-            toRun: []
-        },
-        {
-            bolded: [0, 1],
-            toRun: []
-        },
-        {
-            bolded: [2, 3],
-            toRun: []
-        }
-    ]
-};
-
-/**
- * Frames within verse 2
- */
-export const verse2Frames: Keyframes = {
-    frames: [
-        {
-            bolded: [],
-            toRun: []
-        }
-    ]
-};
-
-/**
- * Frames within verse 3
- */
-export const verse3Frames: Keyframes = {
-    frames: [
-        {
-            bolded: [],
-            toRun: []
-        }
-    ]
-};
-
-/**
- * Frames within verse 4
- */
-export const verse4Frames: Keyframes = {
-    frames: [
-        {
-            bolded: [],
-            toRun: []
-        }
-    ]
-};
-
-export const keyframes: Keyframes[] = [titleFrames, verse1Frames, verse2Frames, verse3Frames, verse4Frames];
-
-export function getFramesCount(keyframe: Keyframes) {
-    return keyframe.frames.length;
-}
-
-export function getTotalFramesCount(upToVerse?: number) {
-    let count = 0;
-    let verse = 0;
-    for (let keyframe of keyframes) {
-        count += keyframe.frames.length
-        if (verse == upToVerse) return count;
-        verse++;
+export const keyframes: Keyframe[] = [
+    {
+        verse: 0,
+        bolded: [],
+        toRun: []
+    },
+    {
+        verse: 1,
+        bolded: [],
+        toRun: []
+    },
+    {
+        verse: 1,
+        bolded: [0, 1],
+        toRun: []
+    },
+    {
+        verse: 1,
+        bolded: [2, 3],
+        toRun: []
+    },
+    {
+        verse: 2,
+        bolded: [],
+        toRun: []
+    },
+    {
+        verse: 3,
+        bolded: [],
+        toRun: []
+    },
+    {
+        verse: 4,
+        bolded: [],
+        toRun: []
     }
-    return count;
+];
+
+/**
+ * Gets the total # of frames in a poem or a verse.
+ * @param verse verse to count, otherwise count all frames
+ * @returns count of frames in a verse
+ */
+export function getFramesCount(verse?: number) {
+    if (verse !== undefined) {
+        let count = 0;
+        for (const keyframe of keyframes) {
+            if (keyframe.verse == verse) count++;
+        }
+        return count;
+    } else {
+        return keyframes.length;
+    }
 }
 
-export function getFrame(keyframe: number): Keyframe {
-    let index = keyframe;
-    // traverse frames
-    for (let verseFrames of keyframes) {
-        if (index >= getFramesCount(verseFrames)) {
-            index -= getFramesCount(verseFrames);
-        } else {
-            return verseFrames.frames[index];
-        }
-    }
-
-    throw Error(
-        `Tried accessing keyframe ${keyframe + 1}, but there are only ${getTotalFramesCount()} frames!`
-    );
+/**
+ * Gets the actual keyframe given the keyframe number.
+ * @param index keyframe to fetch
+ * @returns fetched keyframe
+ */
+export function getFrame(index: number): Keyframe {
+    return keyframes[index];
 }
