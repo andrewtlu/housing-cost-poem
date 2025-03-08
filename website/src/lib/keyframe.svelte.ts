@@ -1,3 +1,5 @@
+import { writable } from "svelte/store";
+
 /**
  * Keyframe contains info on:
  * - bolded lines
@@ -50,6 +52,53 @@ export const keyframes: Keyframe[] = [
         toRun: []
     }
 ];
+
+/**
+ * Internal keyframe state
+ */
+let _keyframe = $state(0);
+
+/**
+ * Exported state wrapped with helper functions.
+ */
+export const keyframe = {
+    /**
+     * Get the current keyframe.
+     * @returns current keyframe
+     */
+    get() {
+        return _keyframe;
+    },
+    /**
+     * Set the current keyframe.
+     * @param frame frame to set to
+     */
+    set(frame: number) {
+        _keyframe = frame;
+    },
+    /**
+     * Increment the current keyframe.
+     * @param count count to increment, or default 1
+     */
+    increment(count?: number) {
+        if (count != undefined) {
+            _keyframe += count;
+        } else {
+            _keyframe++;
+        }
+    },
+    /**
+     * Decrement the current keyframe.
+     * @param count count to decrement, or default 1
+     */
+    decrement(count?: number) {
+        if (count != undefined) {
+            _keyframe -= count;
+        } else {
+            _keyframe--;
+        }
+    }
+};
 
 /**
  * Gets the total # of frames in a poem or a verse.

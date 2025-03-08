@@ -12,11 +12,10 @@
     let unmount: ReturnType<typeof overrideScroll>["unmount"];
 
     let verses = [Verse1, Verse2, Verse3, Verse4];
-    let keyframe = 0;
 
     onMount(() => {
         // when mounted, content will not be null
-        let override = overrideScroll(content!, { keyframe });
+        let override = overrideScroll(content!);
         scrollPosition = override.scrollPosition;
         unmount = override.unmount;
 
@@ -42,16 +41,18 @@
     id="content"
     bind:this={content}
 >
+    <!-- verse 0 (title ) -->
     <div class="flex h-screen w-screen shrink-0 flex-col items-center justify-center" id="title">
         <h1>Affording an Abode: Affordable Housing in Urban America</h1>
     </div>
 
+    <!-- verse 1 through 4 -->
     {#each verses as Verse, index (index)}
         <div
             class="flex h-screen w-screen shrink-0 snap-center flex-row items-center justify-center gap-24"
             id={`verse${index}`}
         >
-            <Verse {keyframe} />
+            <Verse />
         </div>
     {/each}
 </div>

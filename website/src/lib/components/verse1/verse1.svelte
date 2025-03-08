@@ -2,8 +2,6 @@
     import Example from "./example.svelte";
     import Example2 from "./example2.svelte";
 
-    let keyframe = $props();
-
     // dashes are em dashes, and quotations are curled :)
     let lines = [
         "Home—yes, four walls to keep warm",

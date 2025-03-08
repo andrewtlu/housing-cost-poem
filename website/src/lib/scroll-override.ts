@@ -1,6 +1,6 @@
 import { quadOut } from "svelte/easing";
 import { Tween } from "svelte/motion";
-import { getFrame, getFramesCount } from "./keyframe";
+import { getFrame, getFramesCount, keyframe } from "$lib";
 
 /**
  * Overrides default behavior and returns a tweened scrollPosition value to use for transform instead.
@@ -9,7 +9,7 @@ import { getFrame, getFramesCount } from "./keyframe";
  * @param keyframe the keyframe index
  * @returns unmount functions
  */
-export function overrideScroll(content: Element, { keyframe }: { keyframe: number }) {
+export function overrideScroll(content: Element) {
     /** Master scroll duration */
     const duration = 500;
     /** TS doesn't allow wheelevent in addEventListener callback, so we assert type */
@@ -29,12 +29,12 @@ export function overrideScroll(content: Element, { keyframe }: { keyframe: numbe
             wheelEvent = event as WheelEvent;
 
             // update keyframe
-            keyframe += Math.sign(wheelEvent.deltaX + wheelEvent.deltaY);
-            if (keyframe >= getFramesCount() - 1) keyframe = getFramesCount() - 1;
-            else if (keyframe < 0) keyframe = 0;
+            keyframe.increment(Math.sign(wheelEvent.deltaX + wheelEvent.deltaY));
+            if (keyframe.get() >= getFramesCount() - 1) keyframe.set(getFramesCount() - 1);
+            else if (keyframe.get() < 0) keyframe.set(0);
 
             // add verse change * width of screen
-            scrollPosition.target = getFrame(keyframe).verse * window.innerWidth;
+            scrollPosition.target = getFrame(keyframe.get()).verse * window.innerWidth;
             timer = setTimeout(() => {
                 timer = null;
             }, duration / 2);

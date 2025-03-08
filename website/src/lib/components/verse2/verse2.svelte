@@ -1,6 +1,4 @@
 <script lang="ts">
-    let keyframe = $props();
-
     // quotations are curled :)
     let lines = [
         "Plans of school, moving downtown",
