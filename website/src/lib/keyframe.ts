@@ -16,6 +16,19 @@ export type Keyframes = {
     frames: [Keyframe, ...Keyframe[]];
 };
 
+
+/**
+ * Frames within title
+ */
+export const titleFrames: Keyframes = {
+    frames: [
+        {
+            bolded: [],
+            toRun: []
+        },
+    ]
+}
+
 /**
  * Frames within verse 1
  */
@@ -72,7 +85,7 @@ export const verse4Frames: Keyframes = {
     ]
 };
 
-export const keyframes: Keyframes[] = [verse1Frames, verse2Frames, verse3Frames, verse4Frames];
+export const keyframes: Keyframes[] = [titleFrames, verse1Frames, verse2Frames, verse3Frames, verse4Frames];
 
 export function getFramesCount(keyframe: Keyframes) {
     return keyframe.frames.length;

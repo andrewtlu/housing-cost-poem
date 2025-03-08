@@ -1,8 +1,15 @@
 import { quadOut } from "svelte/easing";
 import { Tween } from "svelte/motion";
+import { getTotalFramesCount } from "./keyframe";
 
-/** Overrides default behavior and returns a tweened scrollPosition value to use for transform instead */
-export function overrideScroll(content: Element) {
+// NOW THAT KEYFRAMES ARE CONNECTED, NEED TO MAKE SURE THEY'RE STILL CONNECTED TO THE SCROLL POSITION! CURRENTLY VERY FINICKY
+
+/**
+ * Overrides default behavior and returns a tweened scrollPosition value to use for transform instead.
+ * Automatically updates keyframes.
+ * `keyframe` is wrapped in an object so that keyframe in the calling context can be modified
+ */
+export function overrideScroll(content: Element, { keyframe }: { keyframe: number }) {
     /** Tweened scrollLeft value */
     let scrollPosition = new Tween(0, {
         duration: 500,
@@ -19,14 +26,20 @@ export function overrideScroll(content: Element) {
         nearestVerseScroll =
             Math.round(scrollPosition.current / window.innerWidth) * window.innerWidth;
 
-        if (Math.sign(wheelEvent.deltaX + wheelEvent.deltaY) >= 0)
+        if (Math.sign(wheelEvent.deltaX + wheelEvent.deltaY) >= 0) {
             // positive scroll
             scrollPosition.target = Math.min(
                 nearestVerseScroll + window.innerWidth,
                 content.scrollWidth
             );
+            keyframe = keyframe < getTotalFramesCount() - 1 ? keyframe + 1 : getTotalFramesCount() - 1;
+        }
         // negative scroll
-        else scrollPosition.target = Math.max(nearestVerseScroll - window.innerWidth, 0);
+        else {
+            scrollPosition.target = Math.max(nearestVerseScroll - window.innerWidth, 0);
+            keyframe = keyframe > 0 ? keyframe - 1 : 0;
+        }
+        console.log(keyframe);
     };
 
     const handleResize = () => {

@@ -20,7 +20,7 @@
 
     onMount(() => {
         // when mounted, content will not be null
-        let override = overrideScroll(content!);
+        let override = overrideScroll(content!, { keyframe });
         scrollPosition = override.scrollPosition;
         unmount = override.unmount;
 

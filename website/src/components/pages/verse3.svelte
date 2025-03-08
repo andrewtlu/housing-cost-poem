@@ -1,10 +1,5 @@
 <script lang="ts">
-    import type { Keyframes } from "$lib/keyframe";
-
-    let { keyframe }: { keyframe: number } = $props();
-    let keyframes: Keyframes = {
-        frames: []
-    };
+    let keyframe = $props();
 
     // dashes are em dashes and quotations are curled :)
     let lines = [

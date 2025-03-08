@@ -1,12 +1,8 @@
 <script lang="ts">
-    import type { Keyframes } from "$lib/keyframe";
     import Example from "../graphs/example.svelte";
     import Example2 from "../graphs/example2.svelte";
 
-    let { keyframe }: { keyframe: number } = $props();
-    let keyframes: Keyframes = {
-        frames: []
-    };
+    let keyframe = $props();
 
     // dashes are em dashes, and quotations are curled :)
     let lines = [
