@@ -56,7 +56,10 @@ export const keyframe = $state({
     set(frame: number) {
         this.value = frame;
         this.clean();
+
+        // update scroll and run necessary functions
         updateScroll();
+        getFrame(keyframe.value).toRun.forEach((func) => func());
     },
     /**
      * Increment the current keyframe.
@@ -64,12 +67,10 @@ export const keyframe = $state({
      */
     increment(count?: number) {
         if (count != undefined) {
-            this.value += count;
+            this.set(this.value + count);
         } else {
-            this.value++;
+            this.set(this.value + 1);
         }
-        this.clean();
-        updateScroll();
     },
     /**
      * Decrement the current keyframe.
@@ -77,12 +78,10 @@ export const keyframe = $state({
      */
     decrement(count?: number) {
         if (count != undefined) {
-            this.value -= count;
+            this.set(this.value - count);
         } else {
-            this.value--;
+            this.set(this.value - 1);
         }
-        this.clean();
-        updateScroll();
     }
 });
 
