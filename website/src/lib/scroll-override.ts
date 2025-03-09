@@ -2,6 +2,29 @@ import { quadOut } from "svelte/easing";
 import { Tween } from "svelte/motion";
 import { getFrame, getFramesCount, keyframe } from "$lib";
 
+/** Master scroll duration */
+export const duration = 500;
+
+/** Tweened scrollLeft value */
+export const scrollPosition = new Tween(0, {
+    duration: duration,
+    easing: quadOut
+});
+
+/**
+ * Helper function to update the scroll value.
+ */
+export function updateScroll(instant: boolean = false) {
+    if (!instant)
+        // add verse change * width of screen
+        scrollPosition.target = getFrame(keyframe.value).verse * window.innerWidth;
+    else
+        scrollPosition.set(
+            getFrame(keyframe.value).verse * window.innerWidth,
+            { duration: 0 }
+        );
+}
+
 /**
  * Overrides default behavior and returns a tweened scrollPosition value to use for transform instead.
  * Scroll updates keyframes & derives scroll position
@@ -10,18 +33,10 @@ import { getFrame, getFramesCount, keyframe } from "$lib";
  * @returns unmount functions
  */
 export function overrideScroll(content: Element) {
-    /** Master scroll duration */
-    const duration = 500;
     /** TS doesn't allow wheelevent in addEventListener callback, so we assert type */
     let wheelEvent: WheelEvent;
     /** Track debounce */
     let timer: number | null;
-
-    /** Tweened scrollLeft value */
-    const scrollPosition = new Tween(0, {
-        duration: duration,
-        easing: quadOut
-    });
 
     const debouncedScrollOverride = (event: Event) => {
         if (!timer) {
@@ -29,12 +44,11 @@ export function overrideScroll(content: Element) {
             wheelEvent = event as WheelEvent;
 
             // update keyframe
-            keyframe.increment(Math.sign(wheelEvent.deltaX + wheelEvent.deltaY));
-            if (keyframe.value >= getFramesCount() - 1) keyframe.set(getFramesCount() - 1);
-            else if (keyframe.value < 0) keyframe.set(0);
+            let sign = Math.sign(wheelEvent.deltaX + wheelEvent.deltaY)
+            if (keyframe.value + sign >= getFramesCount() - 1) keyframe.set(getFramesCount() - 1);
+            else if (keyframe.value + sign < 0) keyframe.set(0);
+            else keyframe.increment(sign);
 
-            // add verse change * width of screen
-            scrollPosition.target = getFrame(keyframe.value).verse * window.innerWidth;
             timer = setTimeout(() => {
                 timer = null;
             }, duration / 2);
@@ -42,10 +56,7 @@ export function overrideScroll(content: Element) {
     };
 
     const handleResize = () => {
-        scrollPosition.set(
-            Math.round(scrollPosition.current / window.innerWidth) * window.innerWidth,
-            { duration: 0 }
-        );
+        updateScroll(true);
     };
 
     // yes wheel event is not widely supported but this will have to do

@@ -1,3 +1,5 @@
+import { updateScroll } from "./scroll-override";
+
 /**
  * Keyframe contains info on:
  * - bolded lines
@@ -53,8 +55,14 @@ export const keyframes: Keyframe[] = [
 
 /**
  * The website's keyframe state.
+ * Automatically updates the tweened scrollPosition if provided methods are used to update state.
  */
 export const keyframe = $state({
+    /**
+     * The current keyframe.
+     * 
+     * **SHOULD NOT BE DIRECTLY SET! IF DIRECTLY SET, WILL NOT PROPERLY UPDATE SCROLL! USE set() INSTEAD!**
+     */
     value: 0,
     /**
      * Set the current keyframe.
@@ -62,6 +70,7 @@ export const keyframe = $state({
      */
     set(frame: number) {
         this.value = frame;
+        updateScroll();
     },
     /**
      * Increment the current keyframe.
@@ -73,6 +82,7 @@ export const keyframe = $state({
         } else {
             this.value++;
         }
+        updateScroll();
     },
     /**
      * Decrement the current keyframe.
@@ -84,6 +94,7 @@ export const keyframe = $state({
         } else {
             this.value--;
         }
+        updateScroll();
     }
 });
 
