@@ -1,6 +1,6 @@
 import { quadOut } from "svelte/easing";
 import { Tween } from "svelte/motion";
-import { getFrame, getFramesCount, keyframe } from "$lib";
+import { getFrame, keyframe } from "$lib";
 
 /** Master scroll duration */
 export const duration = 500;
@@ -38,13 +38,7 @@ export function overrideScroll(content: Element) {
         if (!timer) {
             event.preventDefault();
             wheelEvent = event as WheelEvent;
-
-            // update keyframe
-            const sign = Math.sign(wheelEvent.deltaX + wheelEvent.deltaY);
-            if (keyframe.value + sign >= getFramesCount() - 1) keyframe.set(getFramesCount() - 1);
-            else if (keyframe.value + sign < 0) keyframe.set(0);
-            else keyframe.increment(sign);
-
+            keyframe.increment(Math.sign(wheelEvent.deltaX + wheelEvent.deltaY));
             timer = setTimeout(() => {
                 timer = null;
             }, duration / 2);

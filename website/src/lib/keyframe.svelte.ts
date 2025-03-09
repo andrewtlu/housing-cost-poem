@@ -65,11 +65,20 @@ export const keyframe = $state({
      */
     value: 0,
     /**
+     * Helper function to make sure keyframe is in bounds.
+     * Should be called before accessing keyframe (ie, before updateScroll())
+     */
+    clean() {
+        if (this.value >= getFramesCount() - 1) this.value = getFramesCount() - 1;
+        else if (this.value < 0) keyframe.set(0);
+    },
+    /**
      * Set the current keyframe.
      * @param frame frame to set to
      */
     set(frame: number) {
         this.value = frame;
+        this.clean();
         updateScroll();
     },
     /**
@@ -82,6 +91,7 @@ export const keyframe = $state({
         } else {
             this.value++;
         }
+        this.clean();
         updateScroll();
     },
     /**
@@ -94,6 +104,7 @@ export const keyframe = $state({
         } else {
             this.value--;
         }
+        this.clean();
         updateScroll();
     }
 });
