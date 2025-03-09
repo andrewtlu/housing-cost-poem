@@ -25,7 +25,7 @@
     }
 </script>
 
-<div class="flex flex-col items-center gap-5 align-middle">
+<div class="m-1 flex flex-col items-center gap-2 align-middle">
     <svg width="300" height="300" viewBox="0 0 250 250" class="bg-gray-400">
         {#each data as d, i (i)}
             {#if i === 0}
@@ -36,7 +36,7 @@
             {/if}
         {/each}
     </svg>
-    <div class="flex flex-row gap-5">
+    <div class="flex flex-row gap-2">
         <button class="btn btn-sm" onclick={updateState}>Update</button>
         <button class="btn btn-sm" onclick={reset}>Reset</button>
     </div>

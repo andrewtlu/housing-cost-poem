@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { getFrame, keyframe } from "$lib/keyframe.svelte";
     import Example from "./example.svelte";
     import Example2 from "./example2.svelte";
 
@@ -13,10 +14,27 @@
 
 <ul>
     {#each lines as line, index (index)}
-        <li>{line}</li>
+        <li title={line} class={getFrame(keyframe.value).bolded.includes(index) ? "font-bold" : ""}>
+            {line}
+        </li>
     {/each}
 </ul>
 
-<Example />
+<div>
+    <Example />
+    <Example2 />
+</div>
 
-<Example2 />
+<!-- https://stackoverflow.com/questions/5687035/css-bolding-some-text-without-changing-its-containers-size -->
+<!-- may be better to make all text bold, and reduce opacity of non-emphasized text -->
+<style>
+    li::after {
+        display: block;
+        content: attr(title);
+        font-weight: bold;
+        height: 1px;
+        color: transparent;
+        overflow: hidden;
+        visibility: hidden;
+    }
+</style>

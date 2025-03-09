@@ -21,4 +21,4 @@ export const verse1Keyframes: Keyframe[] = [
         bolded: [2, 3],
         toRun: []
     }
-]
+];

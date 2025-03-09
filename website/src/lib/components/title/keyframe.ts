@@ -11,4 +11,4 @@ export const titleKeyframes: Keyframe[] = [
         bolded: [],
         toRun: []
     }
-]
+];
