@@ -38,12 +38,14 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
         <li class="flex items-center align-middle">
             <button
                 class={[
-                    "h-2 w-2 origin-center cursor-pointer overflow-hidden rounded-full bg-black transition-all hover:scale-200",
+                    "-m-0.5 h-3.5 w-3.5 origin-center cursor-pointer p-1 transition-all hover:scale-200",
                     keyframe.value == i ? "scale-200" : ""
                 ]}
                 aria-label={`keyframe ${i}`}
                 onclick={() => navTo(i)}
-            ></button>
+            >
+                <div class="h-full w-full rounded-full bg-black"></div>
+            </button>
         </li>
     {/each}
     <li class="flex origin-center items-center align-middle">

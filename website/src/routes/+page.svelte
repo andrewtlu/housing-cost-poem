@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import "../app.css";
     import { overrideScroll } from "$lib";
-    import { Verse1, Verse2, Verse3, Verse4, Parallax, Nav } from "$lib/components";
+    import { Title, Verse1, Verse2, Verse3, Verse4, Parallax, Nav } from "$lib/components";
 
     /** Main content DOM element */
     let content: Element | null = $state(null);
@@ -11,7 +11,7 @@
     /** Unmount for scroll listener */
     let unmount: ReturnType<typeof overrideScroll>["unmount"];
 
-    let verses = [Verse1, Verse2, Verse3, Verse4];
+    let verses = [Title, Verse1, Verse2, Verse3, Verse4];
 
     onMount(() => {
         // when mounted, content will not be null
@@ -42,16 +42,10 @@
     id="content"
     bind:this={content}
 >
-    <!-- verse 0 (title ) -->
-    <div class="flex h-screen w-screen shrink-0 flex-col items-center justify-center" id="title">
-        <h1>Affording an Abode: Affordable Housing in Urban America</h1>
-    </div>
-
-    <!-- verse 1 through 4 -->
     {#each verses as Verse, index (index)}
         <div
             class="flex h-screen w-screen shrink-0 snap-center flex-row items-center justify-center gap-24"
-            id={`verse${index}`}
+            id={index == 0 ? "title" : `verse${index}`}
         >
             <Verse />
         </div>

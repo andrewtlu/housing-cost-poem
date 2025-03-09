@@ -1,3 +1,4 @@
+import { titleKeyframes, verse1Keyframes, verse2Keyframes, verse3Keyframes, verse4Keyframes } from "./components";
 import { updateScroll } from "./scroll-override";
 
 /**
@@ -16,41 +17,11 @@ export type Keyframe = {
  * Not automatically sorted, but can be easily implemented with .toSorted()
  */
 export const keyframes: Keyframe[] = [
-    {
-        verse: 0,
-        bolded: [],
-        toRun: []
-    },
-    {
-        verse: 1,
-        bolded: [],
-        toRun: []
-    },
-    {
-        verse: 1,
-        bolded: [0, 1],
-        toRun: []
-    },
-    {
-        verse: 1,
-        bolded: [2, 3],
-        toRun: []
-    },
-    {
-        verse: 2,
-        bolded: [],
-        toRun: []
-    },
-    {
-        verse: 3,
-        bolded: [],
-        toRun: []
-    },
-    {
-        verse: 4,
-        bolded: [],
-        toRun: []
-    }
+    ...titleKeyframes,
+    ...verse1Keyframes,
+    ...verse2Keyframes,
+    ...verse3Keyframes,
+    ...verse4Keyframes
 ];
 
 /**
