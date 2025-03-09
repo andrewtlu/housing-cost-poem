@@ -18,11 +18,7 @@ export function updateScroll(instant: boolean = false) {
     if (!instant)
         // add verse change * width of screen
         scrollPosition.target = getFrame(keyframe.value).verse * window.innerWidth;
-    else
-        scrollPosition.set(
-            getFrame(keyframe.value).verse * window.innerWidth,
-            { duration: 0 }
-        );
+    else scrollPosition.set(getFrame(keyframe.value).verse * window.innerWidth, { duration: 0 });
 }
 
 /**
@@ -44,7 +40,7 @@ export function overrideScroll(content: Element) {
             wheelEvent = event as WheelEvent;
 
             // update keyframe
-            let sign = Math.sign(wheelEvent.deltaX + wheelEvent.deltaY)
+            const sign = Math.sign(wheelEvent.deltaX + wheelEvent.deltaY);
             if (keyframe.value + sign >= getFramesCount() - 1) keyframe.set(getFramesCount() - 1);
             else if (keyframe.value + sign < 0) keyframe.set(0);
             else keyframe.increment(sign);

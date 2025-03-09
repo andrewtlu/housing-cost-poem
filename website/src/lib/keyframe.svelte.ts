@@ -60,7 +60,7 @@ export const keyframes: Keyframe[] = [
 export const keyframe = $state({
     /**
      * The current keyframe.
-     * 
+     *
      * **SHOULD NOT BE DIRECTLY SET! IF DIRECTLY SET, WILL NOT PROPERLY UPDATE SCROLL! USE set() INSTEAD!**
      */
     value: 0,

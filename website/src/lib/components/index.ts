@@ -5,3 +5,4 @@ export { default as Verse2 } from "./verse2/verse2.svelte";
 export { default as Verse3 } from "./verse3/verse3.svelte";
 export { default as Verse4 } from "./verse4/verse4.svelte";
 export { default as Parallax } from "./parallax.svelte";
+export { default as Nav } from "./nav.svelte";

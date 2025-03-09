@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import "../app.css";
     import { overrideScroll } from "$lib";
-    import { Verse1, Verse2, Verse3, Verse4, Parallax } from "$lib/components";
+    import { Verse1, Verse2, Verse3, Verse4, Parallax, Nav } from "$lib/components";
 
     /** Main content DOM element */
     let content: Element | null = $state(null);
@@ -34,6 +34,8 @@
 {#if content}
     <Parallax scrollContainer={content} />
 {/if}
+
+<Nav />
 
 <!-- Each element within this div MUST have w-screen due to the tweened scroll positioning -->
 <div
