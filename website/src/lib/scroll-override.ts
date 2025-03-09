@@ -30,11 +30,11 @@ export function overrideScroll(content: Element) {
 
             // update keyframe
             keyframe.increment(Math.sign(wheelEvent.deltaX + wheelEvent.deltaY));
-            if (keyframe.get() >= getFramesCount() - 1) keyframe.set(getFramesCount() - 1);
-            else if (keyframe.get() < 0) keyframe.set(0);
+            if (keyframe.value >= getFramesCount() - 1) keyframe.set(getFramesCount() - 1);
+            else if (keyframe.value < 0) keyframe.set(0);
 
             // add verse change * width of screen
-            scrollPosition.target = getFrame(keyframe.get()).verse * window.innerWidth;
+            scrollPosition.target = getFrame(keyframe.value).verse * window.innerWidth;
             timer = setTimeout(() => {
                 timer = null;
             }, duration / 2);

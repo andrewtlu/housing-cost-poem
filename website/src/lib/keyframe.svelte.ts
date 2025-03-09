@@ -1,5 +1,3 @@
-import { writable } from "svelte/store";
-
 /**
  * Keyframe contains info on:
  * - bolded lines
@@ -54,27 +52,16 @@ export const keyframes: Keyframe[] = [
 ];
 
 /**
- * Internal keyframe state
+ * The website's keyframe state.
  */
-let _keyframe = $state(0);
-
-/**
- * Exported state wrapped with helper functions.
- */
-export const keyframe = {
-    /**
-     * Get the current keyframe.
-     * @returns current keyframe
-     */
-    get() {
-        return _keyframe;
-    },
+export const keyframe = $state({
+    value: 0,
     /**
      * Set the current keyframe.
      * @param frame frame to set to
      */
     set(frame: number) {
-        _keyframe = frame;
+        this.value = frame;
     },
     /**
      * Increment the current keyframe.
@@ -82,9 +69,9 @@ export const keyframe = {
      */
     increment(count?: number) {
         if (count != undefined) {
-            _keyframe += count;
+            this.value += count;
         } else {
-            _keyframe++;
+            this.value++;
         }
     },
     /**
@@ -93,12 +80,12 @@ export const keyframe = {
      */
     decrement(count?: number) {
         if (count != undefined) {
-            _keyframe -= count;
+            this.value -= count;
         } else {
-            _keyframe--;
+            this.value--;
         }
     }
-};
+});
 
 /**
  * Gets the total # of frames in a poem or a verse.
