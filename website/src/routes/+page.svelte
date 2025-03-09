@@ -27,7 +27,6 @@
         content!.scrollLeft = scrollPosition.current;
     });
 
-    // TODO: add scroll (button) bar
     // TODO: image scale may be broken on chrome, make sure to check
 </script>
 
