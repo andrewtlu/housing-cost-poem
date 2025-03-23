@@ -38,7 +38,7 @@
 
 <!-- Each element within this div MUST have w-screen due to the tweened scroll positioning -->
 <div
-    class="relative flex h-screen flex-row overflow-x-hidden bg-gray-50/50"
+    class="relative flex h-screen flex-row overflow-x-hidden bg-gray-50/90"
     id="content"
     bind:this={content}
 >

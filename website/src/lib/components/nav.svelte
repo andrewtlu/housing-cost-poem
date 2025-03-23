@@ -18,7 +18,7 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
 </script>
 
 <ul
-    class="absolute bottom-10 left-1/2 z-50 flex -translate-x-1/2 flex-row items-center gap-5 rounded-full bg-white p-2 align-middle"
+    class="absolute bottom-10 left-1/2 z-50 flex -translate-x-1/2 flex-row items-center gap-5 rounded-full p-2 align-middle"
 >
     <li class="flex origin-center items-center align-middle">
         <button
@@ -38,7 +38,7 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
         <li class="flex items-center align-middle">
             <button
                 class={[
-                    "-m-0.5 h-3.5 w-3.5 origin-center cursor-pointer p-1 transition-all hover:scale-200",
+                    "hover:scale-200 -m-0.5 h-3.5 w-3.5 origin-center cursor-pointer p-1 transition-all",
                     keyframe.value == i ? "scale-200" : ""
                 ]}
                 aria-label={`keyframe ${i}`}
