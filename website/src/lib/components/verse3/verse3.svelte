@@ -14,23 +14,9 @@
     {#each lines as line, index (index)}
         <li
             title={line}
-            class={`transition-all ${getFrame(keyframe.value).bolded.includes(index) ? "font-bold" : ""}`}
+            class={`opacity-50 transition-all ${getFrame(keyframe.value).bolded.includes(index) ? "font-bold opacity-100" : ""}`}
         >
             {line}
         </li>
     {/each}
 </ul>
-
-<!-- https://stackoverflow.com/questions/5687035/css-bolding-some-text-without-changing-its-containers-size -->
-<!-- may be better to make all text bold, and reduce opacity of non-emphasized text -->
-<style>
-    li::after {
-        display: block;
-        content: attr(title);
-        font-weight: bold;
-        height: 1px;
-        color: transparent;
-        overflow: hidden;
-        visibility: hidden;
-    }
-</style>

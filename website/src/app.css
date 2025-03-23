@@ -7,3 +7,17 @@
     --font-slabo: "Slabo 27px", serif;
     --font-sans: "Funnel Sans", sans-serif;
 }
+
+/*
+ * https://stackoverflow.com/questions/5687035/css-bolding-some-text-without-changing-its-containers-size 
+ * basically prevents bold text from changing parent div size compared to normal text
+ */
+li::after {
+    display: block;
+    content: attr(title);
+    font-weight: bold;
+    height: 1px;
+    color: transparent;
+    overflow: hidden;
+    visibility: hidden;
+}
