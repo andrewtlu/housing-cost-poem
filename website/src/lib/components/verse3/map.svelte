@@ -37,7 +37,22 @@ map component used in verse 3 for visualizing geographic data
     const path = $derived(geoPath().projection(projection));
 
     // color
+    // TODO: color by cluster (ie, not scaled across all counties but just surrounding counties)
     let color = $state(scaleLinear<string>());
+
+    // data loading
+    const centroids = $derived(
+        counties.features
+            .map((county) => ({
+                id: county.id as number,
+                centroid: path.centroid(county)
+            }))
+            .filter((county) => data.get(county.id) !== undefined)
+    );
+
+    // for each metro area get average center
+    const clusterCentroids = "";
+
     $effect(() => {
         if (data) {
             const values = Array.from(data.values(), (d) => {
@@ -51,7 +66,14 @@ map component used in verse 3 for visualizing geographic data
     });
 
     $effect(() => {
-        console.log("Counties:", counties.features, "Data:", data);
+        console.log(
+            "Counties:",
+            counties.features,
+            "Data:",
+            data.size,
+            "Centroids:",
+            clusterCentroids
+        );
     });
 </script>
 
@@ -79,19 +101,24 @@ map component used in verse 3 for visualizing geographic data
                         }}
                     />
                 {:else}
-                    <path d={path(county)} fill="white" stroke="none" />
+                    <path d={path(county)} fill="white" stroke="whitesmoke" />
                 {/if}
             {/each}
 
+            <!-- {#each clusterCentroids.centroids as centroid}
+                <circle cx={centroid[0]} cy={centroid[1]} r="25" />
+            {/each} -->
+
             {#if stateMesh}
-                <path d={path(stateMesh)} fill="none" stroke="gray" stroke-width="1" />
+                <path d={path(stateMesh)} fill="none" stroke="gray" stroke-width="0.5" />
             {/if}
 
             {#if countryMesh}
-                <path d={path(countryMesh)} fill="none" stroke="gray" stroke-width="1" />
+                <path d={path(countryMesh)} fill="none" stroke="gray" stroke-width="0.5" />
             {/if}
 
             <!-- TODO: legend, interactive components -->
+            <!-- TODO: adaptive zoom, https://chatgpt.com/c/67e0bd02-e96c-8010-baa7-fcc7425b6edc -->
         </svg>
     {/if}
 </div>
