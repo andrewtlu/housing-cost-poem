@@ -15,6 +15,13 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
     const forward = () => {
         keyframe.increment();
     };
+
+    function onKeyDown(e: KeyboardEvent) {
+        const prev = ["KeyA", "KeyW", "KeyH", "KeyK", "ArrowLeft", "ArrowUp"];
+        const next = ["KeyD", "KeyS", "KeyL", "KeyJ", "ArrowRight", "ArrowDown"];
+        if (prev.includes(e.code)) backward();
+        if (next.includes(e.code)) forward();
+    }
 </script>
 
 <ul
@@ -63,3 +70,5 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
         </button>
     </li>
 </ul>
+
+<svelte:window onkeydown={onKeyDown} />
