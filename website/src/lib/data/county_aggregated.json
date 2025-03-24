@@ -1,6 +1,6 @@
 [
     {
-        "id": "11001",
+        "id": 11001,
         "median_income": 82936.3,
         "median_home_value": 531094.86,
         "county": "District of Columbia",
@@ -23,7 +23,7 @@
         "proportion_25_under": 0.2893376027
     },
     {
-        "id": "13013",
+        "id": 13013,
         "median_income": 56525.17,
         "median_home_value": 137083.33,
         "county": "Barrow County",
@@ -46,7 +46,7 @@
         "proportion_25_under": 0.350031292
     },
     {
-        "id": "13015",
+        "id": 13015,
         "median_income": 53285.93,
         "median_home_value": 136033.33,
         "county": "Bartow County",
@@ -69,7 +69,7 @@
         "proportion_25_under": 0.3348177309
     },
     {
-        "id": "13035",
+        "id": 13035,
         "median_income": 43214.0,
         "median_home_value": 122100.0,
         "county": "Butts County",
@@ -92,7 +92,7 @@
         "proportion_25_under": 0.3014943114
     },
     {
-        "id": "13045",
+        "id": 13045,
         "median_income": 46868.94,
         "median_home_value": 119547.06,
         "county": "Carroll County",
@@ -115,7 +115,7 @@
         "proportion_25_under": 0.3755417849
     },
     {
-        "id": "13057",
+        "id": 13057,
         "median_income": 74959.27,
         "median_home_value": 215573.08,
         "county": "Cherokee County",
@@ -138,7 +138,7 @@
         "proportion_25_under": 0.3374877064
     },
     {
-        "id": "13063",
+        "id": 13063,
         "median_income": 44189.78,
         "median_home_value": 86921.28,
         "county": "Clayton County",
@@ -161,7 +161,7 @@
         "proportion_25_under": 0.3853291993
     },
     {
-        "id": "13067",
+        "id": 13067,
         "median_income": 79262.67,
         "median_home_value": 229999.16,
         "county": "Cobb County",
@@ -184,7 +184,7 @@
         "proportion_25_under": 0.3358116665
     },
     {
-        "id": "13077",
+        "id": 13077,
         "median_income": 70573.05,
         "median_home_value": 192695.0,
         "county": "Coweta County",
@@ -207,7 +207,7 @@
         "proportion_25_under": 0.337854581
     },
     {
-        "id": "13085",
+        "id": 13085,
         "median_income": 64526.33,
         "median_home_value": 213200.0,
         "county": "Dawson County",
@@ -230,7 +230,7 @@
         "proportion_25_under": 0.288626747
     },
     {
-        "id": "13089",
+        "id": 13089,
         "median_income": 63848.2,
         "median_home_value": 223653.19,
         "county": "DeKalb County",
@@ -253,7 +253,7 @@
         "proportion_25_under": 0.3244423734
     },
     {
-        "id": "13097",
+        "id": 13097,
         "median_income": 60404.75,
         "median_home_value": 140995.0,
         "county": "Douglas County",
@@ -276,7 +276,7 @@
         "proportion_25_under": 0.3573263314
     },
     {
-        "id": "13113",
+        "id": 13113,
         "median_income": 89850.0,
         "median_home_value": 262230.0,
         "county": "Fayette County",
@@ -299,7 +299,7 @@
         "proportion_25_under": 0.3267184015
     },
     {
-        "id": "13117",
+        "id": 13117,
         "median_income": 96998.84,
         "median_home_value": 294268.89,
         "county": "Forsyth County",
@@ -322,7 +322,7 @@
         "proportion_25_under": 0.3558163748
     },
     {
-        "id": "13121",
+        "id": 13121,
         "median_income": 66844.26,
         "median_home_value": 268571.28,
         "county": "Fulton County",
@@ -345,7 +345,7 @@
         "proportion_25_under": 0.3319649255
     },
     {
-        "id": "13135",
+        "id": 13135,
         "median_income": 66392.27,
         "median_home_value": 185101.79,
         "county": "Gwinnett County",
@@ -368,7 +368,7 @@
         "proportion_25_under": 0.36740663
     },
     {
-        "id": "13143",
+        "id": 13143,
         "median_income": 44363.2,
         "median_home_value": 115680.0,
         "county": "Haralson County",
@@ -391,7 +391,7 @@
         "proportion_25_under": 0.3221920479
     },
     {
-        "id": "13149",
+        "id": 13149,
         "median_income": 42118.0,
         "median_home_value": 102600.0,
         "county": "Heard County",
@@ -414,7 +414,7 @@
         "proportion_25_under": 0.3181700698
     },
     {
-        "id": "13151",
+        "id": 13151,
         "median_income": 65833.12,
         "median_home_value": 149740.0,
         "county": "Henry County",
@@ -437,7 +437,7 @@
         "proportion_25_under": 0.3616727814
     },
     {
-        "id": "13159",
+        "id": 13159,
         "median_income": 43597.0,
         "median_home_value": 114766.67,
         "county": "Jasper County",
@@ -460,7 +460,7 @@
         "proportion_25_under": 0.3143023595
     },
     {
-        "id": "13171",
+        "id": 13171,
         "median_income": 39958.0,
         "median_home_value": 126100.0,
         "county": "Lamar County",
@@ -483,7 +483,7 @@
         "proportion_25_under": 0.3616672137
     },
     {
-        "id": "13199",
+        "id": 13199,
         "median_income": 36040.5,
         "median_home_value": 91425.0,
         "county": "Meriwether County",
@@ -506,7 +506,7 @@
         "proportion_25_under": 0.3035646747
     },
     {
-        "id": "13211",
+        "id": 13211,
         "median_income": 61027.0,
         "median_home_value": 209160.0,
         "county": "Morgan County",
@@ -529,7 +529,7 @@
         "proportion_25_under": 0.3123299839
     },
     {
-        "id": "13217",
+        "id": 13217,
         "median_income": 54742.23,
         "median_home_value": 125653.85,
         "county": "Newton County",
@@ -552,7 +552,7 @@
         "proportion_25_under": 0.3630738181
     },
     {
-        "id": "13223",
+        "id": 13223,
         "median_income": 65352.42,
         "median_home_value": 150789.47,
         "county": "Paulding County",
@@ -575,7 +575,7 @@
         "proportion_25_under": 0.3616231078
     },
     {
-        "id": "13227",
+        "id": 13227,
         "median_income": 62470.83,
         "median_home_value": 194333.33,
         "county": "Pickens County",
@@ -598,7 +598,7 @@
         "proportion_25_under": 0.2720891145
     },
     {
-        "id": "13231",
+        "id": 13231,
         "median_income": 54063.5,
         "median_home_value": 151975.0,
         "county": "Pike County",
@@ -621,7 +621,7 @@
         "proportion_25_under": 0.3221161895
     },
     {
-        "id": "13247",
+        "id": 13247,
         "median_income": 55295.6,
         "median_home_value": 138953.33,
         "county": "Rockdale County",
@@ -644,7 +644,7 @@
         "proportion_25_under": 0.3482403201
     },
     {
-        "id": "13255",
+        "id": 13255,
         "median_income": 41966.0,
         "median_home_value": 100750.0,
         "county": "Spalding County",
@@ -667,7 +667,7 @@
         "proportion_25_under": 0.327127991
     },
     {
-        "id": "13297",
+        "id": 13297,
         "median_income": 57606.93,
         "median_home_value": 163020.0,
         "county": "Walton County",
@@ -690,7 +690,7 @@
         "proportion_25_under": 0.3417892779
     },
     {
-        "id": "24003",
+        "id": 24003,
         "median_income": 97355.12,
         "median_home_value": 371465.31,
         "county": "Anne Arundel County",
@@ -713,7 +713,7 @@
         "proportion_25_under": 0.3140170032
     },
     {
-        "id": "24005",
+        "id": 24005,
         "median_income": 77833.71,
         "median_home_value": 266238.76,
         "county": "Baltimore County",
@@ -736,7 +736,7 @@
         "proportion_25_under": 0.3081856108
     },
     {
-        "id": "24009",
+        "id": 24009,
         "median_income": 104225.89,
         "median_home_value": 352772.22,
         "county": "Calvert County",
@@ -759,7 +759,7 @@
         "proportion_25_under": 0.3254095834
     },
     {
-        "id": "24013",
+        "id": 24013,
         "median_income": 92337.32,
         "median_home_value": 326339.47,
         "county": "Carroll County",
@@ -782,7 +782,7 @@
         "proportion_25_under": 0.3114171134
     },
     {
-        "id": "24017",
+        "id": 24017,
         "median_income": 92003.47,
         "median_home_value": 288200.0,
         "county": "Charles County",
@@ -805,7 +805,7 @@
         "proportion_25_under": 0.3377942713
     },
     {
-        "id": "24021",
+        "id": 24021,
         "median_income": 92370.48,
         "median_home_value": 315636.07,
         "county": "Frederick County",
@@ -828,7 +828,7 @@
         "proportion_25_under": 0.3245931615
     },
     {
-        "id": "24025",
+        "id": 24025,
         "median_income": 86890.86,
         "median_home_value": 284707.14,
         "county": "Harford County",
@@ -851,7 +851,7 @@
         "proportion_25_under": 0.3122391377
     },
     {
-        "id": "24027",
+        "id": 24027,
         "median_income": 125309.8,
         "median_home_value": 448943.64,
         "county": "Howard County",
@@ -874,7 +874,7 @@
         "proportion_25_under": 0.3269076305
     },
     {
-        "id": "24031",
+        "id": 24031,
         "median_income": 116973.49,
         "median_home_value": 513826.76,
         "county": "Montgomery County",
@@ -897,7 +897,7 @@
         "proportion_25_under": 0.3134571083
     },
     {
-        "id": "24033",
+        "id": 24033,
         "median_income": 80966.89,
         "median_home_value": 263142.99,
         "county": "Prince George's County",
@@ -920,7 +920,7 @@
         "proportion_25_under": 0.3291480742
     },
     {
-        "id": "24035",
+        "id": 24035,
         "median_income": 88272.73,
         "median_home_value": 333236.36,
         "county": "Queen Anne's County",
@@ -943,7 +943,7 @@
         "proportion_25_under": 0.2979152656
     },
     {
-        "id": "24510",
+        "id": 24510,
         "median_income": 49560.08,
         "median_home_value": 163568.21,
         "county": "Baltimore city",
@@ -966,7 +966,7 @@
         "proportion_25_under": 0.3139113515
     },
     {
-        "id": "34003",
+        "id": 34003,
         "median_income": 100670.17,
         "median_home_value": 482294.98,
         "county": "Bergen County",
@@ -989,7 +989,7 @@
         "proportion_25_under": 0.2966670931
     },
     {
-        "id": "34013",
+        "id": 34013,
         "median_income": 67062.06,
         "median_home_value": 317054.9,
         "county": "Essex County",
@@ -1012,7 +1012,7 @@
         "proportion_25_under": 0.3321897399
     },
     {
-        "id": "34017",
+        "id": 34017,
         "median_income": 68442.78,
         "median_home_value": 374767.9,
         "county": "Hudson County",
@@ -1035,7 +1035,7 @@
         "proportion_25_under": 0.2911500597
     },
     {
-        "id": "34019",
+        "id": 34019,
         "median_income": 111517.69,
         "median_home_value": 387042.31,
         "county": "Hunterdon County",
@@ -1058,7 +1058,7 @@
         "proportion_25_under": 0.2956799796
     },
     {
-        "id": "34023",
+        "id": 34023,
         "median_income": 87697.93,
         "median_home_value": 330852.3,
         "county": "Middlesex County",
@@ -1081,7 +1081,7 @@
         "proportion_25_under": 0.315746792
     },
     {
-        "id": "34025",
+        "id": 34025,
         "median_income": 94813.09,
         "median_home_value": 429557.45,
         "county": "Monmouth County",
@@ -1104,7 +1104,7 @@
         "proportion_25_under": 0.3049664489
     },
     {
-        "id": "34027",
+        "id": 34027,
         "median_income": 115410.56,
         "median_home_value": 476075.0,
         "county": "Morris County",
@@ -1127,7 +1127,7 @@
         "proportion_25_under": 0.3037063468
     },
     {
-        "id": "34029",
+        "id": 34029,
         "median_income": 70712.12,
         "median_home_value": 314974.8,
         "county": "Ocean County",
@@ -1150,7 +1150,7 @@
         "proportion_25_under": 0.3113656289
     },
     {
-        "id": "34031",
+        "id": 34031,
         "median_income": 64874.37,
         "median_home_value": 303315.62,
         "county": "Passaic County",
@@ -1173,7 +1173,7 @@
         "proportion_25_under": 0.3418148201
     },
     {
-        "id": "34035",
+        "id": 34035,
         "median_income": 113673.53,
         "median_home_value": 437564.71,
         "county": "Somerset County",
@@ -1196,7 +1196,7 @@
         "proportion_25_under": 0.3087430546
     },
     {
-        "id": "34037",
+        "id": 34037,
         "median_income": 90015.51,
         "median_home_value": 265700.0,
         "county": "Sussex County",
@@ -1219,7 +1219,7 @@
         "proportion_25_under": 0.2953681131
     },
     {
-        "id": "34039",
+        "id": 34039,
         "median_income": 81203.01,
         "median_home_value": 349021.3,
         "county": "Union County",
@@ -1242,7 +1242,7 @@
         "proportion_25_under": 0.3234766382
     },
     {
-        "id": "36005",
+        "id": 36005,
         "median_income": 41688.32,
         "median_home_value": 383802.28,
         "county": "Bronx County",
@@ -1265,7 +1265,7 @@
         "proportion_25_under": 0.3629999327
     },
     {
-        "id": "36027",
+        "id": 36027,
         "median_income": 77797.09,
         "median_home_value": 273656.58,
         "county": "Dutchess County",
@@ -1288,7 +1288,7 @@
         "proportion_25_under": 0.3095084296
     },
     {
-        "id": "36047",
+        "id": 36047,
         "median_income": 59774.86,
         "median_home_value": 682302.41,
         "county": "Kings County",
@@ -1311,7 +1311,7 @@
         "proportion_25_under": 0.3209590755
     },
     {
-        "id": "36059",
+        "id": 36059,
         "median_income": 112968.6,
         "median_home_value": 532068.48,
         "county": "Nassau County",
@@ -1334,7 +1334,7 @@
         "proportion_25_under": 0.3085427077
     },
     {
-        "id": "36061",
+        "id": 36061,
         "median_income": 91715.7,
         "median_home_value": 954900.9399999999,
         "county": "New York County",
@@ -1357,7 +1357,7 @@
         "proportion_25_under": 0.2386755484
     },
     {
-        "id": "36071",
+        "id": 36071,
         "median_income": 75696.96,
         "median_home_value": 261539.24,
         "county": "Orange County",
@@ -1380,7 +1380,7 @@
         "proportion_25_under": 0.3641895001
     },
     {
-        "id": "36079",
+        "id": 36079,
         "median_income": 102620.79,
         "median_home_value": 369394.74,
         "county": "Putnam County",
@@ -1403,7 +1403,7 @@
         "proportion_25_under": 0.2924776804
     },
     {
-        "id": "36081",
+        "id": 36081,
         "median_income": 66931.36,
         "median_home_value": 519473.31,
         "county": "Queens County",
@@ -1426,7 +1426,7 @@
         "proportion_25_under": 0.2879963066
     },
     {
-        "id": "36085",
+        "id": 36085,
         "median_income": 75298.24,
         "median_home_value": 458287.62,
         "county": "Richmond County",
@@ -1449,7 +1449,7 @@
         "proportion_25_under": 0.309785943
     },
     {
-        "id": "36087",
+        "id": 36087,
         "median_income": 90228.8,
         "median_home_value": 425127.69,
         "county": "Rockland County",
@@ -1472,7 +1472,7 @@
         "proportion_25_under": 0.3703692309
     },
     {
-        "id": "36103",
+        "id": 36103,
         "median_income": 98145.18,
         "median_home_value": 424128.88,
         "county": "Suffolk County",
@@ -1495,7 +1495,7 @@
         "proportion_25_under": 0.3121364588
     },
     {
-        "id": "36119",
+        "id": 36119,
         "median_income": 102938.25,
         "median_home_value": 529439.08,
         "county": "Westchester County",
@@ -1518,7 +1518,7 @@
         "proportion_25_under": 0.314992705
     },
     {
-        "id": "42103",
+        "id": 42103,
         "median_income": 61534.06,
         "median_home_value": 201938.89,
         "county": "Pike County",
@@ -1541,7 +1541,7 @@
         "proportion_25_under": 0.2748756442
     },
     {
-        "id": "51013",
+        "id": 51013,
         "median_income": 121674.48,
         "median_home_value": 614641.8199999999,
         "county": "Arlington County",
@@ -1564,7 +1564,7 @@
         "proportion_25_under": 0.2512220412
     },
     {
-        "id": "51043",
+        "id": 51043,
         "median_income": 76480.67,
         "median_home_value": 338666.67,
         "county": "Clarke County",
@@ -1587,7 +1587,7 @@
         "proportion_25_under": 0.2852557393
     },
     {
-        "id": "51047",
+        "id": 51047,
         "median_income": 69581.88,
         "median_home_value": 254800.0,
         "county": "Culpeper County",
@@ -1610,7 +1610,7 @@
         "proportion_25_under": 0.332362687
     },
     {
-        "id": "51061",
+        "id": 51061,
         "median_income": 96468.94,
         "median_home_value": 378476.47,
         "county": "Fauquier County",
@@ -1633,7 +1633,7 @@
         "proportion_25_under": 0.3162880449
     },
     {
-        "id": "51107",
+        "id": 51107,
         "median_income": 129669.7,
         "median_home_value": 473545.31,
         "county": "Loudoun County",
@@ -1656,7 +1656,7 @@
         "proportion_25_under": 0.3606704436
     },
     {
-        "id": "51113",
+        "id": 51113,
         "median_income": 53781.5,
         "median_home_value": 255350.0,
         "county": "Madison County",
@@ -1679,7 +1679,7 @@
         "proportion_25_under": 0.2870003052
     },
     {
-        "id": "51157",
+        "id": 51157,
         "median_income": 61055.0,
         "median_home_value": 333150.0,
         "county": "Rappahannock County",
@@ -1702,7 +1702,7 @@
         "proportion_25_under": 0.2485392037
     },
     {
-        "id": "51179",
+        "id": 51179,
         "median_income": 101958.44,
         "median_home_value": 328677.78,
         "county": "Stafford County",
@@ -1725,7 +1725,7 @@
         "proportion_25_under": 0.3655735731
     },
     {
-        "id": "51187",
+        "id": 51187,
         "median_income": 68121.0,
         "median_home_value": 225800.0,
         "county": "Warren County",
@@ -1748,7 +1748,7 @@
         "proportion_25_under": 0.3126362494
     },
     {
-        "id": "51510",
+        "id": 51510,
         "median_income": 110522.11,
         "median_home_value": 547285.71,
         "county": "Alexandria city",
@@ -1771,7 +1771,7 @@
         "proportion_25_under": 0.2394544632
     },
     {
-        "id": "54037",
+        "id": 54037,
         "median_income": 71741.13,
         "median_home_value": 220813.33,
         "county": "Jefferson County",
@@ -1794,7 +1794,7 @@
         "proportion_25_under": 0.3156467228
     },
     {
-        "id": "60014",
+        "id": 60014,
         "median_income": 91795.24,
         "median_home_value": 634740.12,
         "county": "Alameda County",
@@ -1817,7 +1817,7 @@
         "proportion_25_under": 0.3010630369
     },
     {
-        "id": "60019",
+        "id": 60019,
         "median_income": 130381.0,
         "median_home_value": 488550.0,
         "county": "Alameda County",
@@ -1840,7 +1840,7 @@
         "proportion_25_under": 0.0846484935
     },
     {
-        "id": "60133",
+        "id": 60133,
         "median_income": 98316.87,
         "median_home_value": 561530.92,
         "county": "Contra Costa County",
@@ -1863,7 +1863,7 @@
         "proportion_25_under": 0.3173026436
     },
     {
-        "id": "60139",
+        "id": 60139,
         "median_income": null,
         "median_home_value": null,
         "county": "Contra Costa County",
@@ -1886,7 +1886,7 @@
         "proportion_25_under": null
     },
     {
-        "id": "60411",
+        "id": 60411,
         "median_income": 111398.7,
         "median_home_value": 1004557.46,
         "county": "Marin County",
@@ -1909,7 +1909,7 @@
         "proportion_25_under": 0.2674664704
     },
     {
-        "id": "60419",
+        "id": 60419,
         "median_income": null,
         "median_home_value": null,
         "county": "Marin County",
@@ -1932,7 +1932,7 @@
         "proportion_25_under": null
     },
     {
-        "id": "60750",
+        "id": 60750,
         "median_income": 98762.76,
         "median_home_value": 1015160.36,
         "county": "San Francisco County",
@@ -1955,7 +1955,7 @@
         "proportion_25_under": 0.2096196619
     },
     {
-        "id": "60759",
+        "id": 60759,
         "median_income": 93861.4,
         "median_home_value": 842200.0,
         "county": "San Francisco County",
@@ -1978,7 +1978,7 @@
         "proportion_25_under": 0.2212987013
     },
     {
-        "id": "60816",
+        "id": 60816,
         "median_income": 119591.27,
         "median_home_value": 1006450.0600000001,
         "county": "San Mateo County",
@@ -2001,7 +2001,7 @@
         "proportion_25_under": 0.2870050429
     },
     {
-        "id": "60819",
+        "id": 60819,
         "median_income": null,
         "median_home_value": null,
         "county": "San Mateo County",

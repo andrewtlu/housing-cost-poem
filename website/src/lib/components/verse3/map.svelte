@@ -49,6 +49,10 @@ map component used in verse 3 for visualizing geographic data
                 .range(["white", "red"]);
         }
     });
+
+    $effect(() => {
+        console.log("Counties:", counties.features, "Data:", data);
+    });
 </script>
 
 <div>
@@ -58,7 +62,21 @@ map component used in verse 3 for visualizing geographic data
             height={height + margin.top + margin.bottom}
         >
             {#each counties.features as county}
-                <path d={path(county)} fill={"white"} stroke="lightgray" stroke-width="1" />
+                <path
+                    d={path(county)}
+                    fill={data.get(county.id as number)?.median_home_value &&
+                    data.get(county.id as number)?.median_home_value !== undefined
+                        ? color(data.get(county.id as number)?.median_home_value as number)
+                        : "white"}
+                    stroke="lightgray"
+                    stroke-width="1"
+                    role="contentinfo"
+                    onfocus={() => {}}
+                    onmouseover={() => {
+                        const cty = data.get(county.id as number);
+                        if (cty && cty !== undefined) console.log(cty.median_home_value);
+                    }}
+                />
             {/each}
 
             {#if stateMesh}
