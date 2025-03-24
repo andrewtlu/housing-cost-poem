@@ -40,18 +40,30 @@ map component used in verse 3 for visualizing geographic data
     // TODO: color by cluster (ie, not scaled across all counties but just surrounding counties)
     let color = $state(scaleLinear<string>());
 
-    // data loading
+    // centroid of each cluster on map
     const centroids = $derived(
-        counties.features
-            .map((county) => ({
-                id: county.id as number,
-                centroid: path.centroid(county)
-            }))
-            .filter((county) => data.get(county.id) !== undefined)
+        (() => {
+            const out: [number, number][] = [
+                [0, 0],
+                [0, 0],
+                [0, 0],
+                [0, 0],
+                [0, 0]
+            ];
+            const cnts: number[] = [0, 0, 0, 0, 0];
+            for (const county of counties.features.filter(
+                (county) => data.get(county.id as number) !== undefined
+            )) {
+                const cdata = data.get(county.id as number);
+                const cluster = cdata?.area_cluster;
+                if (cluster == undefined) continue;
+                out[cluster][0] += path.centroid(county)[0];
+                out[cluster][1] += path.centroid(county)[1];
+                cnts[cluster]++;
+            }
+            return out.map((cluster, idx) => [cluster[0] / cnts[idx], cluster[1] / cnts[idx]]);
+        })()
     );
-
-    // for each metro area get average center
-    const clusterCentroids = "";
 
     $effect(() => {
         if (data) {
@@ -63,17 +75,6 @@ map component used in verse 3 for visualizing geographic data
                 .domain(extent(values) as [number, number])
                 .range(["white", "red"]);
         }
-    });
-
-    $effect(() => {
-        console.log(
-            "Counties:",
-            counties.features,
-            "Data:",
-            data.size,
-            "Centroids:",
-            clusterCentroids
-        );
     });
 </script>
 
@@ -105,10 +106,6 @@ map component used in verse 3 for visualizing geographic data
                 {/if}
             {/each}
 
-            <!-- {#each clusterCentroids.centroids as centroid}
-                <circle cx={centroid[0]} cy={centroid[1]} r="25" />
-            {/each} -->
-
             {#if stateMesh}
                 <path d={path(stateMesh)} fill="none" stroke="gray" stroke-width="0.5" />
             {/if}
@@ -116,6 +113,23 @@ map component used in verse 3 for visualizing geographic data
             {#if countryMesh}
                 <path d={path(countryMesh)} fill="none" stroke="gray" stroke-width="0.5" />
             {/if}
+
+            {#each centroids as centroid, idx}
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- yeah not very accessible but the entire chart is hard to nav without mouse -->
+                <circle
+                    cx={centroid[0]}
+                    cy={centroid[1]}
+                    r="25"
+                    fill="gray"
+                    class="opacity-0 hover:cursor-pointer"
+                    role="button"
+                    tabindex={idx}
+                    onclick={() => {
+                        console.log("clicked centroid ", centroid);
+                    }}
+                />
+            {/each}
 
             <!-- TODO: legend, interactive components -->
             <!-- TODO: adaptive zoom, https://chatgpt.com/c/67e0bd02-e96c-8010-baa7-fcc7425b6edc -->
