@@ -116,6 +116,13 @@ map component used in verse 3 for visualizing geographic data
         transform = zoomIdentity.translate(translate[0], translate[1]).scale(scale);
     };
 
+    // county hovering handling
+    let hovered_county: County | null = $state(null);
+    const handleHover = (id: number) => {
+        const county = data.get(id);
+        hovered_county = county !== undefined ? county : null;
+    };
+
     // load variables dependent on data
     $effect(() => {
         if (data) {
@@ -125,7 +132,7 @@ map component used in verse 3 for visualizing geographic data
             cluster_ranges.forEach((range, idx) => {
                 cluster_colors[idx] = scaleLinear<string>()
                     .domain(extent(range) as [number, number])
-                    .range(["white", "red"]);
+                    .range(["yellow", "red"]);
             });
         }
     });
@@ -136,7 +143,7 @@ map component used in verse 3 for visualizing geographic data
 >
     <!-- title -->
     <div
-        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
         Median Housing Cost Percentage of Metro Area Maximum
     </div>
@@ -145,7 +152,7 @@ map component used in verse 3 for visualizing geographic data
     {#if centroid !== -1}
         <button
             aria-label="reset-zoom"
-            class="reset-zoom btn absolute top-5 left-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
+            class="reset-zoom btn absolute left-5 top-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
             onclick={resetZoom}
             transition:fly={{ x: -500, duration: 700 }}
         >
@@ -165,10 +172,28 @@ map component used in verse 3 for visualizing geographic data
 
     {#if centroid !== -1}
         <div
-            class="absolute bottom-5 left-5 z-10 flex flex-col gap-2"
+            class="pointer-events-none absolute bottom-5 left-5 z-10 flex flex-col gap-2"
             transition:fly={{ x: -500, duration: 700 }}
         >
             {#key centroid}
+                {#if hovered_county}
+                    <div
+                        class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5"
+                        transition:fly={{ x: -500, duration: 700 }}
+                    >
+                        <ul>
+                            <li>{hovered_county.county}</li>
+                            <li>Median Home Value: ${hovered_county.median_home_value}</li>
+                            <li>
+                                % Pop w/ College Degree: {Math.round(
+                                    (hovered_county.educational_attainment /
+                                        hovered_county.total_population) *
+                                        100
+                                )}%
+                            </li>
+                        </ul>
+                    </div>
+                {/if}
                 <div class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5">
                     <Legend
                         width={width + margin.left + margin.right}
@@ -176,7 +201,7 @@ map component used in verse 3 for visualizing geographic data
                     />
                 </div>
                 <div
-                    class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
+                    class="text-md w-fit text-wrap rounded-md border-2 border-[gray] bg-white/80 px-5"
                 >
                     Metro Area:
                     {centroidNames[centroid]}
@@ -187,8 +212,8 @@ map component used in verse 3 for visualizing geographic data
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
-        data-tip="Data collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
+        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        data-tip={"Click on a colored metro area to view details!\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
     >
         <svg
             fill="#000000"
@@ -252,8 +277,10 @@ map component used in verse 3 for visualizing geographic data
                             class="hover:cursor-pointer"
                             tabindex={idx}
                             onmouseover={() => {
-                                const cty = data.get(county.id as number);
-                                if (cty && cty !== undefined) console.log(cty.median_home_value);
+                                handleHover(county.id as number);
+                            }}
+                            onmouseleave={() => {
+                                handleHover(-1);
                             }}
                             onclick={() => {
                                 const cty = data.get(county.id as number);
