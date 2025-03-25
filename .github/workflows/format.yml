@@ -1,0 +1,22 @@
+name: Website Formatted Properly
+on:
+  push:
+    paths:
+      - "website/**"
+      - ".github/workflows/**"
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: website
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install 
+          npm run lint

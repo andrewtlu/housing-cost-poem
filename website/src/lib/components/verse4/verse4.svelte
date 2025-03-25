@@ -16,20 +16,9 @@
     {/each}
 </ul>
 
-<div class="scatter_box">
-    <h2 class="scatter_title">Impact of Racial Demographic on Housing Value</h2>
+<div class="bg-white">
+    <h2 class="mb-2.5 text-center text-2xl font-bold">
+        Impact of Racial Demographic on Housing Value
+    </h2>
     <Scatter />
 </div>
-
-<style>
-    .scatter_title {
-        font-size: 25px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-    .scatter_box {
-        background-color: rgb(255, 255, 255);
-    }
-</style>
