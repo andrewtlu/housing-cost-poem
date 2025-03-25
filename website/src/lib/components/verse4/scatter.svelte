@@ -1,16 +1,7 @@
 <script lang="ts">
-    import dataRaw from "$lib/data/county_aggregated.json";
+    import { data, type County, type CountyRaces } from "$lib/data";
     import { extent, scaleLog, scaleSqrt, scaleOrdinal } from "d3";
     import { onMount } from "svelte";
-
-    const data = $state(
-        new Map(
-            dataRaw.map((i) => {
-                const { id, ...dataPoint } = i;
-                return [id, dataPoint];
-            })
-        )
-    );
 
     let graph_values: {
         race: string;
@@ -20,6 +11,30 @@
         city_name: string;
     }[] = $state([]);
 
+    // chart data
+    const chartWidth = 700;
+    const chartHeight = 500;
+    const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
+    const races_legend = [
+        "White",
+        "Black",
+        "Native Indian or Alaska Native",
+        "Asian",
+        "Native Hawaiian or Pacific Islander",
+        "Other Race Alone",
+        "Two or More Races",
+        "Hispanic or Latino"
+    ];
+    const races_data_attr = [
+        "white_alone",
+        "black_alone",
+        "native_alone",
+        "asian_alone",
+        "native_hawaiian_pacific_islander",
+        "some_other_race_alone",
+        "two_or_more",
+        "hispanic_or_latino"
+    ];
     const centroid_values: {
         race: string;
         avg_median_housing: number;
@@ -37,58 +52,20 @@
                 [0, 0],
                 [0, 0]
             ];
-            const race_totals = [0, 0, 0, 0, 0, 0, 0, 0];
-            const race_idx = [
-                "White",
-                "Black",
-                "Native Indian or Alaska Native",
-                "Asian",
-                "Native Hawaiian or Pacific Islander",
-                "Other Race Alone",
-                "Two or More Races",
-                "Hispanic or Latino"
-            ];
+            const race_tallies = [0, 0, 0, 0, 0, 0, 0, 0];
             // Iterate Graph Values & Populate Totals (used to calculate centroids)
+
             for (const data_point of graph_values) {
-                if (data_point.race === "white_alone") {
-                    race_totals[0]++; // Update Number of Cases
-                    centroids[0][0] += data_point.median_housing; // Add Median Housing Value
-                    centroids[0][1] += data_point.race_percent; // Add Race Percent
-                } else if (data_point.race === "black_alone") {
-                    race_totals[1]++; // Update Number of Cases
-                    centroids[1][0] += data_point.median_housing; // Add Median Housing Value
-                    centroids[1][1] += data_point.race_percent; // Add Race Percent
-                } else if (data_point.race === "native_alone") {
-                    race_totals[2]++; // Update Number of Cases
-                    centroids[2][0] += data_point.median_housing; // Add Median Housing Value
-                    centroids[2][1] += data_point.race_percent; // Add Race Percent
-                } else if (data_point.race === "asian_alone") {
-                    race_totals[3]++; // Update Number of Cases
-                    centroids[3][0] += data_point.median_housing; // Add Median Housing Value
-                    centroids[3][1] += data_point.race_percent; // Add Race Percent
-                } else if (data_point.race === "native_hawaiian_pacific_islander") {
-                    race_totals[4]++; // Update Number of Cases
-                    centroids[4][0] += data_point.median_housing; // Add Median Housing Value
-                    centroids[4][1] += data_point.race_percent; // Add Race Percent
-                } else if (data_point.race === "some_other_race_alone") {
-                    race_totals[5]++; // Update Number of Cases
-                    centroids[5][0] += data_point.median_housing; // Add Median Housing Value
-                    centroids[5][1] += data_point.race_percent; // Add Race Percent
-                } else if (data_point.race === "two_or_more") {
-                    race_totals[6]++; // Update Number of Cases
-                    centroids[6][0] += data_point.median_housing; // Add Median Housing Value
-                    centroids[6][1] += data_point.race_percent; // Add Race Percent
-                } else if (data_point.race === "hispanic_or_latino") {
-                    race_totals[7]++; // Update Number of Cases
-                    centroids[7][0] += data_point.median_housing; // Add Median Housing Value
-                    centroids[7][1] += data_point.race_percent; // Add Race Percent
-                }
+                const race = races_data_attr.indexOf(data_point.race);
+                race_tallies[race]++; // increment
+                centroids[race][0] += data_point.median_housing;
+                centroids[race][1] += data_point.race_percent;
             }
 
             return centroids.map((centroid, idx) => ({
-                race: race_idx[idx],
-                avg_median_housing: centroid[0] / race_totals[idx],
-                avg_race_percent: centroid[1] / race_totals[idx]
+                race: races_legend[idx],
+                avg_median_housing: centroid[0] / race_tallies[idx],
+                avg_race_percent: centroid[1] / race_tallies[idx]
             }));
         })()
     );
@@ -113,7 +90,7 @@
     let x_scale = [0, 20, 40, 60, 80, 100];
 
     // Calculate Race Percentages
-    const race_percent_calc = (county, trait) => {
+    const race_percent_calc = (county: County, trait: CountyRaces) => {
         return (county[trait] / county["total_population"]) * 100;
     };
 
@@ -123,7 +100,7 @@
             const temp_graph_values = [];
             // for each race, add the race, median housing, race_percent
             for (const county of data.values()) {
-                for (const county_race of races_data) {
+                for (const county_race of races_data_attr) {
                     temp_graph_values.push({
                         race: county_race,
                         median_housing: county.median_home_value,
@@ -136,33 +113,6 @@
             graph_values = temp_graph_values;
         }
     });
-
-    // Chart Dimension Variables
-    const chartWidth = 700;
-    const chartHeight = 500;
-    const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
-
-    const races_legend = [
-        "White",
-        "Black",
-        "Native Indian or Alaska Native",
-        "Asian",
-        "Native Hawaiian or Pacific Islander",
-        "Other Race Alone",
-        "Two or More Races",
-        "Hispanic or Latino"
-    ];
-
-    const races_data = [
-        "white_alone",
-        "black_alone",
-        "native_alone",
-        "asian_alone",
-        "native_hawaiian_pacific_islander",
-        "some_other_race_alone",
-        "two_or_more",
-        "hispanic_or_latino"
-    ];
 
     // Scale Functions (X & Y)
     const xScale = scaleSqrt()
