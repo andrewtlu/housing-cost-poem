@@ -9,6 +9,7 @@ map component used in verse 3 for visualizing geographic data
     import type { Topology, GeometryObject } from "topojson-specification";
     import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
     import Legend from "./legend.svelte";
+    import { fly } from "svelte/transition";
 
     // data
     const US = topo as unknown as Topology;
@@ -61,6 +62,19 @@ map component used in verse 3 for visualizing geographic data
                 cnts[cluster]++;
             }
             return out.map((cluster, idx) => [cluster[0] / cnts[idx], cluster[1] / cnts[idx]]);
+        })()
+    );
+    const centroidNames = $derived(
+        (() => {
+            const out: string[] = ["", "", "", "", ""];
+            for (const county of counties.features.filter(
+                (county) => data.get(county.id as number) !== undefined
+            )) {
+                const cdata = data.get(county.id as number);
+                if (cdata == undefined) continue;
+                out[cdata.area_cluster] = cdata.metro_area;
+            }
+            return out;
         })()
     );
 
@@ -117,7 +131,9 @@ map component used in verse 3 for visualizing geographic data
     });
 </script>
 
-<div class="relative flex flex-col rounded-md border-2 border-[gray] bg-white/80 font-bold">
+<div
+    class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white/80 font-bold"
+>
     <!-- title -->
     <div
         class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
@@ -129,8 +145,9 @@ map component used in verse 3 for visualizing geographic data
     {#if centroid !== -1}
         <button
             aria-label="reset-zoom"
-            class="reset-zoom btn absolute top-5 left-5 z-10 h-fit w-fit rounded-full p-0 pr-2"
+            class="reset-zoom btn absolute top-5 left-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
             onclick={resetZoom}
+            transition:fly={{ x: -500, duration: 700 }}
         >
             <svg
                 fill="#000000"
@@ -147,14 +164,25 @@ map component used in verse 3 for visualizing geographic data
     {/if}
 
     {#if centroid !== -1}
-        {#key centroid}
-            <div class="absolute bottom-5 left-5 z-10">
-                <Legend
-                    width={width + margin.left + margin.right}
-                    color={cluster_colors[centroid]}
-                />
-            </div>
-        {/key}
+        <div
+            class="absolute bottom-5 left-5 z-10 flex flex-col gap-2"
+            transition:fly={{ x: -500, duration: 700 }}
+        >
+            {#key centroid}
+                <div class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5">
+                    <Legend
+                        width={width + margin.left + margin.right}
+                        color={cluster_colors[centroid]}
+                    />
+                </div>
+                <div
+                    class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
+                >
+                    Metro Area:
+                    {centroidNames[centroid]}
+                </div>
+            {/key}
+        </div>
     {/if}
 
     <!-- info tooltip -->
