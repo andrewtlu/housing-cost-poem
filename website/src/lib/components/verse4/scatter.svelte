@@ -37,11 +37,11 @@
     }[] = $state([]);
     $effect(() => {
         if (data) {
-            graphValues = [];
+            const tmp = [];
             // for each race, add the race, median housing, race_percent
             for (const county of data.values()) {
                 for (const county_race of racesDataAttr) {
-                    graphValues.push({
+                    tmp.push({
                         race: county_race,
                         median_housing: county.median_home_value,
                         race_percent:
@@ -51,6 +51,7 @@
                     });
                 }
             }
+            graphValues = tmp;
         }
     });
     const centroidValues: {
