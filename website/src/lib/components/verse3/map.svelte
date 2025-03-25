@@ -120,7 +120,7 @@ map component used in verse 3 for visualizing geographic data
         Median Housing Cost Percentage of Metro Area Maximum
     </div>
 
-    <!-- reset -->
+    <!-- reset zoom button -->
     {#if scale !== 1}
         <button
             aria-label="reset-zoom"
@@ -149,6 +149,7 @@ map component used in verse 3 for visualizing geographic data
             <svg
                 width={width + margin.left + margin.right}
                 height={height + margin.top + margin.bottom}
+                class="transition-all duration-700"
                 transform={transform.toString()}
             >
                 <!-- double iterator is mad inefficient, but this is the only way to render selected counties over counties with no info -->
