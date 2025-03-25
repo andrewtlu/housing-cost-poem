@@ -198,7 +198,7 @@
         height={chartHeight + chartMargins.top + chartMargins.bottom}
     >
         <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
-        {#each graph_values as data_point}
+        {#each graph_values as data_point, idx (idx)}
             <circle
                 cx={xScale(data_point.race_percent)}
                 cy={yScale(data_point.median_housing)}
@@ -227,7 +227,7 @@
             >
                 Percent of Total Population (%)
             </text>
-            {#each x_scale as x_val}
+            {#each x_scale as x_val, idx (idx)}
                 <g transform="translate({xScale(x_val)}, {chartHeight - chartMargins.bottom})">
                     <text class="x-axis-tick" y="20" x="-6">
                         {x_val}
@@ -254,7 +254,7 @@
             >
                 Median House Value ($)
             </text>
-            {#each y_scale as y_val}
+            {#each y_scale as y_val, idx (idx)}
                 <g transform="translate(0, {yScale(y_val)})">
                     <text class="y-axis-tick" x="35" y="0">
                         {y_val}
@@ -264,7 +264,7 @@
         </g>
 
         <!-- Draw Centroids -->
-        {#each centroid_values as centroid_points}
+        {#each centroid_values as centroid_points, idx (idx)}
             <circle
                 cx={xScale(centroid_points.avg_race_percent)}
                 cy={yScale(centroid_points.avg_median_housing)}
@@ -280,7 +280,7 @@
     <!-- Chart Legend -->
     <div style="margin-left: -90px; padding-right: 20px; width: 250px; margin-top: -250px">
         <ul class="w-30 text-sm">
-            {#each races_legend as race}
+            {#each races_legend as race, idx (idx)}
                 <li class="flex items-start">
                     <div
                         class="rounded-full"
