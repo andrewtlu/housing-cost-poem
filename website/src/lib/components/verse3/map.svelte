@@ -4,7 +4,7 @@ map component used in verse 3 for visualizing geographic data
 <script lang="ts">
     import dataRaw from "$lib/data/county_aggregated.json";
     import topo from "$lib/data/us-counties.topojson.json";
-    import { geoPath, geoAlbers, scaleLinear, extent } from "d3";
+    import { geoPath, geoAlbers, scaleLinear, extent, zoomIdentity, ZoomTransform } from "d3";
     import { feature, mesh } from "topojson-client";
     import type { Topology, GeometryObject } from "topojson-specification";
     import type { FeatureCollection } from "geojson";
@@ -21,6 +21,7 @@ map component used in verse 3 for visualizing geographic data
     );
 
     // graph geometry
+    let chart: SVGElement | null = $state(null);
     const width = 800;
     const height = 640;
     const margin = { top: 10, left: 10, right: 10, bottom: 10 };
@@ -35,12 +36,8 @@ map component used in verse 3 for visualizing geographic data
             .translate([width / 2, height / 2])
     );
     const path = $derived(geoPath().projection(projection));
-
-    // color
-    // TODO: color by cluster (ie, not scaled across all counties but just surrounding counties)
-    let color = $state(scaleLinear<string>());
-
     // centroid of each cluster on map
+    // TODO: may be worth clustering DC & Balti together
     const centroids = $derived(
         (() => {
             const out: [number, number][] = [
@@ -65,6 +62,9 @@ map component used in verse 3 for visualizing geographic data
         })()
     );
 
+    // color
+    // TODO: color by cluster (ie, not scaled across all counties but just surrounding counties)
+    let color = $state(scaleLinear<string>());
     $effect(() => {
         if (data) {
             const values = Array.from(data.values(), (d) => {
@@ -76,63 +76,104 @@ map component used in verse 3 for visualizing geographic data
                 .range(["white", "red"]);
         }
     });
+
+    // zoom handling
+    const radius = 30;
+    let scale = $state(1);
+    let translate = $state([0, 0]);
+    let transform: ZoomTransform = $state(zoomIdentity.translate(0, 0));
+
+    const zoomToCluster = (centroid: [number, number]) => {
+        scale = width / (radius * 2);
+        translate[0] = width / 2 - centroid[0] + margin.left;
+        translate[1] = height / 2 - centroid[1] + margin.top;
+
+        transform = zoomIdentity.scale(scale).translate(translate[0], translate[1]);
+    };
+
+    const resetZoom = () => {
+        scale = 1;
+        translate = [0, 0];
+        transform = zoomIdentity.translate(translate[0], translate[1]).scale(scale);
+    };
 </script>
 
-<div>
-    {#if width}
-        <svg
-            width={width + margin.left + margin.right}
-            height={height + margin.top + margin.bottom}
-        >
-            {#each counties.features as county}
-                {#if data.get(county.id as number) !== undefined}
-                    <path
-                        d={path(county)}
-                        fill={data.get(county.id as number)?.median_home_value &&
-                        data.get(county.id as number)?.median_home_value !== undefined
-                            ? color(data.get(county.id as number)?.median_home_value as number)
-                            : "white"}
-                        stroke="lightgray"
-                        stroke-width="1"
-                        role="contentinfo"
-                        onfocus={() => {}}
-                        onmouseover={() => {
-                            const cty = data.get(county.id as number);
-                            if (cty && cty !== undefined) console.log(cty.median_home_value);
-                        }}
-                    />
-                {:else}
-                    <path d={path(county)} fill="white" stroke="whitesmoke" />
+<div class="flex flex-col gap-2">
+    <div class="border-gray overflow-hidden rounded-md border-2 border-[gray] bg-white/80">
+        {#if width}
+            <svg
+                width={width + margin.left + margin.right}
+                height={height + margin.top + margin.bottom}
+                transform={transform.toString()}
+                class=""
+                bind:this={chart}
+            >
+                <!-- double iterator is mad inefficient, but this is the only way to render selected counties over counties with no info -->
+                {#each counties.features as county}
+                    {#if data.get(county.id as number) === undefined}
+                        <path
+                            d={path(county)}
+                            fill="white"
+                            stroke="whitesmoke"
+                            stroke-width="0.2"
+                        />
+                    {/if}
+                {/each}
+                {#each counties.features as county, idx}
+                    {#if data.get(county.id as number) !== undefined}
+                        <!-- svelte-ignore a11y_click_events_have_key_events -->
+                        <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+                        <path
+                            d={path(county)}
+                            fill={data.get(county.id as number)?.median_home_value &&
+                            data.get(county.id as number)?.median_home_value !== undefined
+                                ? color(data.get(county.id as number)?.median_home_value as number)
+                                : "white"}
+                            stroke="lightgray"
+                            stroke-width="0.2"
+                            role="button"
+                            class="hover:cursor-pointer"
+                            tabindex={idx}
+                            onmouseover={() => {
+                                const cty = data.get(county.id as number);
+                                if (cty && cty !== undefined) console.log(cty.median_home_value);
+                            }}
+                            onclick={() => {
+                                const cty = data.get(county.id as number);
+                                if (cty && cty !== undefined)
+                                    zoomToCluster(centroids[cty.area_cluster] as [number, number]);
+                            }}
+                        />
+                    {/if}
+                {/each}
+
+                {#if stateMesh}
+                    <path d={path(stateMesh)} fill="none" stroke="gray" stroke-width="0.2" />
                 {/if}
-            {/each}
 
-            {#if stateMesh}
-                <path d={path(stateMesh)} fill="none" stroke="gray" stroke-width="0.5" />
-            {/if}
+                {#if countryMesh}
+                    <path d={path(countryMesh)} fill="none" stroke="gray" stroke-width="0.2" />
+                {/if}
 
-            {#if countryMesh}
-                <path d={path(countryMesh)} fill="none" stroke="gray" stroke-width="0.5" />
-            {/if}
+                {#each centroids as centroid, idx}
+                    <!-- svelte-ignore a11y_click_events_have_key_events -->
+                    <!-- yeah not very accessible but the entire chart is hard to nav without mouse -->
+                    <circle
+                        cx={centroid[0]}
+                        cy={centroid[1]}
+                        r={radius}
+                        fill="red"
+                        class={`opacity-0 ${scale == 1 ? "hover:cursor-pointer" : "pointer-events-none"}`}
+                        role="button"
+                        tabindex={idx}
+                        onclick={() => zoomToCluster(centroid as [number, number])}
+                    />
+                {/each}
 
-            {#each centroids as centroid, idx}
-                <!-- svelte-ignore a11y_click_events_have_key_events -->
-                <!-- yeah not very accessible but the entire chart is hard to nav without mouse -->
-                <circle
-                    cx={centroid[0]}
-                    cy={centroid[1]}
-                    r="25"
-                    fill="gray"
-                    class="opacity-0 hover:cursor-pointer"
-                    role="button"
-                    tabindex={idx}
-                    onclick={() => {
-                        console.log("clicked centroid ", centroid);
-                    }}
-                />
-            {/each}
+                <!-- TODO: legend, interactive components -->
+            </svg>
+        {/if}
+    </div>
 
-            <!-- TODO: legend, interactive components -->
-            <!-- TODO: adaptive zoom, https://chatgpt.com/c/67e0bd02-e96c-8010-baa7-fcc7425b6edc -->
-        </svg>
-    {/if}
+    <button aria-label="reset-zoom" class="btn" onclick={resetZoom}>Reset Zoom</button>
 </div>
