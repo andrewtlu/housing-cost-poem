@@ -8,6 +8,7 @@ map component used in verse 3 for visualizing geographic data
     import { feature, mesh } from "topojson-client";
     import type { Topology, GeometryObject } from "topojson-specification";
     import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
+    import Legend from "./legend.svelte";
 
     // data
     const US = topo as unknown as Topology;
@@ -36,6 +37,7 @@ map component used in verse 3 for visualizing geographic data
             .translate([width / 2, height / 2])
     );
     const path = $derived(geoPath().projection(projection));
+    let centroid = $state(-1);
     // centroid of each cluster on map
     // TODO: may be worth clustering DC & Balti together
     const centroids = $derived(
@@ -85,14 +87,16 @@ map component used in verse 3 for visualizing geographic data
     let scale = $state(1);
     let translate = $state([0, 0]);
     let transform: ZoomTransform = $state(zoomIdentity.translate(0, 0));
-    const zoomToCluster = (centroid: [number, number]) => {
+    const zoomToCluster = (cluster_idx: number) => {
+        centroid = cluster_idx;
         scale = width / (radius * 2);
-        translate[0] = width / 2 - centroid[0] + margin.left;
-        translate[1] = height / 2 - centroid[1] + margin.top;
+        translate[0] = width / 2 - centroids[centroid][0] + margin.left;
+        translate[1] = height / 2 - centroids[centroid][1] + margin.top;
 
         transform = zoomIdentity.scale(scale).translate(translate[0], translate[1]);
     };
     const resetZoom = () => {
+        centroid = -1;
         scale = 1;
         translate = [0, 0];
         transform = zoomIdentity.translate(translate[0], translate[1]).scale(scale);
@@ -122,7 +126,7 @@ map component used in verse 3 for visualizing geographic data
     </div>
 
     <!-- reset zoom button -->
-    {#if scale !== 1}
+    {#if centroid !== -1}
         <button
             aria-label="reset-zoom"
             class="reset-zoom btn absolute top-5 left-5 z-10 h-fit w-fit rounded-full p-0 pr-2"
@@ -142,10 +146,21 @@ map component used in verse 3 for visualizing geographic data
         </button>
     {/if}
 
+    {#if centroid !== -1}
+        {#key centroid}
+            <div class="absolute bottom-5 left-5 z-10">
+                <Legend
+                    width={width + margin.left + margin.right}
+                    color={cluster_colors[centroid]}
+                />
+            </div>
+        {/key}
+    {/if}
+
     <!-- info tooltip -->
     <div
         class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
-        data-tip="Data collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base and compiled on Kaggle."
+        data-tip="Data collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
     >
         <svg
             fill="#000000"
@@ -214,8 +229,7 @@ map component used in verse 3 for visualizing geographic data
                             }}
                             onclick={() => {
                                 const cty = data.get(county.id as number);
-                                if (cty && cty !== undefined)
-                                    zoomToCluster(centroids[cty.area_cluster] as [number, number]);
+                                if (cty && cty !== undefined) zoomToCluster(cty.area_cluster);
                             }}
                         />
                     {/if}
@@ -240,7 +254,7 @@ map component used in verse 3 for visualizing geographic data
                         class={`opacity-0 ${scale == 1 ? "hover:cursor-pointer" : "pointer-events-none"}`}
                         role="button"
                         tabindex={idx}
-                        onclick={() => zoomToCluster(centroid as [number, number])}
+                        onclick={() => zoomToCluster(idx)}
                     />
                 {/each}
 
