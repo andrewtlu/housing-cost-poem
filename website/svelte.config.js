@@ -16,8 +16,8 @@ const config = {
             strict: true
         }),
         paths: {
-            assets: process.env.NODE_ENV == "production" ? "https://yourusername.github.io/housing-cost-poem" : "",
-            base: process.env.NODE_ENV == "production" ? "/housing-cost-poem" : ""
+            base: process.env.NODE_ENV == "production" ? "/housing-cost-poem" : "",
+            relative: true
         }
     }
 };

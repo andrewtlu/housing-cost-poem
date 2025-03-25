@@ -2,6 +2,7 @@
 Parallax component, used to render the city skyline in the background of the poem
  -->
 <script lang="ts">
+    import { base } from "$app/paths";
     import { onMount } from "svelte";
 
     /** DOM element of scroll */
@@ -38,7 +39,7 @@ Parallax component, used to render the city skyline in the background of the poe
 <div class="absolute top-0 -z-50 h-screen w-screen overflow-hidden">
     <!-- trust me the math works -->
     <img
-        src="/city.png"
+        src={`${base}/city.png`}
         alt="background parallax city"
         class="absolute bottom-0 left-0 -translate-y-1/2 scale-200"
         style={`transform: translateX(${25 - (scrollLeft / maxScroll) * 50}%)`}
