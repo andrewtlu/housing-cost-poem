@@ -1,4 +1,6 @@
 <script lang="ts">
+    import Scatter from "./scatter.svelte";
+
     // quotations are curled :)
     let lines = [
         "...hopeless. Yet, hopes still remain.",
@@ -13,3 +15,21 @@
         <li>{line}</li>
     {/each}
 </ul>
+
+<div class="scatter_box">
+    <h2 class="scatter_title">Impact of Racial Demographic on Housing Value</h2>
+    <Scatter />
+</div>
+
+<style>
+    .scatter_title {
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .scatter_box {
+        background-color: whitesmoke;
+    }
+</style>
