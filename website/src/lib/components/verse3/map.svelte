@@ -7,7 +7,7 @@ map component used in verse 3 for visualizing geographic data
     import { geoPath, geoAlbers, scaleLinear, extent, zoomIdentity, ZoomTransform } from "d3";
     import { feature, mesh } from "topojson-client";
     import type { Topology, GeometryObject } from "topojson-specification";
-    import type { FeatureCollection } from "geojson";
+    import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 
     // data
     const US = topo as unknown as Topology;
@@ -19,9 +19,9 @@ map component used in verse 3 for visualizing geographic data
             })
         )
     );
+    type County = Omit<(typeof dataRaw)[number], "id">;
 
     // graph geometry
-    let chart: SVGElement | null = $state(null);
     const width = 800;
     const height = 640;
     const margin = { top: 10, left: 10, right: 10, bottom: 10 };
@@ -63,26 +63,27 @@ map component used in verse 3 for visualizing geographic data
     );
 
     // color
-    // TODO: color by cluster (ie, not scaled across all counties but just surrounding counties)
-    let color = $state(scaleLinear<string>());
-    $effect(() => {
-        if (data) {
-            const values = Array.from(data.values(), (d) => {
-                if (d.median_home_value != null) return d.median_home_value;
-                return 0;
-            });
-            color = scaleLinear<string>()
-                .domain(extent(values) as [number, number])
-                .range(["white", "red"]);
+    let cluster_colors = $state([
+        scaleLinear<string>(),
+        scaleLinear<string>(),
+        scaleLinear<string>(),
+        scaleLinear<string>(),
+        scaleLinear<string>()
+    ]);
+    const cluster_ranges: number[][] = [[], [], [], [], []];
+    const getColor = (county: Feature<Geometry, GeoJsonProperties>) => {
+        let county_data = data.get(county.id as number);
+        if (county_data !== undefined) {
+            return cluster_colors[county_data.area_cluster](county_data.median_home_value);
         }
-    });
+        return "white";
+    };
 
     // zoom handling
     const radius = 30;
     let scale = $state(1);
     let translate = $state([0, 0]);
     let transform: ZoomTransform = $state(zoomIdentity.translate(0, 0));
-
     const zoomToCluster = (centroid: [number, number]) => {
         scale = width / (radius * 2);
         translate[0] = width / 2 - centroid[0] + margin.left;
@@ -90,18 +91,31 @@ map component used in verse 3 for visualizing geographic data
 
         transform = zoomIdentity.scale(scale).translate(translate[0], translate[1]);
     };
-
     const resetZoom = () => {
         scale = 1;
         translate = [0, 0];
         transform = zoomIdentity.translate(translate[0], translate[1]).scale(scale);
     };
+
+    // load variables dependent on data
+    $effect(() => {
+        if (data) {
+            data.values().forEach((element) =>
+                cluster_ranges[element.area_cluster].push(element.median_home_value)
+            );
+            cluster_ranges.forEach((range, idx) => {
+                cluster_colors[idx] = scaleLinear<string>()
+                    .domain(extent(range) as [number, number])
+                    .range(["white", "red"]);
+            });
+        }
+    });
 </script>
 
 <div class="relative flex flex-col rounded-md border-2 border-[gray] bg-white/80 font-bold">
     <!-- title -->
     <div
-        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
         Median Housing Cost Percentage of Metro Area Maximum
     </div>
@@ -110,7 +124,7 @@ map component used in verse 3 for visualizing geographic data
     {#if scale !== 1}
         <button
             aria-label="reset-zoom"
-            class="reset-zoom btn absolute top-5 left-5 z-10 h-fit w-fit rounded-full p-0 pr-2"
+            class="reset-zoom btn absolute left-5 top-5 z-10 h-fit w-fit rounded-full p-0 pr-2"
             onclick={resetZoom}
         >
             <svg
@@ -136,8 +150,6 @@ map component used in verse 3 for visualizing geographic data
                 width={width + margin.left + margin.right}
                 height={height + margin.top + margin.bottom}
                 transform={transform.toString()}
-                class=""
-                bind:this={chart}
             >
                 <!-- double iterator is mad inefficient, but this is the only way to render selected counties over counties with no info -->
                 {#each counties.features as county}
@@ -156,10 +168,7 @@ map component used in verse 3 for visualizing geographic data
                         <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                         <path
                             d={path(county)}
-                            fill={data.get(county.id as number)?.median_home_value &&
-                            data.get(county.id as number)?.median_home_value !== undefined
-                                ? color(data.get(county.id as number)?.median_home_value as number)
-                                : "white"}
+                            fill={getColor(county)}
                             stroke="lightgray"
                             stroke-width="0.2"
                             role="button"
