@@ -2,7 +2,7 @@
 map component used in verse 3 for visualizing geographic data
 -->
 <script lang="ts">
-    import dataRaw from "$lib/data/county_aggregated.json";
+    import { data, type County } from "$lib/data";
     import topo from "$lib/data/us-counties.topojson.json";
     import { geoPath, geoAlbers, scaleLinear, extent, zoomIdentity, ZoomTransform } from "d3";
     import { feature, mesh } from "topojson-client";
@@ -13,15 +13,6 @@ map component used in verse 3 for visualizing geographic data
 
     // data
     const US = topo as unknown as Topology;
-    const data = $state(
-        new Map(
-            dataRaw.map((i) => {
-                const { id, ...dataPoint } = i;
-                return [id, dataPoint];
-            })
-        )
-    );
-    type County = Omit<(typeof dataRaw)[number], "id">;
 
     // graph geometry
     const width = 800;
