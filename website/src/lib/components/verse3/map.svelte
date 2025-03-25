@@ -80,6 +80,7 @@ map component used in verse 3 for visualizing geographic data
     };
 
     // zoom handling
+    // TODO: fix blurryness
     const radius = 30;
     let scale = $state(1);
     let translate = $state([0, 0]);
@@ -115,7 +116,7 @@ map component used in verse 3 for visualizing geographic data
 <div class="relative flex flex-col rounded-md border-2 border-[gray] bg-white/80 font-bold">
     <!-- title -->
     <div
-        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
         Median Housing Cost Percentage of Metro Area Maximum
     </div>
@@ -124,7 +125,7 @@ map component used in verse 3 for visualizing geographic data
     {#if scale !== 1}
         <button
             aria-label="reset-zoom"
-            class="reset-zoom btn absolute left-5 top-5 z-10 h-fit w-fit rounded-full p-0 pr-2"
+            class="reset-zoom btn absolute top-5 left-5 z-10 h-fit w-fit rounded-full p-0 pr-2"
             onclick={resetZoom}
         >
             <svg
