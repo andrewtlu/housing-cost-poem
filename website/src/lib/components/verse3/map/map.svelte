@@ -143,7 +143,7 @@ map component used in verse 3 for visualizing geographic data
 >
     <!-- title -->
     <div
-        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
         Median Housing Cost Percentage of Metro Area Maximum
     </div>
@@ -152,7 +152,7 @@ map component used in verse 3 for visualizing geographic data
     {#if centroid !== -1}
         <button
             aria-label="reset-zoom"
-            class="reset-zoom btn absolute left-5 top-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
+            class="reset-zoom btn absolute top-5 left-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
             onclick={resetZoom}
             transition:fly={{ x: -500, duration: 700 }}
         >
@@ -201,7 +201,7 @@ map component used in verse 3 for visualizing geographic data
                     />
                 </div>
                 <div
-                    class="text-md w-fit text-wrap rounded-md border-2 border-[gray] bg-white/80 px-5"
+                    class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
                 >
                     Metro Area:
                     {centroidNames[centroid]}
@@ -212,7 +212,7 @@ map component used in verse 3 for visualizing geographic data
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
         data-tip={"Click on a colored metro area to view details!\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
     >
         <svg
