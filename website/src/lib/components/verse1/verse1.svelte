@@ -25,7 +25,7 @@
     const yTicks = ["$0", "$200,000", "$400,000", "$600,000", "$800,000", "$1,000,000"];
     const yTickValues = [0, 200000, 400000, 600000, 800000, 1000000];
     const y2Ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];  // For percentage scale
-    const padding = { top: 20, right: 80, bottom: 40, left: 50 };
+    const padding = { top: 20, right: 50, bottom: 40, left: 50 };
 
     let width = $state(500);
     let height = 350;
@@ -67,7 +67,7 @@
     <!-- Left Y-axis -->
         <g class="axis y-axis">
             {#each yTickValues as tick, i (i)}
-                <g class="tick tick-{tick}" transform="translate(0, {yScale(tick)})">
+                <g class="tick tick-{tick}" transform="translate(17, {yScale(tick)})">
                     <line x2="100%"/>
                     <text y="-4">{yTicks[i]}</text> <!-- Display string tick from yTicks -->
                 </g>
@@ -121,12 +121,50 @@
                 </g>
             {/each}
         </g>
+    <!-- X-Axis Label -->
+    <text x={width / 2 } y={height - padding.bottom + 35} text-anchor="middle" class="axis-label">
+        Metro Area
+    </text>
 
-        
+    <!-- Y-Axis Label -->
+    <text x={-height / 2} y={padding.left - 40} transform="rotate(-90)" text-anchor="middle" class="axis-label">
+        Median Housing Price ($), Median Income ($)
+    </text>
+
+    <!-- Y2-Axis Label -->
+    <text x={-height / 2} y={width - padding.right + 40} transform="rotate(-90)" text-anchor="middle" class="axis-label y2-label">
+        Proportion Under 25 (%)
+    </text>
+
+    <!-- Legend -->
+<g class="legend" transform="translate({width - padding.right - 150}, {padding.top})">
+    <!-- Proportion Under 25 -->
+    <g transform="translate(0, 0)">
+        <circle cx="0" cy="5" r="5" fill="green"/>
+        <text x="10" y="10" font-size="14px">Proportion Under 25</text>
+    </g>
+
+    <!-- Median Housing Price -->
+    <g transform="translate(0, 20)">
+        <circle cx="0" cy="5" r="5" fill="black"/>
+        <text x="10" y="10" font-size="14px">Median Housing Price</text>
+    </g>
+
+    <!-- Median Income -->
+    <g transform="translate(0, 40)">
+        <circle cx="0" cy="5" r="5" fill="orange"/>
+        <text x="10" y="10" font-size="14px">Median Income</text>
+    </g>
+</g>
+
     </svg>
 </div>
 
 <style>
+    .axis-label {
+        font-size: 12px;
+        text-anchor: middle;
+    }
     .x-axis-tick {
         font-size: 14px;
         text-anchor: start;
