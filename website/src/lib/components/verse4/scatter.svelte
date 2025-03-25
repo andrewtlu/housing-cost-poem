@@ -291,6 +291,11 @@
                     <text style="white-space: nowrap">{race}</text>
                 </li>
             {/each}
+            <li class="flex items-start">
+                <text style="white-space: nowrap; margin-top: 5px;"
+                    ><em>*Larger Circles Indicate Race Centroid</em></text
+                >
+            </li>
         </ul>
     </div>
 </div>
