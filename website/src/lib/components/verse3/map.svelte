@@ -98,8 +98,39 @@ map component used in verse 3 for visualizing geographic data
     };
 </script>
 
-<div class="flex flex-col gap-2">
-    <div class="border-gray overflow-hidden rounded-md border-2 border-[gray] bg-white/80">
+<div class="relative flex flex-col rounded-md border-2 border-[gray] bg-white/80 font-bold">
+    <!-- title -->
+    <div
+        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+    >
+        Median Housing Cost Percentage of Metro Area Maximum
+    </div>
+
+    <!-- reset -->
+    {#if scale !== 1}
+        <button
+            aria-label="reset-zoom"
+            class="reset-zoom btn absolute top-5 left-5 z-10 h-fit w-fit rounded-full p-0 pr-2"
+            onclick={resetZoom}
+        >
+            <svg
+                fill="#000000"
+                width="25px"
+                height="25px"
+                viewBox="0 0 200 200"
+                data-name="Layer 1"
+                id="Layer_1"
+                xmlns="http://www.w3.org/2000/svg"
+                ><path
+                    d="M100,15a85,85,0,1,0,85,85A84.93,84.93,0,0,0,100,15Zm0,150a65,65,0,1,1,65-65A64.87,64.87,0,0,1,100,165ZM116.5,57.5a9.67,9.67,0,0,0-14,0L74,86a19.92,19.92,0,0,0,0,28.5L102.5,143a9.9,9.9,0,0,0,14-14l-28-29L117,71.5C120.5,68,120.5,61.5,116.5,57.5Z"
+                /></svg
+            >
+            <div class="font-medium">Reset Zoom</div>
+        </button>
+    {/if}
+
+    <!-- graph -->
+    <div class="border-gray overflow-hidden rounded-md">
         {#if width}
             <svg
                 width={width + margin.left + margin.right}
@@ -174,6 +205,4 @@ map component used in verse 3 for visualizing geographic data
             </svg>
         {/if}
     </div>
-
-    <button aria-label="reset-zoom" class="btn" onclick={resetZoom}>Reset Zoom</button>
 </div>
