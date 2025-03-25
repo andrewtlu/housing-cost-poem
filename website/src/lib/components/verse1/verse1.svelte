@@ -60,11 +60,11 @@
 <div class="bg-gray-100" bind:clientWidth={width}>
     <svg {width} {height}>
         <!-- Left Y-axis -->
-        <g class="axis y-axis">
+        <g class="axis">
             {#each yTickValues as tick, i (i)}
                 <g class="tick tick-{tick}" transform="translate(17, {yScale(tick)})">
                     <line x2="100%" />
-                    <text y="-4">{yTicks[i]}</text>
+                    <text y="-4" class="text-xs">{yTicks[i]}</text>
                     <!-- Display string tick from yTicks -->
                 </g>
             {/each}
@@ -75,7 +75,7 @@
             {#each y2Ticks as tick (tick)}
                 <g class="tick tick-{tick}" transform="translate(0, {y2Scale(tick)})">
                     <line x2="100%" />
-                    <text x="4" y="4">{tick}%</text>
+                    <text x="4" y="4" class="text-start text-xs text-green-700">{tick}%</text>
                 </g>
             {/each}
         </g>
@@ -84,7 +84,7 @@
         <g class="axis x-axis">
             {#each xTicks as tick, i (i)}
                 <g class="tick" transform="translate({xScale(tick)}, {height})">
-                    <text class="x-axis-tick" x={barWidth} y="-20">
+                    <text class="text-start text-sm" x={barWidth} y="-20">
                         {width > 380 ? tick : formatMobile(tick)}
                     </text>
                 </g>
@@ -122,7 +122,7 @@
             x={width / 2}
             y={height - padding.bottom + 35}
             text-anchor="middle"
-            class="axis-label"
+            class="text-center text-xs"
         >
             Metro Area
         </text>
@@ -133,7 +133,7 @@
             y={padding.left - 40}
             transform="rotate(-90)"
             text-anchor="middle"
-            class="axis-label"
+            class="text-center text-xs"
         >
             Median Housing Price ($), Median Income ($)
         </text>
@@ -144,7 +144,7 @@
             y={width - padding.right + 40}
             transform="rotate(-90)"
             text-anchor="middle"
-            class="axis-label y2-label"
+            class="y2-label text-center text-xs"
         >
             Proportion Under 25 (%)
         </text>
@@ -173,20 +173,7 @@
 </div>
 
 <style>
-    .axis-label {
-        font-size: 12px;
-        text-anchor: middle;
-    }
-    .x-axis-tick {
-        font-size: 14px;
-        text-anchor: start;
-    }
-    .y-axis text {
-        font-size: 12px;
-    }
     .y2-axis text {
-        font-size: 12px;
-        text-anchor: start;
         fill: darkgreen;
     }
     .tick line {
