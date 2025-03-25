@@ -46,7 +46,7 @@
     <!-- Gradient  -->
     <defs>
         <linearGradient id="gradient">
-            {#each gradientStops as stop}
+            {#each gradientStops as stop (stop.offset)}
                 <stop offset="{stop.offset}%" stop-color={stop.color} />
             {/each}
         </linearGradient>
@@ -65,7 +65,7 @@
             fill="url(#gradient)"
             class="gradient"
         />
-        {#each tickValues as tick}
+        {#each tickValues as tick (tick.value)}
             <g transform="translate({(tick.offset * legendWidth) / 100}, -20)">
                 <line y1="18" y2="15" stroke="gray" />
                 <text

@@ -41,6 +41,7 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
             </svg>
         </button>
     </li>
+    <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
     {#each keyframes as _, i (i)}
         <li class="flex items-center align-middle">
             <button

@@ -213,7 +213,8 @@ map component used in verse 3 for visualizing geographic data
     <!-- info tooltip -->
     <div
         class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
-        data-tip={"Click on a colored metro area to view details!\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
+        data-tip={"Click on a colored metro area to view details!" +
+            "\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
     >
         <svg
             fill="#000000"
@@ -254,7 +255,7 @@ map component used in verse 3 for visualizing geographic data
                 transform={transform.toString()}
             >
                 <!-- double iterator is mad inefficient, but this is the only way to render selected counties over counties with no info -->
-                {#each counties.features as county}
+                {#each counties.features as county, idx (idx)}
                     {#if data.get(county.id as number) === undefined}
                         <path
                             d={path(county)}
@@ -264,7 +265,7 @@ map component used in verse 3 for visualizing geographic data
                         />
                     {/if}
                 {/each}
-                {#each counties.features as county, idx}
+                {#each counties.features as county, idx (idx)}
                     {#if data.get(county.id as number) !== undefined}
                         <!-- svelte-ignore a11y_click_events_have_key_events -->
                         <!-- svelte-ignore a11y_mouse_events_have_key_events -->
@@ -298,7 +299,7 @@ map component used in verse 3 for visualizing geographic data
                     <path d={path(countryMesh)} fill="none" stroke="gray" stroke-width="0.2" />
                 {/if}
 
-                {#each centroids as centroid, idx}
+                {#each centroids as centroid, idx (idx)}
                     <!-- svelte-ignore a11y_click_events_have_key_events -->
                     <!-- yeah not very accessible but the entire chart is hard to nav without mouse -->
                     <circle
