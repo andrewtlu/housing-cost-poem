@@ -1,6 +1,6 @@
 import { type Keyframe } from "$lib/keyframe.svelte";
 
-let verse = 1;
+const verse = 1;
 /**
  * The keyframes for verse 1.
  */

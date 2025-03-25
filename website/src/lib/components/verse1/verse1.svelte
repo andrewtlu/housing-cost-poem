@@ -1,4 +1,5 @@
 <script lang="ts">
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     import { getFrame, keyframe } from "$lib/keyframe.svelte";
 
     // dashes are em dashes, and quotations are curled :)
