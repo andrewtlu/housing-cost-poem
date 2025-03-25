@@ -1,6 +1,6 @@
 import { type Keyframe } from "$lib/keyframe.svelte";
 
-let verse = 0;
+const verse = 0;
 
 /**
  * The keyframes for the title.

@@ -10,12 +10,12 @@
                 <div class="text-9xl">Afford</div>
                 <div class="mb-2 flex flex-col justify-end self-end text-2xl">ing an</div>
             </div>
-            <div class="ml-46 -mt-5 text-7xl">Abode:</div>
+            <div class="-mt-5 ml-46 text-7xl">Abode:</div>
         </div>
 
         <div class="flex w-full items-end justify-between">
             <!-- subtitle -->
-            <div class="order-2 mr-4 flex flex-col items-end text-3xl font-medium leading-7">
+            <div class="order-2 mr-4 flex flex-col items-end text-3xl leading-7 font-medium">
                 <div>Affordable</div>
                 <div>Housing</div>
                 <div>in</div>

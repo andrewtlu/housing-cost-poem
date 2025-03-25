@@ -15,6 +15,13 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
     const forward = () => {
         keyframe.increment();
     };
+
+    function onKeyDown(e: KeyboardEvent) {
+        const prev = ["KeyA", "KeyW", "KeyH", "KeyK", "ArrowLeft", "ArrowUp"];
+        const next = ["KeyD", "KeyS", "KeyL", "KeyJ", "ArrowRight", "ArrowDown"];
+        if (prev.includes(e.code)) backward();
+        if (next.includes(e.code)) forward();
+    }
 </script>
 
 <ul
@@ -34,11 +41,12 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
             </svg>
         </button>
     </li>
+    <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
     {#each keyframes as _, i (i)}
         <li class="flex items-center align-middle">
             <button
                 class={[
-                    "hover:scale-200 -m-0.5 h-3.5 w-3.5 origin-center cursor-pointer p-1 transition-all",
+                    "-m-0.5 h-3.5 w-3.5 origin-center cursor-pointer p-1 transition-all hover:scale-200",
                     keyframe.value == i ? "scale-200" : ""
                 ]}
                 aria-label={`keyframe ${i}`}
@@ -63,3 +71,5 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
         </button>
     </li>
 </ul>
+
+<svelte:window onkeydown={onKeyDown} />
