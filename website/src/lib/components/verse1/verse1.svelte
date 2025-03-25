@@ -136,7 +136,7 @@
         Proportion Under 25 (%)
     </text>
 
-    <!-- Legend -->
+<!-- Legend -->
 <g class="legend" transform="translate({width - padding.right - 150}, {padding.top})">
     <!-- Proportion Under 25 -->
     <g transform="translate(0, 0)">

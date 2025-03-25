@@ -66,10 +66,10 @@
         .data(data)
         .enter()
         .append("text")
-        .attr("x", d => xScale(d.median_housing_price))
-        .attr("y", d => yScale(d.median_income))
-        .attr("dy", "-0.5em")
-        .attr("text-anchor", "middle")
+        .attr("x", d => xScale(d.median_housing_price))  // Center horizontally
+        .attr("y", d => yScale(d.median_income))         // Center vertically
+        .attr("text-anchor", "middle")                   // Center text horizontally
+        .attr("dominant-baseline", "middle")             // Center text vertically
         .attr("font-size", "12px")
         .attr("fill", "#333")
         .text(d => d.metro_area);
@@ -88,12 +88,32 @@
     <!-- Left Y-axis -->
     <g class="axis y-axis">
         {#each yTickValues as tick, i (i)}
-            <g class="tick tick-{tick}" transform="translate(0, {yScale(tick)})">
+            <g class="tick tick-{tick}" transform="translate(30, {yScale(tick)})">
                 <line x2="100%" stroke="black"/>
                 <text y="-4">{yTicks[i]}</text>
             </g>
         {/each}
     </g>
+    
+    <g class="legend" transform="translate({width - padding.right - 100}, {padding.top})">
+    <!-- Proportion Under 25 -->
+    <g transform="translate(60, 100)">
+        <!-- Background rectangle -->
+        <rect x="-8" y="-5" width="140" height="70" fill="white" stroke="black" stroke-width="1" rx="5" ry="5"/>
+
+        <!-- Legend Circle -->
+        <circle cx="0" cy="5" r="5" fill="steelblue"/>
+
+        <!-- Legend Text -->
+        <text x="10" y="10" font-size="12px">
+            <tspan x="10" dy="0">Proportion Over 25</tspan>
+            <tspan x="10" dy="15">with 4 Year College</tspan>
+            <tspan x="10" dy="15">Degree Or Equivalent</tspan>
+            <tspan x="10" dy="15">by Metro Area</tspan>
+        </text>
+    </g>
+</g>
+
 
     <!-- X-axis -->
     <g class="axis x-axis">
@@ -105,15 +125,28 @@
             </g>
         {/each}
     </g>
+    <!-- X-Axis Label -->
+    <text x={width / 2} y={height - padding.bottom + 40} text-anchor="middle" class="axis-label">
+        Median Housing Value ($)
+    </text>
+
+    <!-- Y-Axis Label -->
+    <text x={-height / 2} y={padding.left - 50} transform="rotate(-90)" text-anchor="middle" class="axis-label">
+        Median Income ($)
+    </text>
 </svg>
 </div>
 
 <style>
+    .axis-label {
+        font-size: 14px;
+        text-anchor: middle;
+    }
     .x-axis text {
         font-size: 14px;
     }
     .y-axis text {
-        font-size: 12px;
+        font-size: 14px;
     }
     .tick line {
 		stroke: #d4d4d4;
