@@ -21,7 +21,6 @@
     }[] = $state([]);
 
     const centroid_values: {
-        // DERIVED OR WRITABLE??
         race: string;
         avg_median_housing: number;
         avg_race_percent: number;
@@ -88,6 +87,7 @@
         }
     });
 
+    // Chart Dimension Variables
     const chartWidth = 700;
     const chartHeight = 500;
     const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
@@ -114,6 +114,7 @@
         "hispanic_or_latino"
     ];
 
+    // Scale Functions (X & Y)
     const xScale = scaleSqrt()
         .domain([0, 100])
         .range([chartMargins.left, chartWidth - chartMargins.right]);
@@ -126,6 +127,7 @@
             .range([chartHeight - chartMargins.bottom, chartMargins.top]);
     });
 
+    // Sets Data Point Color Scale
     const point_colors = scaleOrdinal()
         .range([
             "#1f77b4",
@@ -147,7 +149,6 @@
     >
         <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graph_values as data_point}
-            <!-- DRAW POINT (CIRCLE) -->
             <circle
                 cx={xScale(data_point.race_percent)}
                 cy={yScale(data_point.median_housing)}
@@ -225,6 +226,7 @@
             </circle>
         {/each}
     </svg>
+
     <!-- Chart Legend -->
     <div style="margin-left: -90px; padding-right: 20px; width: 250px; margin-top: -250px">
         <ul class="w-30 text-sm">
@@ -243,7 +245,3 @@
     </div>
 </div>
 
-<!-- 
-TODOS:
-- (2) Centroid Calculations & Plotting
--->
