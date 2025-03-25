@@ -39,8 +39,12 @@
     const yTicks = ["$0", "$50,000", "$100,000", "$150,000", "$200,000"];
     const yTickValues = [0, 50000, 100000, 150000, 200000];
 
+    // TODO: instead of adding attributes like this, directly add svg elements using svelte's {#each} directive
     onMount(() => {
-        const svg = select("#bubble-chart").attr("width", width).attr("height", height).select("g");
+        const svg = select("#bubble-chart")
+            .attr("width", width)
+            .attr("height", height)
+            .select("g#chart-content");
 
         // Add bubbles
         svg.selectAll("circle")
@@ -76,21 +80,46 @@
 
 <div class="bg-gray-100">
     <svg id="bubble-chart">
-        <g />
-        <!-- Left Y-axis -->
+        <!-- y-axis -->
         <g>
             {#each yTickValues as tick, i (i)}
                 <g class="tick tick-{tick}" transform="translate(30, {yScale(tick)})">
-                    <line x2="100%" stroke="#d4d4d4" />
-                    <text y="-4">{yTicks[i]}</text>
+                    <line x2="100%" stroke="#d4d4d4" style="stroke-dasharray: 2;" />
+                    <text y="-4" class="text-center text-sm">{yTicks[i]}</text>
                 </g>
             {/each}
         </g>
+        <!-- y-axis label -->
+        <text
+            x={-height / 2}
+            y={padding.left - 50}
+            transform="rotate(-90)"
+            class="text-center text-sm"
+        >
+            Median Income ($)
+        </text>
 
+        <!-- x-axis -->
+        <g>
+            {#each xTickValues as tick, i (i)}
+                <g class="tick" transform="translate({xScale(tick)}, {height - padding.bottom})">
+                    <line y2="6" stroke="#d4d4d4" style="stroke-dasharray: 2;" />
+                    <line y1="-{height - padding.bottom - padding.top / 1.5}" y2="0" />
+                    <text x="0" y="20" text-anchor="middle" class="text-center text-sm"
+                        >{xTicks[i]}</text
+                    >
+                </g>
+            {/each}
+        </g>
+        <!-- x-axis label -->
+        <text x={width / 2} y={height - padding.bottom + 40} class="text-center text-sm">
+            Median Housing Value ($)
+        </text>
+
+        <!-- legend -->
         <g class="legend" transform="translate({width - padding.right - 100}, {padding.top})">
-            <!-- Proportion Under 25 -->
             <g transform="translate(60, 100)">
-                <!-- Background rectangle -->
+                <!-- bg rectangle -->
                 <rect
                     x="-8"
                     y="-5"
@@ -102,11 +131,7 @@
                     rx="5"
                     ry="5"
                 />
-
-                <!-- Legend Circle -->
                 <circle cx="0" cy="5" r="5" fill="steelblue" />
-
-                <!-- Legend Text -->
                 <text x="10" y="10" font-size="12px">
                     <tspan x="10" dy="0">Proportion Over 25</tspan>
                     <tspan x="10" dy="15">with 4 Year College</tspan>
@@ -116,29 +141,14 @@
             </g>
         </g>
 
-        <!-- X-axis -->
-        <g>
-            {#each xTickValues as tick, i (i)}
-                <g class="tick" transform="translate({xScale(tick)}, {height - padding.bottom})">
-                    <line y2="6" stroke="#d4d4d4" style="stroke-dasharray: 2;" />
-                    <line y1="-{height - padding.bottom - padding.top}" y2="0" />
-                    <text x="0" y="20" text-anchor="middle">{xTicks[i]}</text>
-                </g>
-            {/each}
-        </g>
-        <!-- X-Axis Label -->
-        <text x={width / 2} y={height - padding.bottom + 40} class="text-center text-sm">
-            Median Housing Value ($)
-        </text>
-
-        <!-- Y-Axis Label -->
-        <text
-            x={-height / 2}
-            y={padding.left - 50}
-            transform="rotate(-90)"
-            class="text-center text-sm"
-        >
-            Median Income ($)
-        </text>
+        <!-- chart content -->
+        <g id="chart-content" />
     </svg>
 </div>
+
+<style>
+    .tick line {
+        stroke: #d4d4d4;
+        stroke-dasharray: 2;
+    }
+</style>
