@@ -30,6 +30,6 @@
     }
 
     .scatter_box {
-        background-color: beige;
+        background-color: rgb(255, 255, 255);
     }
 </style>

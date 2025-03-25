@@ -38,9 +38,58 @@
                 [0, 0]
             ];
             const race_totals = [0, 0, 0, 0, 0, 0, 0, 0];
-            // iterate through graph values
-            // populate centroid for each race
-            // return list of race centroids
+            const race_idx = [
+                "White",
+                "Black",
+                "Native Indian or Alaska Native",
+                "Asian",
+                "Native Hawaiian or Pacific Islander",
+                "Other Race Alone",
+                "Two or More Races",
+                "Hispanic or Latino"
+            ];
+            // Iterate Graph Values & Populate Totals (used to calculate centroids)
+            for (const data_point of graph_values) {
+                if (data_point.race === "white_alone") {
+                    race_totals[0]++; // Update Number of Cases
+                    centroids[0][0] += data_point.median_housing; // Add Median Housing Value
+                    centroids[0][1] += data_point.race_percent; // Add Race Percent
+                } else if (data_point.race === "black_alone") {
+                    race_totals[1]++; // Update Number of Cases
+                    centroids[1][0] += data_point.median_housing; // Add Median Housing Value
+                    centroids[1][1] += data_point.race_percent; // Add Race Percent
+                } else if (data_point.race === "native_alone") {
+                    race_totals[2]++; // Update Number of Cases
+                    centroids[2][0] += data_point.median_housing; // Add Median Housing Value
+                    centroids[2][1] += data_point.race_percent; // Add Race Percent
+                } else if (data_point.race === "asian_alone") {
+                    race_totals[3]++; // Update Number of Cases
+                    centroids[3][0] += data_point.median_housing; // Add Median Housing Value
+                    centroids[3][1] += data_point.race_percent; // Add Race Percent
+                } else if (data_point.race === "native_hawaiian_pacific_islander") {
+                    race_totals[4]++; // Update Number of Cases
+                    centroids[4][0] += data_point.median_housing; // Add Median Housing Value
+                    centroids[4][1] += data_point.race_percent; // Add Race Percent
+                } else if (data_point.race === "some_other_race_alone") {
+                    race_totals[5]++; // Update Number of Cases
+                    centroids[5][0] += data_point.median_housing; // Add Median Housing Value
+                    centroids[5][1] += data_point.race_percent; // Add Race Percent
+                } else if (data_point.race === "two_or_more") {
+                    race_totals[6]++; // Update Number of Cases
+                    centroids[6][0] += data_point.median_housing; // Add Median Housing Value
+                    centroids[6][1] += data_point.race_percent; // Add Race Percent
+                } else if (data_point.race === "hispanic_or_latino") {
+                    race_totals[7]++; // Update Number of Cases
+                    centroids[7][0] += data_point.median_housing; // Add Median Housing Value
+                    centroids[7][1] += data_point.race_percent; // Add Race Percent
+                }
+            }
+
+            return centroids.map((centroid, idx) => ({
+                race: race_idx[idx],
+                avg_median_housing: centroid[0] / race_totals[idx],
+                avg_race_percent: centroid[1] / race_totals[idx]
+            }));
         })()
     );
 
@@ -49,6 +98,7 @@
             return Number(d.median_housing);
         }) as [number, number]
     );
+
     let y_range = $derived(y_extent[1] - y_extent[0]);
 
     let y_scale = $derived([
@@ -92,7 +142,7 @@
     const chartHeight = 500;
     const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
 
-    const race_legend = [
+    const races_legend = [
         "White",
         "Black",
         "Native Indian or Alaska Native",
@@ -139,7 +189,7 @@
             "#e377c2",
             "#7f7f7f"
         ])
-        .domain(race_legend);
+        .domain(races_legend);
 </script>
 
 <div class="flex items-center gap-2">
@@ -154,7 +204,7 @@
                 cy={yScale(data_point.median_housing)}
                 r="5"
                 fill={point_colors(data_point.race)}
-                opacity="0.65"
+                opacity="0.4"
             />
         {/each}
 
@@ -178,10 +228,7 @@
                 Percent of Total Population (%)
             </text>
             {#each x_scale as x_val}
-                <g
-                    class="tick"
-                    transform="translate({xScale(x_val)}, {chartHeight - chartMargins.bottom})"
-                >
+                <g transform="translate({xScale(x_val)}, {chartHeight - chartMargins.bottom})">
                     <text class="x-axis-tick" y="20" x="-6">
                         {x_val}
                     </text>
@@ -208,7 +255,7 @@
                 Median House Value ($)
             </text>
             {#each y_scale as y_val}
-                <g class="tick" transform="translate(0, {yScale(y_val)})">
+                <g transform="translate(0, {yScale(y_val)})">
                     <text class="y-axis-tick" x="35" y="0">
                         {y_val}
                     </text>
@@ -218,30 +265,32 @@
 
         <!-- Draw Centroids -->
         {#each centroid_values as centroid_points}
-            <circle>
-                <!-- cx={xScale(data_point.race_percent)}
-            cy={yScale(data_point.median_housing)}
-            r="5" fill={point_colors(data_point.race)} -->
-                <!-- Opacity? -->
-            </circle>
+            <circle
+                cx={xScale(centroid_points.avg_race_percent)}
+                cy={yScale(centroid_points.avg_median_housing)}
+                r="10"
+                fill={point_colors(centroid_points.race)}
+                stroke="black"
+                stroke-width="2"
+                opacity="0.75"
+            />
         {/each}
     </svg>
 
     <!-- Chart Legend -->
     <div style="margin-left: -90px; padding-right: 20px; width: 250px; margin-top: -250px">
         <ul class="w-30 text-sm">
-            {#each race_legend as race}
+            {#each races_legend as race}
                 <li class="flex items-start">
                     <div
-                    class="rounded-full"
+                        class="rounded-full"
                         style="background-color: {point_colors(
                             race
-                        )}; width: 15px; height: 15px; inline-block; margin-right: 10px; flex-shrink: 0;"
+                        )}; width: 15px; height: 15px; margin-right: 10px; flex-shrink: 0;"
                     ></div>
-                    <text style="flex-grow: 1; white-space: nowrap">{race}</text>
+                    <text style="white-space: nowrap">{race}</text>
                 </li>
             {/each}
         </ul>
     </div>
 </div>
-
