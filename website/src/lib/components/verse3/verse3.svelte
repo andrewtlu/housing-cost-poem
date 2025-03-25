@@ -1,5 +1,6 @@
 <script lang="ts">
     import { getFrame, keyframe } from "$lib";
+    import { Map } from "./map";
 
     // dashes are em dashes and quotations are curled :)
     let lines = [
@@ -20,3 +21,5 @@
         </li>
     {/each}
 </ul>
+
+<Map />
