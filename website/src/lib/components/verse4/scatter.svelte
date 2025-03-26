@@ -3,8 +3,8 @@
     import { extent, scaleLog, scaleSqrt, scaleOrdinal } from "d3";
 
     // chart data
-    const chartWidth = 700;
-    const chartHeight = 500;
+    const width = 700;
+    const height = 500;
     const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
     const racesLegend = [
         "White",
@@ -107,12 +107,12 @@
     let yScale = $derived(
         scaleLog()
             .domain(yExtent)
-            .range([chartHeight - chartMargins.bottom, chartMargins.top])
+            .range([height - chartMargins.bottom, chartMargins.top])
     );
     const xTicks = [0, 20, 40, 60, 80, 100];
     const xScale = scaleSqrt()
         .domain([0, 100])
-        .range([chartMargins.left, chartWidth - chartMargins.right]);
+        .range([chartMargins.left, width - chartMargins.right]);
 
     // color
     const point_colors = scaleOrdinal<string, string, never>()
@@ -131,8 +131,8 @@
 
 <div class="flex items-center gap-2">
     <svg
-        width={chartWidth + chartMargins.left + chartMargins.right}
-        height={chartHeight + chartMargins.top + chartMargins.bottom}
+        width={width + chartMargins.left + chartMargins.right}
+        height={height + chartMargins.top + chartMargins.bottom}
     >
         <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
@@ -149,23 +149,23 @@
         <g class="axis x-axis">
             <line
                 x1={chartMargins.left}
-                y1={chartHeight - chartMargins.bottom}
-                x2={chartWidth - chartMargins.right}
-                y2={chartHeight - chartMargins.bottom}
+                y1={height - chartMargins.bottom}
+                x2={width - chartMargins.right}
+                y2={height - chartMargins.bottom}
                 stroke="black"
                 stroke-width="3"
             />
             <text
                 class="x-axis_label"
-                x={chartWidth / 2}
-                y={chartHeight + 30}
+                x={width / 2}
+                y={height + 30}
                 font-size="15px"
                 text-anchor="middle"
             >
                 Percent of Total Population (%)
             </text>
             {#each xTicks as x_val, idx (idx)}
-                <g transform="translate({xScale(x_val)}, {chartHeight - chartMargins.bottom})">
+                <g transform="translate({xScale(x_val)}, {height - chartMargins.bottom})">
                     <text class="x-axis-tick" y="20" x="-6">
                         {x_val}
                     </text>
@@ -177,14 +177,14 @@
                 x1={chartMargins.left}
                 y1={chartMargins.top}
                 x2={chartMargins.left}
-                y2={chartHeight - chartMargins.bottom}
+                y2={height - chartMargins.bottom}
                 stroke="black"
                 stroke-width="3"
             />
             <text
                 class="y-axis_label"
                 transform="rotate(-90)"
-                x={-chartHeight / 2}
+                x={-height / 2}
                 y={chartMargins.left - 95}
                 font-size="15px"
                 text-anchor="middle"
@@ -215,23 +215,19 @@
     </svg>
 
     <!-- Chart Legend -->
-    <div style="margin-left: -90px; padding-right: 20px; width: 250px; margin-top: -250px">
-        <ul class="w-30 text-sm">
+    <div class="ml-2">
+        <ul class="flex flex-col gap-2 text-sm">
             {#each racesLegend as race, idx (idx)}
-                <li class="flex items-start">
+                <li class="flex items-center">
                     <div
-                        class="rounded-full"
-                        style="background-color: {point_colors(
-                            race
-                        )}; width: 15px; height: 15px; margin-right: 10px; flex-shrink: 0;"
+                        class="mr-2 h-4 w-4 shrink-0 rounded-full"
+                        style="background-color: {point_colors(race)};"
                     ></div>
-                    <text style="white-space: nowrap">{race}</text>
+                    <text class="">{race}</text>
                 </li>
             {/each}
             <li class="flex items-start">
-                <text style="white-space: nowrap; margin-top: 5px;"
-                    ><em>*Larger Circles Indicate Race Centroid</em></text
-                >
+                <text class="mt-1.5"><em>*Larger Circles Indicate Race Centroid</em></text>
             </li>
         </ul>
     </div>
