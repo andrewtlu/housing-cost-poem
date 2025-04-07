@@ -1,6 +1,9 @@
 <script lang="ts">
     import { scaleBand, scaleLinear } from "d3-scale";
     import points from "./verse1_data.json";
+    import { writable } from 'svelte/store';
+    import { getFrame, keyframe } from "$lib";
+    import { toggleMedianIncome, showMedianIncome, toggleHousingPrice, showMedianHousingPrice, showProportion, textOpacity } from '$lib/actions';
 
     let lines = [
         "Home—yes, four walls to keep warm",
@@ -23,14 +26,14 @@
     const y2Ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // For percentage scale
     const padding = { top: 20, right: 50, bottom: 40, left: 50 };
 
-    let width = $state(500);
-    let height = 350;
+    let width = $state(700);
+    let height = 500;
 
     // scales
     let xScale = $derived(
         scaleBand()
             .domain(xTicks)
-            .range([padding.left, width - padding.right])
+            .range([padding.left + 10, width - padding.right])
             .padding(0.1)
     );
     // y-axis scale for the main bars (housing, income, home value)
@@ -42,16 +45,25 @@
         .domain([0, 100])
         .range([height - padding.bottom, padding.top]);
 
-    let barWidth = $derived(xScale.bandwidth() / 3);
+    let barWidth = $derived(xScale.bandwidth() / 2);
 
     function formatMobile(tick: string) {
         return "'" + tick.slice(-2);
     }
+
+    // Create a writable store for the variable
+    
+
+    
+
 </script>
 
-<ul class="">
+<ul>
     {#each lines as line, index (index)}
-        <li>
+        <li
+            title={line}
+            class={`opacity-50 transition-all ${getFrame(keyframe.value).bolded.includes(index) ? "font-bold opacity-100" : ""}`}
+        >
             {line}
         </li>
     {/each}
@@ -62,29 +74,18 @@
         <!-- Left Y-axis -->
         <g class="axis">
             {#each yTickValues as tick, i (i)}
-                <g class="tick tick-{tick}" transform="translate(17, {yScale(tick)})">
+                <g class="tick tick-{tick}" transform="translate(3, {yScale(tick)})">
                     <line x2="100%" />
                     <text y="-4" class="text-xs">{yTicks[i]}</text>
                     <!-- Display string tick from yTicks -->
                 </g>
             {/each}
         </g>
-
-        <!-- Right Y-axis for proportion_under_25 -->
-        <g class="axis y2-axis" transform="translate({width - padding.right}, 0)">
-            {#each y2Ticks as tick (tick)}
-                <g class="tick tick-{tick}" transform="translate(0, {y2Scale(tick)})">
-                    <line x2="100%" />
-                    <text x="4" y="4" class="text-start text-xs text-green-700">{tick}%</text>
-                </g>
-            {/each}
-        </g>
-
         <!-- X-axis -->
         <g class="axis x-axis">
             {#each xTicks as tick, i (i)}
                 <g class="tick" transform="translate({xScale(tick)}, {height})">
-                    <text class="text-start text-sm" x={barWidth} y="-20">
+                    <text class="text-start text-sm" x={barWidth-25} y="-20">
                         {width > 380 ? tick : formatMobile(tick)}
                     </text>
                 </g>
@@ -99,21 +100,83 @@
                         y={yScale(point.median_housing_price)}
                         width={barWidth * 0.9}
                         height={yScale(0) - yScale(point.median_housing_price)}
+                        fill={$showMedianHousingPrice ? 'black' : 'white'}
+                        style="transition: fill 0.5s;"
                     />
                     <rect
                         x={Number(xScale(xTicks[i])) + barWidth * 1}
                         y={yScale(point.median_income)}
                         width={barWidth * 0.9}
                         height={yScale(0) - yScale(point.median_income)}
-                        fill="orange"
+                        style="transition: fill 0.5s;"
+                        fill={$showMedianIncome ? 'lightgray' : 'white'}
+                        stroke="gray"
+                        stroke-width="1"
+                        stroke-opacity={$showProportion ? 1 : 0}
                     />
-                    <rect
-                        x={Number(xScale(xTicks[i])) + barWidth * 2}
-                        y={y2Scale(point.proportion_under_25)}
-                        width={barWidth * 0.9}
-                        height={y2Scale(0) - y2Scale(point.proportion_under_25)}
-                        fill="green"
-                    />
+                    <!-- Additional Rectangles on top of the Median Income bar -->
+                    {#each Array(Math.floor(point.median_housing_price / point.median_income) - 1).fill() as _, index}
+                        <rect
+                            x={Number(xScale(xTicks[i])) + barWidth * 1}
+                            y={yScale(point.median_income) - (index + 1)*(yScale(0) - yScale(point.median_income))}
+                            width={barWidth * 0.9}
+                            height={yScale(0) - yScale(point.median_income)} 
+                            fill="lightgray"
+                            stroke="gray"
+                            stroke-width="1"
+                            style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${$showProportion ? (index + 1) * 0.15 + 's' : '0s'};`}
+                            opacity={$showProportion ? 1 : 0}
+                        />
+                    {/each}
+                    <!-- Fractional Rectangle (if there's a remainder) -->
+                    {#if (point.median_housing_price / point.median_income) % 1 !== 0}
+                        <rect
+                            x={Number(xScale(xTicks[i])) + barWidth * 1}
+                            y={yScale(point.median_income) - ((point.median_housing_price / point.median_income) - 1)*(yScale(0) - yScale(point.median_income))}
+                            width={barWidth * 0.9}
+                            height={(yScale(0) - yScale(point.median_income)) * ((point.median_housing_price / point.median_income) % 1)}
+                            fill="lightgray"
+                            stroke="gray"
+                            stroke-width="1"
+                            style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${$showProportion ? Math.floor(point.median_housing_price / point.median_income) * 0.15 + 's' : '0s'};`}
+                            opacity={$showProportion ? 1 : 0}
+                        />
+                    {/if}
+                    
+                    <text
+                        x={Number(xScale(xTicks[i])) + barWidth * 1}
+                        y={yScale(point.median_housing_price) - 45}
+                        text-anchor="middle"
+                        font-size="12px"
+                        fill="black"
+                        style="transition: opacity 0.5s;"
+                        opacity={$textOpacity ? 1 : 0}
+                    >
+                        <tspan font-size="14px">Median Housing is </tspan>
+                    </text>
+                    <text
+                        x={Number(xScale(xTicks[i])) + barWidth * 1}
+                        y={yScale(point.median_housing_price) - 20}
+                        text-anchor="middle"
+                        font-size="12px"
+                        fill="black"
+                        style="transition: opacity 0.5s;"
+                        opacity={$textOpacity ? 1 : 0}
+                    >
+                        <tspan font-size="24px">{(point.median_housing_price / point.median_income).toFixed(1)}</tspan><tspan font-size="14px">x</tspan>
+                    </text>
+                    <text
+                        x={Number(xScale(xTicks[i])) + barWidth * 1}
+                        y={yScale(point.median_housing_price) - 5}
+                        text-anchor="middle"
+                        font-size="12px"
+                        fill="black"
+                        style="transition: opacity 0.5s;"
+                        opacity={$textOpacity ? 1 : 0}
+                    >
+                        <tspan font-size="14px">Median Income</tspan>
+                    </text>
+                    
                 </g>
             {/each}
         </g>
@@ -127,46 +190,18 @@
             Metro Area
         </text>
 
-        <!-- Y-Axis Label -->
-        <text
-            x={-height / 2}
-            y={padding.left - 40}
-            transform="rotate(-90)"
-            text-anchor="middle"
-            class="text-center text-xs"
-        >
-            Median Housing Price ($), Median Income ($)
-        </text>
-
-        <!-- Y2-Axis Label -->
-        <text
-            x={-height / 2}
-            y={width - padding.right + 40}
-            transform="rotate(-90)"
-            text-anchor="middle"
-            class="y2-label text-center text-xs"
-        >
-            Proportion Under 25 (%)
-        </text>
-
         <!-- Legend -->
         <g class="legend" transform="translate({width - padding.right - 150}, {padding.top})">
-            <!-- Proportion Under 25 -->
-            <g transform="translate(0, 0)">
-                <circle cx="0" cy="5" r="5" fill="green" />
-                <text x="10" y="10" font-size="14px">Proportion Under 25</text>
-            </g>
-
             <!-- Median Housing Price -->
-            <g transform="translate(0, 20)">
-                <circle cx="0" cy="5" r="5" fill="black" />
-                <text x="10" y="10" font-size="14px">Median Housing Price</text>
+            <g transform="translate(0, 20)" on:click={toggleHousingPrice} style="cursor: pointer;">
+                <circle cx="0" cy="5" r="7" fill="black" />
+                <text x="10" y="10" font-size="16px">Median Housing Price</text>
             </g>
 
             <!-- Median Income -->
-            <g transform="translate(0, 40)">
-                <circle cx="0" cy="5" r="5" fill="orange" />
-                <text x="10" y="10" font-size="14px">Median Income</text>
+            <g transform="translate(0, 40)" on:click={toggleMedianIncome} style="cursor: pointer;">
+                <circle cx="0" cy="5" r="7" fill="lightgray" />
+                <text x="10" y="10" font-size="16px">Median Income</text>
             </g>
         </g>
     </svg>
