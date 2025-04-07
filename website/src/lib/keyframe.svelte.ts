@@ -3,7 +3,8 @@ import {
     verse1Keyframes,
     verse2Keyframes,
     verse3Keyframes,
-    verse4Keyframes
+    verse4Keyframes,
+    verse5Keyframes
 } from "./components";
 import { updateScroll } from "./scroll-override";
 
@@ -27,7 +28,8 @@ export const keyframes: Keyframe[] = [
     ...verse1Keyframes,
     ...verse2Keyframes,
     ...verse3Keyframes,
-    ...verse4Keyframes
+    ...verse4Keyframes,
+    ...verse5Keyframes
 ];
 
 /**
