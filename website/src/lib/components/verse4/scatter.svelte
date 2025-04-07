@@ -1,6 +1,16 @@
+<!-- TODO: 
+    - HOW TO MAKE FILTERING OPTIONS CLEAR??? TOOLTIP (1)
+    - Make Data Points Hoverable (2)
+    - xTICKS (3)
+    - Line of Best Fit (4)
+
+    - Transitions?
+    - Console Errors?
+-->
+
 <script lang="ts">
     import { data, type CountyRaces } from "$lib/data";
-    import { extent, scaleLog, scaleSqrt, scaleOrdinal } from "d3";
+    import { extent, scaleLog, scaleSqrt, scaleOrdinal, filter } from "d3";
 
     // chart data
     const width = 700;
@@ -55,6 +65,17 @@
         }
     });
 
+    // race filtering
+    let filter_race = $state("");
+
+    function raceFiltering(race : string) {
+        if (filter_race === race) {
+            filter_race = "";
+        } else {
+            filter_race = race;
+        }
+    }
+
     // scales
     let yExtent = $derived(
         extent(graphValues, (d) => {
@@ -75,10 +96,33 @@
             .domain(yExtent)
             .range([height - chartMargins.bottom, chartMargins.top])
     );
+
     const xTicks = [0, 20, 40, 60, 80, 100];
-    const xScale = scaleSqrt()
-        .domain([0, 100])
-        .range([chartMargins.left, width - chartMargins.right]);
+
+    let xScale = $derived((() => {
+        const graphValues_filtered = graphValues.filter( (d) => {
+            if (filter_race !== "") {
+                return d.race === filter_race;
+            } else {
+                return true;
+            }
+         });
+
+        let xExtent;
+        if (filter_race === "") {
+            xExtent = [0,100];
+        } else {
+            xExtent = extent(graphValues_filtered, (d) => d.race_percent) as [number, number];
+        }
+        
+        return scaleSqrt()
+            .domain(xExtent)
+            .range([chartMargins.left, width - chartMargins.right]);
+    })());
+
+    // const xScale = scaleSqrt()
+    //     .domain([0,100])
+    //     .range([chartMargins.left, width - chartMargins.right]);
 
     // color
     const point_colors = scaleOrdinal<string, string, never>()
@@ -94,20 +138,9 @@
         ])
         .domain(racesLegend);
 
-    // race filtering
-    let filter_race = $state("");
-
-    function raceFiltering(race : string) {
-        if (filter_race === race) {
-            filter_race = "";
-        } else {
-            filter_race = race;
-        }
-    }
-
 </script>
 
-<div class="flex items-center gap-2">
+<div class="relative flex items-center gap-2">
     <svg
         width={width + chartMargins.left + chartMargins.right}
         height={height + chartMargins.top + chartMargins.bottom}
@@ -115,13 +148,16 @@
     <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
             {#if filter_race === "" || data_point.race === filter_race}
-                <circle
-                    cx={xScale(data_point.race_percent)}
-                    cy={yScale(data_point.median_housing)}
-                    r="5"
-                    fill={point_colors(data_point.race)}
-                    opacity="1"
-                />
+            <!-- Smooth Circle Transitions?????  -->
+                <!-- <div> -->
+                    <circle
+                        cx={xScale(data_point.race_percent)}
+                        cy={yScale(data_point.median_housing)}
+                        r="5"
+                        fill={point_colors(data_point.race)}
+                        opacity="1"
+                    />
+                <!-- </div> -->
             {/if}
         {/each}
 
@@ -186,7 +222,7 @@
         <ul class="flex flex-col gap-1.25">
             {#each racesLegend as race, idx (idx)}
                 <li>
-                    <button class="flex items-center cursor-pointer" onclick={() => raceFiltering(racesDataAttr[idx])} >
+                    <button class="flex items-center cursor-pointer" onclick={() => raceFiltering(racesDataAttr[idx])} > <!-- ***On Click add second that resizes x (pass race and check.. if no race keep original else do it for the one race)-->
                         <div
                             class="mr-2 h-4 w-4 shrink-0 rounded-full"
                             style="background-color: {point_colors(race)};"
@@ -196,5 +232,44 @@
                 </li>
             {/each}
         </ul>
+    </div>
+
+    <!-- Chart Tooltip -->
+    <div 
+        class="tooltip tooltip-left absolute bottom-5 right-5 rounded-full hover:cursor-pointer" 
+        data-tip=
+        {
+            "Select Races from Legend to Filter the Graph." +
+            "\nSelect the Same Race to Return Graph to Original State (Showing All Races)"
+        }
+        > 
+        
+        <svg  
+            fill="#000000"
+            xmlns="http://www.w3.org/2000/svg"
+            width="25px"
+            height="25px"
+            viewBox="0 0 488.484 488.484"
+            xml:space="preserve"
+        >
+        <g>
+            <g>
+                <path
+                    d="M244.236,0.002C109.562,0.002,0,109.565,0,244.238c0,134.679,109.563,244.244,244.236,244.244
+                c134.684,0,244.249-109.564,244.249-244.244C488.484,109.566,378.92,0.002,244.236,0.002z M244.236,413.619
+                c-93.4,0-169.38-75.979-169.38-169.379c0-93.396,75.979-169.375,169.38-169.375s169.391,75.979,169.391,169.375
+                C413.627,337.641,337.637,413.619,244.236,413.619z"
+                />
+                <path
+                    d="M244.236,206.816c-14.757,0-26.619,11.962-26.619,26.73v118.709c0,14.769,11.862,26.735,26.619,26.735
+                c14.769,0,26.62-11.967,26.62-26.735V233.546C270.855,218.778,259.005,206.816,244.236,206.816z"
+                />
+                <path
+                    d="M244.236,107.893c-19.949,0-36.102,16.158-36.102,36.091c0,19.934,16.152,36.092,36.102,36.092
+                c19.929,0,36.081-16.158,36.081-36.092C280.316,124.051,264.165,107.893,244.236,107.893z"
+                />
+            </g>
+        </g>
+    </svg>
     </div>
 </div>
