@@ -93,6 +93,14 @@
             "#7f7f7f"
         ])
         .domain(racesLegend);
+
+    // race filtering
+    // let filter_race: string | null;
+
+    // function raceFiltering(race) {
+        
+    // }
+
 </script>
 
 <div class="flex items-center gap-2">
@@ -107,7 +115,7 @@
                 cy={yScale(data_point.median_housing)}
                 r="5"
                 fill={point_colors(data_point.race)}
-                opacity="0.4"
+                opacity="1"
             />
         {/each}
 
@@ -168,8 +176,8 @@
     </svg>
 
     <!-- Chart Legend -->
-    <div class="ml-2">
-        <ul class="flex flex-col gap-2 text-sm">
+    <div class="-ml-20 pr-5">
+        <ul class="flex flex-col gap-1.25 text-sm">
             {#each racesLegend as race, idx (idx)}
                 <li class="flex items-center">
                     <div
@@ -179,9 +187,6 @@
                     <text class="">{race}</text>
                 </li>
             {/each}
-            <li class="flex items-start">
-                <text class="mt-1.5"><em>*Larger Circles Indicate Race Centroid</em></text>
-            </li>
         </ul>
     </div>
 </div>
