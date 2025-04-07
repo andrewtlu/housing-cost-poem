@@ -54,40 +54,6 @@
             graphValues = tmp;
         }
     });
-    const centroidValues: {
-        race: string;
-        avg_median_housing: number;
-        avg_race_percent: number;
-    }[] = $derived(
-        // Populates 'centroid_values'
-        (() => {
-            const centroids = [
-                [0, 0],
-                [0, 0],
-                [0, 0],
-                [0, 0],
-                [0, 0],
-                [0, 0],
-                [0, 0],
-                [0, 0]
-            ];
-            const race_tallies = [0, 0, 0, 0, 0, 0, 0, 0];
-            // Iterate Graph Values & Populate Totals (used to calculate centroids)
-
-            for (const data_point of graphValues) {
-                const race = racesDataAttr.indexOf(data_point.race);
-                race_tallies[race]++; // increment
-                centroids[race][0] += data_point.median_housing;
-                centroids[race][1] += data_point.race_percent;
-            }
-
-            return centroids.map((centroid, idx) => ({
-                race: racesLegend[idx],
-                avg_median_housing: centroid[0] / race_tallies[idx],
-                avg_race_percent: centroid[1] / race_tallies[idx]
-            }));
-        })()
-    );
 
     // scales
     let yExtent = $derived(
@@ -199,19 +165,6 @@
                 </g>
             {/each}
         </g>
-
-        <!-- Draw Centroids -->
-        {#each centroidValues as centroid_points, idx (idx)}
-            <circle
-                cx={xScale(centroid_points.avg_race_percent)}
-                cy={yScale(centroid_points.avg_median_housing)}
-                r="10"
-                fill={point_colors(centroid_points.race)}
-                stroke="black"
-                stroke-width="2"
-                opacity="0.75"
-            />
-        {/each}
     </svg>
 
     <!-- Chart Legend -->
