@@ -95,11 +95,15 @@
         .domain(racesLegend);
 
     // race filtering
-    // let filter_race: string | null;
+    let filter_race = $state("");
 
-    // function raceFiltering(race) {
-        
-    // }
+    function raceFiltering(race : string) {
+        if (filter_race === race) {
+            filter_race = "";
+        } else {
+            filter_race = race;
+        }
+    }
 
 </script>
 
@@ -108,15 +112,17 @@
         width={width + chartMargins.left + chartMargins.right}
         height={height + chartMargins.top + chartMargins.bottom}
     >
-        <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
+    <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
-            <circle
-                cx={xScale(data_point.race_percent)}
-                cy={yScale(data_point.median_housing)}
-                r="5"
-                fill={point_colors(data_point.race)}
-                opacity="1"
-            />
+            {#if filter_race === "" || data_point.race === filter_race}
+                <circle
+                    cx={xScale(data_point.race_percent)}
+                    cy={yScale(data_point.median_housing)}
+                    r="5"
+                    fill={point_colors(data_point.race)}
+                    opacity="1"
+                />
+            {/if}
         {/each}
 
         <!-- Adding Axis -->
@@ -177,14 +183,16 @@
 
     <!-- Chart Legend -->
     <div class="-ml-20 pr-5">
-        <ul class="flex flex-col gap-1.25 text-sm">
+        <ul class="flex flex-col gap-1.25">
             {#each racesLegend as race, idx (idx)}
-                <li class="flex items-center">
-                    <div
-                        class="mr-2 h-4 w-4 shrink-0 rounded-full"
-                        style="background-color: {point_colors(race)};"
-                    ></div>
-                    <text class="">{race}</text>
+                <li>
+                    <button class="flex items-center cursor-pointer" onclick={() => raceFiltering(racesDataAttr[idx])} >
+                        <div
+                            class="mr-2 h-4 w-4 shrink-0 rounded-full"
+                            style="background-color: {point_colors(race)};"
+                        ></div>
+                        <text class="">{race}</text>
+                    </button>
                 </li>
             {/each}
         </ul>
