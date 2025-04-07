@@ -1,7 +1,7 @@
 <!-- TODO: 
-    - HOW TO MAKE FILTERING OPTIONS CLEAR??? TOOLTIP (1)
     - Make Data Points Hoverable (2)
     - xTICKS (3)
+    - Grey Out Legend...?
     - Line of Best Fit (4)
 
     - Transitions?
@@ -148,7 +148,6 @@
     <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
             {#if filter_race === "" || data_point.race === filter_race}
-            <!-- Smooth Circle Transitions?????  -->
                 <!-- <div> -->
                     <circle
                         cx={xScale(data_point.race_percent)}
@@ -220,17 +219,34 @@
     <!-- Chart Legend -->
     <div class="-ml-20 pr-5">
         <ul class="flex flex-col gap-1.25">
+        {#if filter_race === ""}
             {#each racesLegend as race, idx (idx)}
-                <li>
-                    <button class="flex items-center cursor-pointer" onclick={() => raceFiltering(racesDataAttr[idx])} > <!-- ***On Click add second that resizes x (pass race and check.. if no race keep original else do it for the one race)-->
-                        <div
-                            class="mr-2 h-4 w-4 shrink-0 rounded-full"
-                            style="background-color: {point_colors(race)};"
-                        ></div>
-                        <text class="">{race}</text>
-                    </button>
-                </li>
+                    <li>
+                        <button class="flex items-center cursor-pointer" onclick={() => raceFiltering(racesDataAttr[idx])} > 
+                            <div
+                                class="mr-2 h-4 w-4 shrink-0 rounded-full"
+                                style="background-color: {point_colors(race)};"
+                            ></div>
+                            <text class="">{race}</text>
+                        </button>
+                    </li>       
             {/each}
+        {:else}
+            {#each racesLegend as race, idx (idx)}
+                    <li>
+                        <button 
+                            class="flex items-center cursor-pointer" 
+                            style="opacity: {filter_race === racesDataAttr[idx]  || filter_race === "" ? 1 : 0.4};" 
+                            onclick={() => raceFiltering(racesDataAttr[idx])} > 
+                            <div
+                                class="mr-2 h-4 w-4 shrink-0 rounded-full"
+                                style="background-color: {point_colors(race)};"
+                            ></div>
+                            <text class="">{race}</text>
+                        </button>
+                    </li>       
+            {/each}
+        {/if}
         </ul>
     </div>
 
@@ -240,7 +256,7 @@
         data-tip=
         {
             "Select Races from Legend to Filter the Graph." +
-            "\nSelect the Same Race to Return Graph to Original State (Showing All Races)"
+            "\nSelect the Same Race Again to Return Graph to Original State (Showing All Races)"
         }
         > 
         
