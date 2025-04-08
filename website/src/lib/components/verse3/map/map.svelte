@@ -304,8 +304,6 @@ map component used in verse 3 for visualizing geographic data
                         onclick={() => zoomToCluster(idx)}
                     />
                 {/each}
-
-                <!-- TODO: legend, interactive components -->
             </svg>
         {/if}
     </div>
