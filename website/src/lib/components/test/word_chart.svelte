@@ -84,14 +84,14 @@ map component used in verse 3 for visualizing geographic data
 >
     <!-- title -->
     <div
-        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
         What Does Home Mean to You?
     </div>
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
         data-tip={"Hover over a word to see cosine similarity with 'Home'." +
             "\nWords collected from Habitat for Humanity's 'What does home mean to you' page, and cosine similarity calculated using API Ninjas' Text Similarity API."}
     >
@@ -171,7 +171,7 @@ map component used in verse 3 for visualizing geographic data
                             class="pointer-events-none absolute bottom-5 left-5 z-10 flex flex-col gap-2 text-xs"
                             transition:fade={{ duration: 300 }}
                         >
-                            Similarity to Home: {homeSimilarityData.get(hoveredWord)?.toFixed(4)}
+                            Similarity to Home: {homeSimilarityData.get(word.text)?.toFixed(4)}
                         </text>
                     </g>
                 {/if}

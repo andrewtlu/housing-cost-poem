@@ -53,4 +53,4 @@ export const reloadColors = () => {
             .domain(extent(range) as [number, number])
             .range(["yellow", "red"]);
     });
-}
+};
