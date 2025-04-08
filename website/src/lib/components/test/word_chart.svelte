@@ -13,10 +13,10 @@ map component used in verse 3 for visualizing geographic data
 
     // graph geometry
     const width = 800;
-    const height = 640;
-    const margin = { top: 10, left: 10, right: 10, bottom: 10 };
+    const height = 630;
+    const margin = { top: 20, left: 10, right: 10, bottom: 10 };
 
-    const wordScale = scaleLinear().domain(similarityExtent).range([25, 100]);
+    const wordScale = scaleLinear().domain(similarityExtent).range([10, 100]);
 
     const data = $derived(
         Array.from(
@@ -71,7 +71,7 @@ map component used in verse 3 for visualizing geographic data
 
     $effect(() => {
         layout.start();
-        words = cloudWords;
+        words = cloudWords; // necessary to prevent dependency loop :)
     });
 
     $inspect(similarityExtent).with(console.log);
@@ -83,14 +83,14 @@ map component used in verse 3 for visualizing geographic data
 >
     <!-- title -->
     <div
-        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
         What Does Home Mean to You?
     </div>
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
         data-tip={"Hover over a word to see cosine similarity with 'Home'." +
             "\nWords collected from Habitat for Humanity's 'What does home mean to you' page, and cosine similarity calculated using API Ninjas' Text Similarity API."}
     >
@@ -130,12 +130,9 @@ map component used in verse 3 for visualizing geographic data
         class="transition-all duration-700"
         text-anchor="middle"
     >
-        <g transform={`translate(${layout.size()[0] / 2}, ${layout.size()[1] / 2})`}>
+        <g transform={`translate(0, ${margin.bottom})`}>
             {#each words as word (word.text + word.x + word.y)}
-                <text
-                    transform={`translate(${layout.fontSize(word.x)}, ${layout.fontSize(word.y)})`}
-                    font-size={word.size}
-                >
+                <text transform={`translate(${word.x}, ${word.y})`} font-size={word.size}>
                     {word.text}
                 </text>
             {/each}
