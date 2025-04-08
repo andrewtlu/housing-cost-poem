@@ -32,7 +32,7 @@ export function overrideScroll(content: Element) {
     /** TS doesn't allow wheelevent in addEventListener callback, so we assert type */
     let wheelEvent: WheelEvent;
     /** Track debounce */
-    let timer: number | null;
+    let timer: NodeJS.Timeout | null;
 
     const debouncedScrollOverride = (event: Event) => {
         if (!timer) {

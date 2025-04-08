@@ -4,12 +4,13 @@ map component used in verse 3 for visualizing geographic data
 <script lang="ts">
     import { data, type County } from "$lib/data";
     import topo from "$lib/data/us-counties.topojson.json";
-    import { geoPath, geoAlbers, scaleLinear, extent, zoomIdentity, ZoomTransform } from "d3";
+    import { geoPath, geoAlbers, zoomIdentity, ZoomTransform } from "d3";
     import { feature, mesh } from "topojson-client";
     import type { Topology, GeometryObject } from "topojson-specification";
-    import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
+    import type { FeatureCollection } from "geojson";
     import Legend from "./legend.svelte";
     import { fly } from "svelte/transition";
+    import { cluster_colors, getColor, reloadColors, update } from "./store.svelte";
 
     // data
     const US = topo as unknown as Topology;
@@ -31,7 +32,6 @@ map component used in verse 3 for visualizing geographic data
     const path = $derived(geoPath().projection(projection));
     let centroid = $state(-1);
     // centroid of each cluster on map
-    // TODO: may be worth clustering DC & Balti together
     const centroids = $derived(
         (() => {
             const out: [number, number][] = [
@@ -69,25 +69,7 @@ map component used in verse 3 for visualizing geographic data
         })()
     );
 
-    // color
-    let cluster_colors = $state([
-        scaleLinear<string>(),
-        scaleLinear<string>(),
-        scaleLinear<string>(),
-        scaleLinear<string>(),
-        scaleLinear<string>()
-    ]);
-    const cluster_ranges: number[][] = [[], [], [], [], []];
-    const getColor = (county: Feature<Geometry, GeoJsonProperties>) => {
-        let county_data = data.get(county.id as number);
-        if (county_data !== undefined) {
-            return cluster_colors[county_data.area_cluster](county_data.median_home_value);
-        }
-        return "white";
-    };
-
     // zoom handling
-    // TODO: fix blurryness
     const radius = 30;
     let scale = $state(1);
     let translate = $state([0, 0]);
@@ -116,15 +98,8 @@ map component used in verse 3 for visualizing geographic data
 
     // load variables dependent on data
     $effect(() => {
-        if (data) {
-            data.values().forEach((element) =>
-                cluster_ranges[element.area_cluster].push(element.median_home_value)
-            );
-            cluster_ranges.forEach((range, idx) => {
-                cluster_colors[idx] = scaleLinear<string>()
-                    .domain(extent(range) as [number, number])
-                    .range(["yellow", "red"]);
-            });
+        if (data && update != null) {
+            reloadColors();
         }
     });
 </script>
@@ -134,7 +109,7 @@ map component used in verse 3 for visualizing geographic data
 >
     <!-- title -->
     <div
-        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
         Median Housing Cost Percentage of Metro Area Maximum
     </div>
@@ -143,7 +118,7 @@ map component used in verse 3 for visualizing geographic data
     {#if centroid !== -1}
         <button
             aria-label="reset-zoom"
-            class="reset-zoom btn absolute top-5 left-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
+            class="reset-zoom btn absolute left-5 top-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
             onclick={resetZoom}
             transition:fly={{ x: -500, duration: 700 }}
         >
@@ -192,7 +167,7 @@ map component used in verse 3 for visualizing geographic data
                     />
                 </div>
                 <div
-                    class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
+                    class="text-md w-fit text-wrap rounded-md border-2 border-[gray] bg-white/80 px-5"
                 >
                     Metro Area:
                     {centroidNames[centroid]}
@@ -203,7 +178,7 @@ map component used in verse 3 for visualizing geographic data
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
         data-tip={"Click on a colored metro area to view details!" +
             "\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
     >
