@@ -10,7 +10,7 @@ map component used in verse 3 for visualizing geographic data
     import type { FeatureCollection } from "geojson";
     import Legend from "./legend.svelte";
     import { fly } from "svelte/transition";
-    import { cluster_colors, getColor, reloadColors, update } from "./store.svelte";
+    import { cluster_colors, colorByState, getColor, reloadColors } from "./store.svelte";
 
     // data
     const US = topo as unknown as Topology;
@@ -98,7 +98,7 @@ map component used in verse 3 for visualizing geographic data
 
     // load variables dependent on data
     $effect(() => {
-        if (data && update != null) {
+        if (data && colorByState) {
             reloadColors();
         }
     });
