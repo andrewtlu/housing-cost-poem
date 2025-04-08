@@ -9,15 +9,20 @@ map component used in verse 3 for visualizing geographic data
     // chart limits
     const similarityExtent = extent(homeSimilarityData.values()) as [number, number];
     const maxFontSize = 100;
-    const wordPadding = 2;
+    const wordPadding = 3;
 
     // graph geometry
     const width = 800;
     const height = 630;
     const margin = { top: 20, left: 10, right: 10, bottom: 10 };
-
     const wordScale = scaleLinear().domain(similarityExtent).range([10, 100]);
 
+    // interactivity
+    let defaultWords = $state([""]);
+    let hoveredWord = $state("");
+    $inspect(hoveredWord).with(console.log);
+
+    // data
     const data = $derived(
         Array.from(
             homeSimilarityData.keys().map((i) => {
@@ -28,7 +33,6 @@ map component used in verse 3 for visualizing geographic data
             })
         ).sort((a, b) => b.size - a.size)
     );
-
     let cloudWords: {
         size: number;
         x: number;
@@ -46,6 +50,7 @@ map component used in verse 3 for visualizing geographic data
         }[]
     );
 
+    // layout
     const layout = $derived.by(() => {
         cloudWords = [];
 
@@ -68,14 +73,10 @@ map component used in verse 3 for visualizing geographic data
                 });
             });
     });
-
     $effect(() => {
         layout.start();
         words = cloudWords; // necessary to prevent dependency loop :)
     });
-
-    $inspect(similarityExtent).with(console.log);
-    $inspect(words).with(console.log);
 </script>
 
 <div
@@ -83,14 +84,14 @@ map component used in verse 3 for visualizing geographic data
 >
     <!-- title -->
     <div
-        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
         What Does Home Mean to You?
     </div>
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
         data-tip={"Hover over a word to see cosine similarity with 'Home'." +
             "\nWords collected from Habitat for Humanity's 'What does home mean to you' page, and cosine similarity calculated using API Ninjas' Text Similarity API."}
     >
@@ -130,9 +131,29 @@ map component used in verse 3 for visualizing geographic data
         class="transition-all duration-700"
         text-anchor="middle"
     >
-        <g transform={`translate(0, ${margin.bottom})`}>
-            {#each words as word (word.text + word.x + word.y)}
-                <text transform={`translate(${word.x}, ${word.y})`} font-size={word.size}>
+        <g transform={`translate(0, ${margin.bottom + margin.top})`}>
+            {#each words as word, idx (idx)}
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+                <text
+                    transform={`translate(${word.x}, ${word.y})`}
+                    font-size={word.size}
+                    role="button"
+                    style={`transition: fill .4s ease; fill: ${
+                        (hoveredWord == "" && defaultWords.includes(word.text)) ||
+                        hoveredWord == word.text
+                            ? "#51a2ff"
+                            : "#d1d5dc"
+                    }`}
+                    class="cursor-default bg-gray-300"
+                    tabindex={idx}
+                    onmouseover={() => {
+                        hoveredWord = word.text;
+                    }}
+                    onmouseleave={() => {
+                        hoveredWord = "";
+                    }}
+                >
                     {word.text}
                 </text>
             {/each}
