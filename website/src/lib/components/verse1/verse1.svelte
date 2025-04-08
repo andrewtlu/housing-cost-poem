@@ -52,10 +52,6 @@
     }
 
     // Create a writable store for the variable
-    
-
-    
-
 </script>
 
 <ul>

@@ -3,12 +3,16 @@
     import points from "./verse2_data.json";
     import { select } from "d3-selection";
     import { onMount } from "svelte";
+    import * as d3 from 'd3';
+    import { zoom, zoomIdentity, ZoomTransform } from "d3";
+    
 
     let data: {
         metro_area: string;
         median_housing_price: number;
         median_income: number;
         education_attainment: number;
+        total_population: number;
     }[] = points;
 
     let lines = [
@@ -18,33 +22,68 @@
         "For what? To be kept trapped therein?"
     ];
 
-    const width = 600;
-    const height = 400;
+    const width = 700;
+    const height = 500;
     const padding = { top: 50, right: 100, bottom: 50, left: 70 };
 
     const xScale = scaleLinear()
         .domain([0, Math.max(...data.map((d) => d.median_housing_price))])
-        .range([padding.left, width - padding.right]);
+        .range([padding.left, width - padding.right - 50]);
 
     const yScale = scaleLinear()
         .domain([0, Math.max(...data.map((d) => d.median_income))])
         .range([height - padding.bottom, padding.top]);
 
     const rScale = scaleLinear()
-        .domain([0, Math.max(...data.map((d) => d.education_attainment))])
-        .range([5, 30]);
+        .domain([0, Math.max(...data.map((d) => d.total_population))])
+        .range([0, 80]);
 
     const xTickValues = [0, 200000, 400000, 600000, 800000]; // Adjust for readability
     const xTicks = ["$0", "$200,000", "$400,000", "$600,000", "$800,000"];
     const yTicks = ["$0", "$50,000", "$100,000", "$150,000", "$200,000"];
     const yTickValues = [0, 50000, 100000, 150000, 200000];
+    
 
-    // TODO: instead of adding attributes like this, directly add svg elements using svelte's {#each} directive
     onMount(() => {
         const svg = select("#bubble-chart")
             .attr("width", width)
             .attr("height", height)
             .select("g#chart-content");
+        
+
+        const onCircleClick = (d) => {
+            console.log("circle clicked");
+            svg.selectAll(".pie-group")
+                .style("display", "block")
+                .selectAll("path")
+                .transition()
+                .duration(800)
+                .attrTween("d", function(d) {
+                    const radius = d3.select(this.parentNode).datum()
+                        ? rScale(d3.select(this.parentNode).datum().total_population)
+                        : 20; // default fallback
+
+                    const arc = d3.arc().innerRadius(0).outerRadius(radius);
+
+                    // Explicitly ensure clockwise direction by adjusting angles
+                    const startAngle = d.startAngle >= 0 ? d.startAngle : (d.startAngle + 2 * Math.PI); // Make sure it's positive
+                    const endAngle = d.endAngle >= 0 ? d.endAngle : (d.endAngle + 2 * Math.PI); // Make sure it's positive
+
+                    // Ensure start is less than end for clockwise
+                    const adjustedStartAngle = Math.min(startAngle, endAngle);
+                    const adjustedEndAngle = Math.max(startAngle, endAngle);
+
+                    const interpolate = d3.interpolate(
+                        { startAngle: 0, endAngle: 0 }, // Start at 0
+                        { startAngle: adjustedStartAngle, endAngle: adjustedEndAngle } // Animate to the target angles
+                    );
+
+                    return function(t) {
+                        return arc(interpolate(t)); // Animate using arc path
+                    };
+                });
+        };
+
 
         // Add bubbles
         svg.selectAll("circle")
@@ -53,9 +92,89 @@
             .append("circle")
             .attr("cx", (d) => xScale(d.median_housing_price))
             .attr("cy", (d) => yScale(d.median_income))
-            .attr("r", (d) => rScale(d.education_attainment))
+            .attr("r", (d) => rScale(d.total_population))
             .attr("fill", "steelblue")
-            .attr("opacity", 0.7);
+            .attr("opacity", 1)
+            .on("click", onCircleClick)
+            .attr("stroke", "black")
+            .attr("stroke-width", 1); 
+
+        
+        const pie = d3.pie()
+            .startAngle(0)
+            .endAngle(-2 * Math.PI);
+        const arc = d3.arc().innerRadius(0); // Full pie
+
+        const pieColor = d3.scaleOrdinal()
+            .domain([0, 1])
+            .range(["lightgray", "darkgreen"]); // 4-year degree vs. not
+
+        svg.selectAll(".pie-group")
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("class", "pie-group")
+            .attr("transform", d =>
+                `translate(${xScale(d.median_housing_price)}, ${yScale(d.median_income)})`
+            )
+            .style("display", "none") // initially hidden
+            .each(function(d) {
+                const radius = rScale(d.total_population);
+                const localArc = d3.arc().innerRadius(0).outerRadius(radius); // <- define per pie!
+
+                const pieData = pie([d.education_attainment, 100 - d.education_attainment]);
+
+                d3.select(this)
+                    .selectAll("path")
+                    .data(pieData)
+                    .enter()
+                    .append("path")
+                    .attr("fill", (d, i) => pieColor(i))
+                    .attr("opacity", 1)
+                    .attr("d", d3.arc().innerRadius(0).outerRadius(radius)
+                        .startAngle(0).endAngle(0)) // start with no visible arc
+                    .attr("stroke", "black") // Add black border to the pie slices
+                    .attr("stroke-width", 1) 
+                    .on("mouseover", function() {
+                        d3.select(this)
+                            .attr("stroke", "white") // Add white border on mouseover
+                            .attr("stroke-width", 3); // Make the stroke bold
+                        d3.select(this.parentNode)
+                            .append("rect")
+                            .attr("class", "text-background") // Class to style the background
+                            .attr("x", radius - 10) // Adjust position (x) for padding
+                            .attr("y", -radius / 2 - (radius / 4) - 10) // Adjust position (y) for padding
+                            .attr("width", 30) // Set width of the background rectangle
+                            .attr("height", 17) // Set height of the background rectangle
+                            .attr("fill", "white") // Set the fill color to white for the background
+                            .attr("stroke", "none"); // No border for the background
+                        d3.select(this.parentNode) // Select the group containing the pie slice
+                            .append("text")
+                            .attr("class", "hover-text") // Add a class to style the text
+                            .attr("x", radius + 10)
+                            .attr("y", -radius / 2 - (radius / 4)) // Center the text vertically
+                            .attr("text-anchor", "middle")
+                            .attr("dominant-baseline", "middle")
+                            .attr("font-size", "16px")
+                            .attr("fill", "black")
+                            .text(d3.format(".0%")(d.education_attainment / 100))
+                            })
+                        
+
+                    .on("mouseout", function() {
+                        d3.select(this)
+                            .attr("stroke", "black") // Remove the stroke on mouseout
+                            .attr("stroke-width", 1); // Reset stroke width to default
+                        d3.select(this.parentNode)
+                            .selectAll(".hover-text") // Select the text element with the class "hover-text"
+                            .remove(); // Remove the text
+                        d3.select(this.parentNode)
+                        .selectAll(".text-background") // Select the background rectangle
+                        .remove(); // Remove the background rectangle
+                    });
+
+            })
+
 
         // Add labels
         svg.selectAll("text")
@@ -63,12 +182,12 @@
             .enter()
             .append("text")
             .attr("x", (d) => xScale(d.median_housing_price)) // Center horizontally
-            .attr("y", (d) => yScale(d.median_income)) // Center vertically
+            .attr("y", (d) => yScale(d.median_income) + rScale(d.total_population) + 10)
             .attr("text-anchor", "middle") // Center text horizontally
             .attr("dominant-baseline", "middle") // Center text vertically
-            .attr("font-size", "12px")
+            .attr("font-size", "16px")
             .attr("fill", "#333")
-            .text((d) => d.metro_area);
+            .text((d) => d.metro_area)
     });
 </script>
 
@@ -91,7 +210,7 @@
         </g>
         <!-- y-axis label -->
         <text
-            x={-height / 2}
+            x={-height / 2 - 50}
             y={padding.left - 50}
             transform="rotate(-90)"
             class="text-center text-sm"
@@ -112,19 +231,20 @@
             {/each}
         </g>
         <!-- x-axis label -->
-        <text x={width / 2} y={height - padding.bottom + 40} class="text-center text-sm">
+        <text x={(width / 2)- padding.right} y={height - padding.bottom + 40} class="text-center text-sm">
             Median Housing Value ($)
+            
         </text>
 
         <!-- legend -->
         <g class="legend" transform="translate({width - padding.right - 100}, {padding.top})">
-            <g transform="translate(60, 100)">
+            <g transform="translate(55, 100)">
                 <!-- bg rectangle -->
                 <rect
                     x="-8"
                     y="-5"
-                    width="140"
-                    height="70"
+                    width="145"
+                    height="100"
                     fill="white"
                     stroke="black"
                     stroke-width="1"
@@ -133,10 +253,15 @@
                 />
                 <circle cx="0" cy="5" r="5" fill="steelblue" />
                 <text x="10" y="10" font-size="12px">
-                    <tspan x="10" dy="0">Proportion Over 25</tspan>
-                    <tspan x="10" dy="15">with 4 Year College</tspan>
-                    <tspan x="10" dy="15">Degree Or Equivalent</tspan>
-                    <tspan x="10" dy="15">by Metro Area</tspan>
+                    <tspan x="10" dy="0">Population by Metro</tspan>
+                    <tspan x="10" dy="15">Area </tspan>
+                </text>
+                <circle cx="0" cy="40" r="5" fill="darkgreen" />
+                <text x="10" y="40" font-size="12px">
+                    <tspan x="10" dy="0">Population with 4 Year</tspan>
+                    <tspan x="10" dy="15"> College Degree Or</tspan>
+                    <tspan x="10" dy="15"> Equivalent by Metro</tspan>
+                    <tspan x="10" dy="15"> Area</tspan>
                 </text>
             </g>
         </g>
@@ -150,5 +275,8 @@
     .tick line {
         stroke: #d4d4d4;
         stroke-dasharray: 2;
+    }
+    .text-sm {
+    font-size: 16px; /* Change the font size in the CSS class */
     }
 </style>

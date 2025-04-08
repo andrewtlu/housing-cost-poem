@@ -3,30 +3,35 @@
         "metro_area": "ATL",
         "median_housing_price": 165900.0,
         "median_income": 61307.0,
-        "education_attainment": 36.98
+        "education_attainment": 24.24,
+        "total_population": 5700990
     },
     {
         "metro_area": "BALT",
         "median_housing_price": 245300.0,
         "median_income": 73625.0,
-        "education_attainment": 38.73
+        "education_attainment": 26.60,
+        "total_population": 2792050
     },
     {
         "metro_area": "NYC",
         "median_housing_price": 419650.0,
         "median_income": 71566.5,
-        "education_attainment": 38.66
+        "education_attainment": 26.7,
+        "total_population": 20192042
     },
     {
         "metro_area": "SF",
         "median_housing_price": 687400.0,
         "median_income": 95681.5,
-        "education_attainment": 47.43
+        "education_attainment": 33.97,
+        "total_population": 4641820
     },
     {
         "metro_area": "DC",
         "median_housing_price": 356900.0,
         "median_income": 91489.0,
-        "education_attainment": 48.75
+        "education_attainment": 33.41,
+        "total_population": 4257324
     }
 ]
