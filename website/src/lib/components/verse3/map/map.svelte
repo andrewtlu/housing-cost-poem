@@ -10,7 +10,7 @@ map component used in verse 3 for visualizing geographic data
     import type { FeatureCollection } from "geojson";
     import Legend from "./legend.svelte";
     import { fly } from "svelte/transition";
-    import { cluster_colors, attribute, getColor, reloadColors } from "./store.svelte";
+    import { cluster_colors, attributeState, getColor, reloadColors } from "./store.svelte";
     import CountyInfo from "./countyInfo.svelte";
 
     // data
@@ -98,6 +98,7 @@ map component used in verse 3 for visualizing geographic data
     };
 
     // load variables dependent on data
+    const attribute = $derived(attributeState[0]);
     $effect(() => {
         if (data && attribute) {
             reloadColors();

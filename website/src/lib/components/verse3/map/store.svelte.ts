@@ -127,7 +127,9 @@ export const attributeMap = {
 };
 
 // what to color by, list is to work around exporting non-const
-export const attribute: [MapKeys] = $state(["median_home_value"]);
+// to use attribute, do $derived(attributeState[0])
+export const attributeState: [MapKeys] = $state(["median_home_value"]);
+const attribute = $derived(attributeState[0]);
 
 // color/color calculation used by map
 export const cluster_colors = $state([
@@ -141,9 +143,7 @@ let cluster_ranges: number[][] = [[], [], [], [], []];
 export const getColor = (county: Feature<Geometry, GeoJsonProperties>) => {
     const county_data = data.get(county.id as number);
     if (county_data !== undefined) {
-        return cluster_colors[county_data.area_cluster](
-            attributeMap[attribute[0]].value(county_data)
-        );
+        return cluster_colors[county_data.area_cluster](attributeMap[attribute].value(county_data));
     }
     return "white";
 };
@@ -152,11 +152,11 @@ export const getColor = (county: Feature<Geometry, GeoJsonProperties>) => {
 export const reloadColors = () => {
     cluster_ranges = [[], [], [], [], []];
     data.values().forEach((county) =>
-        cluster_ranges[county.area_cluster].push(attributeMap[attribute[0]].value(county))
+        cluster_ranges[county.area_cluster].push(attributeMap[attribute].value(county))
     );
     cluster_ranges.forEach((range, idx) => {
         cluster_colors[idx] = scaleLinear<string>()
             .domain(extent(range) as [number, number])
-            .range(attributeMap[attribute[0]].color);
+            .range(attributeMap[attribute].color);
     });
 };
