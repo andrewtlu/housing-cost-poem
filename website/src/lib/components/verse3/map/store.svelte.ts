@@ -72,6 +72,24 @@ const colorByStates = {
         return county_data.proportion_25_under;
     }
 };
+// [low, high]
+const colorScales = {
+    total_population: ["#f9ffba", "red"],
+    total_population_25_over: ["#f9ffba", "red"],
+    educational_attainment: ["#f9ffba", "red"],
+    median_income: ["#f9ffba", "red"],
+    median_home_value: ["#f9ffba", "red"],
+    white_alone: ["steelblue", "red"],
+    black_alone: ["steelblue", "red"],
+    native_alone: ["steelblue", "red"],
+    asian_alone: ["steelblue", "red"],
+    native_hawaiian_pacific_islander: ["steelblue", "red"],
+    some_other_race_alone: ["steelblue", "red"],
+    two_or_more: ["steelblue", "red"],
+    hispanic_or_latino: ["steelblue", "red"],
+    total_population_25_under: ["#f9ffba", "red"],
+    proportion_25_under: ["#f9ffba", "red"]
+};
 
 // color/color calculation used by map
 export const cluster_colors = $state([
@@ -101,6 +119,6 @@ export const reloadColors = () => {
     cluster_ranges.forEach((range, idx) => {
         cluster_colors[idx] = scaleLinear<string>()
             .domain(extent(range) as [number, number])
-            .range(["yellow", "red"]);
+            .range(colorScales[colorByState[0]]);
     });
 };

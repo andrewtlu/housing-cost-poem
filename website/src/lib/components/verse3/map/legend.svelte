@@ -1,6 +1,7 @@
 <script lang="ts">
     import { scaleLinear, type ScaleLinear } from "d3-scale";
     import { onMount } from "svelte";
+    import { colorByState } from "./store.svelte";
 
     let {
         color,
@@ -65,7 +66,7 @@
             fill="url(#gradient)"
             class="gradient"
         />
-        {#each tickValues as tick (tick.value)}
+        {#each tickValues as tick (tick)}
             <g transform="translate({(tick.offset * legendWidth) / 100}, -20)">
                 <line y1="18" y2="15" stroke="gray" />
                 <text
