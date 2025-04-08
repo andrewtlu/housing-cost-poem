@@ -145,12 +145,10 @@ map component used in verse 3 for visualizing geographic data
         >
             {#key centroid}
                 <CountyInfo {hovered_county} />
-                <div class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5">
-                    <Legend
-                        width={width + margin.left + margin.right}
-                        color={cluster_colors[centroid]}
-                    />
-                </div>
+                <Legend
+                    width={width + margin.left + margin.right}
+                    color={cluster_colors[centroid]}
+                />
                 <div
                     class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
                 >
