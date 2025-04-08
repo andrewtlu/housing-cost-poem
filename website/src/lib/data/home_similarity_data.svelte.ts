@@ -1,4 +1,4 @@
-import dataRaw from "./habitat-similar-home.json"
+import dataRaw from "./habitat-similar-home.json";
 
 export const data = $state(
     new Map(

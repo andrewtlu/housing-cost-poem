@@ -3,12 +3,79 @@ map component used in verse 3 for visualizing geographic data
 -->
 <script lang="ts">
     import { homeSimilarityData } from "$lib/data";
+    import { extent, scaleLinear } from "d3";
     import cloud from "d3-cloud";
+
+    // chart limits
+    const similarityExtent = extent(homeSimilarityData.values()) as [number, number];
+    const maxFontSize = 100;
+    const wordPadding = 2;
 
     // graph geometry
     const width = 800;
     const height = 640;
     const margin = { top: 10, left: 10, right: 10, bottom: 10 };
+
+    const wordScale = scaleLinear().domain(similarityExtent).range([25, 100]);
+
+    const data = $derived(
+        Array.from(
+            homeSimilarityData.keys().map((i) => {
+                return {
+                    text: i,
+                    size: Math.round(wordScale(homeSimilarityData.get(i) || similarityExtent[0]))
+                };
+            })
+        ).sort((a, b) => b.size - a.size)
+    );
+
+    let cloudWords: {
+        size: number;
+        x: number;
+        y: number;
+        rotate: number;
+        text: string;
+    }[] = [];
+    let words = $state(
+        [] as {
+            size: number;
+            x: number;
+            y: number;
+            rotate: number;
+            text: string;
+        }[]
+    );
+
+    const layout = $derived.by(() => {
+        cloudWords = [];
+
+        return cloud()
+            .size([width, height])
+            .words(data)
+            .padding(wordPadding)
+            .rotate(0)
+            .font("Funnel Sans")
+            .fontSize((d) =>
+                Math.floor(((d.size as number) / wordScale(similarityExtent[1])) * maxFontSize)
+            )
+            .on("word", ({ size, x, y, rotate, text }) => {
+                cloudWords.push({
+                    size: size || 0,
+                    x: x || 0,
+                    y: y || 0,
+                    rotate: rotate || 0,
+                    text: text || ""
+                });
+            });
+    });
+
+    $effect(() => {
+        layout.start();
+        words = cloudWords;
+    });
+
+    $inspect(similarityExtent).with(console.log);
+    $inspect(words).with(console.log);
 </script>
 
 <div
@@ -16,14 +83,14 @@ map component used in verse 3 for visualizing geographic data
 >
     <!-- title -->
     <div
-        class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
     >
-        Median Housing Cost Percentage of Metro Area Maximum
+        What Does Home Mean to You?
     </div>
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
         data-tip={"Hover over a word to see cosine similarity with 'Home'." +
             "\nWords collected from Habitat for Humanity's 'What does home mean to you' page, and cosine similarity calculated using API Ninjas' Text Similarity API."}
     >
@@ -57,5 +124,21 @@ map component used in verse 3 for visualizing geographic data
     </div>
 
     <!-- cloud -->
-    <svg> </svg>
+    <svg
+        width={width + margin.left + margin.right}
+        height={height + margin.top + margin.bottom}
+        class="transition-all duration-700"
+        text-anchor="middle"
+    >
+        <g transform={`translate(${layout.size()[0] / 2}, ${layout.size()[1] / 2})`}>
+            {#each words as word (word.text + word.x + word.y)}
+                <text
+                    transform={`translate(${layout.fontSize(word.x)}, ${layout.fontSize(word.y)})`}
+                    font-size={word.size}
+                >
+                    {word.text}
+                </text>
+            {/each}
+        </g>
+    </svg>
 </div>
