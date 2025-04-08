@@ -22,74 +22,112 @@ type MapKeys =
     | "total_population_25_under"
     | "proportion_25_under";
 
-// what to color by, list is to work around exporting non-const
-export const colorByState: [MapKeys] = $state(["black_alone"]);
-// processed values to use when generating/coloring
-const colorByStates = {
-    total_population: (county_data: County) => {
-        return county_data.total_population;
+// map attribute to different info display elements
+export const attributeMap = {
+    total_population: {
+        textLabel: "Total Population",
+        textValue: (county: County) => county.total_population.toLocaleString("en-US"),
+        value: (county: County) => county.total_population,
+        color: ["#f9ffba", "red"]
     },
-    total_population_25_over: (county_data: County) => {
-        return county_data.total_population_25_over;
+    total_population_25_over: {
+        textLabel: "Total Population Over 25",
+        textValue: (county: County) => county.total_population_25_over.toLocaleString("en-US"),
+        value: (county: County) => county.total_population_25_over,
+        color: ["#f9ffba", "red"]
     },
-    educational_attainment: (county_data: County) => {
-        return county_data.educational_attainment;
+    educational_attainment: {
+        textLabel: "% Pop w/ College Degree",
+        textValue: (county: County) =>
+            `${Math.round((county.educational_attainment / county.total_population) * 100)}%`,
+        value: (county: County) => county.educational_attainment / county.total_population,
+        color: ["#f9ffba", "red"]
     },
-    median_income: (county_data: County) => {
-        return county_data.median_income;
+    median_income: {
+        textLabel: "Median Income",
+        textValue: (county: County) => `$${county.median_income.toLocaleString("en-US")}`,
+        value: (county: County) => county.median_income,
+        color: ["#f9ffba", "red"]
     },
-    median_home_value: (county_data: County) => {
-        return county_data.median_home_value;
+    median_home_value: {
+        textLabel: "Median Home Value",
+        textValue: (county: County) => `$${county.median_home_value.toLocaleString("en-US")}`,
+        value: (county: County) => county.median_home_value,
+        color: ["#f9ffba", "red"]
     },
-    white_alone: (county_data: County) => {
-        return county_data.white_alone / county_data.total_population;
+    white_alone: {
+        textLabel: "% Population White",
+        textValue: (county: County) =>
+            `${Math.round((county.white_alone / county.total_population) * 100)}%`,
+        value: (county: County) => county.white_alone / county.total_population,
+        color: ["steelblue", "red"]
     },
-    black_alone: (county_data: County) => {
-        return county_data.black_alone / county_data.total_population;
+    black_alone: {
+        textLabel: "% Population Black",
+        textValue: (county: County) =>
+            `${Math.round((county.black_alone / county.total_population) * 100)}%`,
+        value: (county: County) => county.black_alone / county.total_population,
+        color: ["steelblue", "red"]
     },
-    native_alone: (county_data: County) => {
-        return county_data.native_alone / county_data.total_population;
+    native_alone: {
+        textLabel: "% Population Native",
+        textValue: (county: County) =>
+            `${Math.round((county.native_alone / county.total_population) * 100)}%`,
+        value: (county: County) => county.native_alone / county.total_population,
+        color: ["steelblue", "red"]
     },
-    asian_alone: (county_data: County) => {
-        return county_data.asian_alone / county_data.total_population;
+    asian_alone: {
+        textLabel: "% Population Asian",
+        textValue: (county: County) =>
+            `${Math.round((county.asian_alone / county.total_population) * 100)}%`,
+        value: (county: County) => county.asian_alone / county.total_population,
+        color: ["steelblue", "red"]
     },
-    native_hawaiian_pacific_islander: (county_data: County) => {
-        return county_data.native_hawaiian_pacific_islander / county_data.total_population;
+    native_hawaiian_pacific_islander: {
+        textLabel: "% Population Native Hawaiian/Pacific Islander",
+        textValue: (county: County) =>
+            `${Math.round((county.native_hawaiian_pacific_islander / county.total_population) * 100)}%`,
+        value: (county: County) =>
+            county.native_hawaiian_pacific_islander / county.total_population,
+        color: ["steelblue", "red"]
     },
-    some_other_race_alone: (county_data: County) => {
-        return county_data.some_other_race_alone / county_data.total_population;
+    some_other_race_alone: {
+        textLabel: "% Population Other",
+        textValue: (county: County) =>
+            `${Math.round((county.some_other_race_alone / county.total_population) * 100)}%`,
+        value: (county: County) => county.some_other_race_alone / county.total_population,
+        color: ["steelblue", "red"]
     },
-    two_or_more: (county_data: County) => {
-        return county_data.two_or_more / county_data.total_population;
+    two_or_more: {
+        textLabel: "% Population Mixed",
+        textValue: (county: County) =>
+            `${Math.round((county.two_or_more / county.total_population) * 100)}%`,
+        value: (county: County) => county.two_or_more / county.total_population,
+        color: ["steelblue", "red"]
     },
-    hispanic_or_latino: (county_data: County) => {
-        return county_data.hispanic_or_latino / county_data.total_population;
+    hispanic_or_latino: {
+        textLabel: "% Population Hispanic/Latino",
+        textValue: (county: County) =>
+            `${Math.round((county.hispanic_or_latino / county.total_population) * 100)}%`,
+        value: (county: County) => county.hispanic_or_latino / county.total_population,
+        color: ["steelblue", "red"]
     },
-    total_population_25_under: (county_data: County) => {
-        return county_data.total_population_25_under;
+    total_population_25_under: {
+        textLabel: "Total Population Under 25",
+        textValue: (county: County) => county.total_population_25_under.toLocaleString("en-US"),
+        value: (county: County) => county.total_population_25_under,
+        color: ["#f9ffba", "red"]
     },
-    proportion_25_under: (county_data: County) => {
-        return county_data.proportion_25_under;
+    proportion_25_under: {
+        textLabel: "% Population Under 25",
+        textValue: (county: County) => `${Math.round(county.proportion_25_under * 100)}%`,
+        value: (county: County) => county.proportion_25_under,
+        color: ["#f9ffba", "red"]
     }
 };
-// [low, high]
-const colorScales = {
-    total_population: ["#f9ffba", "red"],
-    total_population_25_over: ["#f9ffba", "red"],
-    educational_attainment: ["#f9ffba", "red"],
-    median_income: ["#f9ffba", "red"],
-    median_home_value: ["#f9ffba", "red"],
-    white_alone: ["steelblue", "red"],
-    black_alone: ["steelblue", "red"],
-    native_alone: ["steelblue", "red"],
-    asian_alone: ["steelblue", "red"],
-    native_hawaiian_pacific_islander: ["steelblue", "red"],
-    some_other_race_alone: ["steelblue", "red"],
-    two_or_more: ["steelblue", "red"],
-    hispanic_or_latino: ["steelblue", "red"],
-    total_population_25_under: ["#f9ffba", "red"],
-    proportion_25_under: ["#f9ffba", "red"]
-};
+
+// what to color by, list is to work around exporting non-const
+export const attribute: [MapKeys] = $state(["median_home_value"]);
 
 // color/color calculation used by map
 export const cluster_colors = $state([
@@ -104,7 +142,7 @@ export const getColor = (county: Feature<Geometry, GeoJsonProperties>) => {
     const county_data = data.get(county.id as number);
     if (county_data !== undefined) {
         return cluster_colors[county_data.area_cluster](
-            colorByStates[colorByState[0]](county_data)
+            attributeMap[attribute[0]].value(county_data)
         );
     }
     return "white";
@@ -113,12 +151,12 @@ export const getColor = (county: Feature<Geometry, GeoJsonProperties>) => {
 // helper function to allow color reloading in component's effect
 export const reloadColors = () => {
     cluster_ranges = [[], [], [], [], []];
-    data.values().forEach((element) =>
-        cluster_ranges[element.area_cluster].push(colorByStates[colorByState[0]](element))
+    data.values().forEach((county) =>
+        cluster_ranges[county.area_cluster].push(attributeMap[attribute[0]].value(county))
     );
     cluster_ranges.forEach((range, idx) => {
         cluster_colors[idx] = scaleLinear<string>()
             .domain(extent(range) as [number, number])
-            .range(colorScales[colorByState[0]]);
+            .range(attributeMap[attribute[0]].color);
     });
 };

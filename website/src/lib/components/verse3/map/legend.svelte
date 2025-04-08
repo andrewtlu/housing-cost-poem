@@ -1,7 +1,6 @@
 <script lang="ts">
     import { scaleLinear, type ScaleLinear } from "d3-scale";
     import { onMount } from "svelte";
-    import { colorByState } from "./store.svelte";
 
     let {
         color,

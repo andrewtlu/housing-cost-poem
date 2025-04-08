@@ -1,5 +1,5 @@
 import { type Keyframe } from "$lib/keyframe.svelte";
-import { colorByState } from "./map/store.svelte";
+import { attribute } from "./map/store.svelte";
 
 const verse = 3;
 
@@ -12,7 +12,7 @@ export const verse3Keyframes: Keyframe[] = [
         bolded: [0],
         toRun: [
             () => {
-                colorByState[0] = "black_alone";
+                attribute[0] = "black_alone";
             }
         ]
     },
@@ -21,7 +21,7 @@ export const verse3Keyframes: Keyframe[] = [
         bolded: [1, 2, 3],
         toRun: [
             () => {
-                colorByState[0] = "median_home_value";
+                attribute[0] = "median_home_value";
             }
         ]
     }

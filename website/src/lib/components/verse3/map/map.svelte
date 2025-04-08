@@ -10,7 +10,8 @@ map component used in verse 3 for visualizing geographic data
     import type { FeatureCollection } from "geojson";
     import Legend from "./legend.svelte";
     import { fly } from "svelte/transition";
-    import { cluster_colors, colorByState, getColor, reloadColors } from "./store.svelte";
+    import { cluster_colors, attribute, getColor, reloadColors } from "./store.svelte";
+    import CountyInfo from "./countyInfo.svelte";
 
     // data
     const US = topo as unknown as Topology;
@@ -98,7 +99,7 @@ map component used in verse 3 for visualizing geographic data
 
     // load variables dependent on data
     $effect(() => {
-        if (data && colorByState) {
+        if (data && attribute) {
             reloadColors();
         }
     });
@@ -142,24 +143,7 @@ map component used in verse 3 for visualizing geographic data
             transition:fly={{ x: -500, duration: 700 }}
         >
             {#key centroid}
-                {#if hovered_county}
-                    <div
-                        class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5"
-                        transition:fly={{ x: -500, duration: 700 }}
-                    >
-                        <ul>
-                            <li>{hovered_county.county}</li>
-                            <li>Median Home Value: ${hovered_county.median_home_value}</li>
-                            <li>
-                                % Pop w/ College Degree: {Math.round(
-                                    (hovered_county.educational_attainment /
-                                        hovered_county.total_population) *
-                                        100
-                                )}%
-                            </li>
-                        </ul>
-                    </div>
-                {/if}
+                <CountyInfo {hovered_county} />
                 <div class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5">
                     <Legend
                         width={width + margin.left + margin.right}
