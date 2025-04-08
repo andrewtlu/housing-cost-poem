@@ -6,6 +6,7 @@ map component used in verse 3 for visualizing geographic data
     import { extent, scaleLinear } from "d3";
     import { defaultWords } from "./keyframe.svelte";
     import cloud from "d3-cloud";
+    import { fade } from "svelte/transition";
 
     // chart limits
     const similarityExtent = extent(homeSimilarityData.values()) as [number, number];
@@ -155,6 +156,23 @@ map component used in verse 3 for visualizing geographic data
                 >
                     {word.text}
                 </text>
+            {/each}
+
+            {#each words as word, idx (idx)}
+                <!-- cosine similarity -->
+                {#if hoveredWord != "" && hoveredWord == word.text}
+                    <g
+                        transform={`translate(${word.x}, ${word.y + 20})`}
+                        class="pointer-events-none"
+                    >
+                        <text
+                            class="pointer-events-none absolute bottom-5 left-5 z-10 flex flex-col gap-2 text-xs"
+                            transition:fade={{ duration: 300 }}
+                        >
+                            Similarity to Home: {homeSimilarityData.get(hoveredWord)?.toFixed(4)}
+                        </text>
+                    </g>
+                {/if}
             {/each}
         </g>
     </svg>
