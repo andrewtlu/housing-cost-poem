@@ -34,7 +34,7 @@
         ticks[ticks.length - 1] = domain[1];
 
         tickValues = ticks.map((tick) => ({
-            value: `$${Math.round(tick / 1000)}k`,
+            value: attributeMap[attribute].tickFormat(tick),
             offset: (scale(tick) / width) * 100
         }));
     });
