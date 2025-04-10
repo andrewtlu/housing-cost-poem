@@ -13,6 +13,7 @@ map component used in verse 3 for visualizing geographic data
     import { cluster_colors, attributeState, getColor, reloadColors } from "./store.svelte";
     import CountyInfo from "./countyInfo.svelte";
     import Title from "./title.svelte";
+    import AttributeSelect from "./attributeSelect.svelte";
 
     // data
     const US = topo as unknown as Topology;
@@ -262,4 +263,6 @@ map component used in verse 3 for visualizing geographic data
             </svg>
         {/if}
     </div>
+
+    <AttributeSelect />
 </div>

@@ -15,7 +15,7 @@ legend for the map component; displays attribute name, color gradient, and gradi
 
     // svg info
     let margin = { top: 5, left: 20, bottom: 5, right: 20 };
-    let legendWidth = 150;
+    let legendWidth = 180;
     let legendHeight = 60;
     let boxHeight = 15;
     let tickValues: { value: string; offset: number }[] = $state([]);
@@ -44,7 +44,7 @@ legend for the map component; displays attribute name, color gradient, and gradi
 </script>
 
 {#key attribute}
-    <div class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5">
+    <div class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-2">
         <svg
             fill="#000000"
             width={legendWidth + margin.left + margin.right}

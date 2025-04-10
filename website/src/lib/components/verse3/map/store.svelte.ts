@@ -5,7 +5,7 @@ import { data, type County } from "$lib/data";
 import type { Feature, GeoJsonProperties, Geometry } from "geojson";
 
 // attribute of aggregate data to color by
-type MapKeys =
+export type MapKeys =
     | "median_income"
     | "median_home_value"
     | "total_population"
@@ -27,6 +27,7 @@ type MapKeys =
 export const attributeMap = {
     total_population: {
         textLabel: "Total Population",
+        tag: "Population",
         textValue: (county: County) => county.total_population.toLocaleString("en-US"),
         value: (county: County) => county.total_population,
         color: ["#f9ffba", "red"],
@@ -34,6 +35,7 @@ export const attributeMap = {
     },
     total_population_25_over: {
         textLabel: "Total Population Over 25",
+        tag: "Over 25",
         textValue: (county: County) => county.total_population_25_over.toLocaleString("en-US"),
         value: (county: County) => county.total_population_25_over,
         color: ["#f9ffba", "red"],
@@ -41,6 +43,7 @@ export const attributeMap = {
     },
     educational_attainment: {
         textLabel: "% Pop w/ College Degree",
+        tag: "% w/ College Degree",
         textValue: (county: County) =>
             `${Math.round((county.educational_attainment / county.total_population) * 100)}%`,
         value: (county: County) => county.educational_attainment / county.total_population,
@@ -49,6 +52,7 @@ export const attributeMap = {
     },
     median_income: {
         textLabel: "Median Income",
+        tag: "Median Income",
         textValue: (county: County) => `$${county.median_income.toLocaleString("en-US")}`,
         value: (county: County) => county.median_income,
         color: ["#f9ffba", "red"],
@@ -56,6 +60,7 @@ export const attributeMap = {
     },
     median_home_value: {
         textLabel: "Median Home Value",
+        tag: "Median Home Value",
         textValue: (county: County) => `$${county.median_home_value.toLocaleString("en-US")}`,
         value: (county: County) => county.median_home_value,
         color: ["#f9ffba", "red"],
@@ -63,6 +68,7 @@ export const attributeMap = {
     },
     white_alone: {
         textLabel: "% Population White",
+        tag: "White",
         textValue: (county: County) =>
             `${Math.round((county.white_alone / county.total_population) * 100)}%`,
         value: (county: County) => county.white_alone / county.total_population,
@@ -71,6 +77,7 @@ export const attributeMap = {
     },
     black_alone: {
         textLabel: "% Population Black",
+        tag: "Black",
         textValue: (county: County) =>
             `${Math.round((county.black_alone / county.total_population) * 100)}%`,
         value: (county: County) => county.black_alone / county.total_population,
@@ -79,6 +86,7 @@ export const attributeMap = {
     },
     native_alone: {
         textLabel: "% Population Native",
+        tag: "Native",
         textValue: (county: County) =>
             `${Math.round((county.native_alone / county.total_population) * 100)}%`,
         value: (county: County) => county.native_alone / county.total_population,
@@ -87,6 +95,7 @@ export const attributeMap = {
     },
     asian_alone: {
         textLabel: "% Population Asian",
+        tag: "Asian",
         textValue: (county: County) =>
             `${Math.round((county.asian_alone / county.total_population) * 100)}%`,
         value: (county: County) => county.asian_alone / county.total_population,
@@ -95,6 +104,7 @@ export const attributeMap = {
     },
     native_hawaiian_pacific_islander: {
         textLabel: "% Population Native Hawaiian/Pacific Islander",
+        tag: "Native Hawaiian/Pacific Islander",
         textValue: (county: County) =>
             `${Math.round((county.native_hawaiian_pacific_islander / county.total_population) * 100)}%`,
         value: (county: County) =>
@@ -104,6 +114,7 @@ export const attributeMap = {
     },
     some_other_race_alone: {
         textLabel: "% Population Other",
+        tag: "Other",
         textValue: (county: County) =>
             `${Math.round((county.some_other_race_alone / county.total_population) * 100)}%`,
         value: (county: County) => county.some_other_race_alone / county.total_population,
@@ -112,6 +123,7 @@ export const attributeMap = {
     },
     two_or_more: {
         textLabel: "% Population Mixed",
+        tag: "Mixed",
         textValue: (county: County) =>
             `${Math.round((county.two_or_more / county.total_population) * 100)}%`,
         value: (county: County) => county.two_or_more / county.total_population,
@@ -120,6 +132,7 @@ export const attributeMap = {
     },
     hispanic_or_latino: {
         textLabel: "% Population Hispanic/Latino",
+        tag: "Hispanic/Latino",
         textValue: (county: County) =>
             `${Math.round((county.hispanic_or_latino / county.total_population) * 100)}%`,
         value: (county: County) => county.hispanic_or_latino / county.total_population,
@@ -128,6 +141,7 @@ export const attributeMap = {
     },
     total_population_25_under: {
         textLabel: "Total Population Under 25",
+        tag: "Under 25",
         textValue: (county: County) => county.total_population_25_under.toLocaleString("en-US"),
         value: (county: County) => county.total_population_25_under,
         color: ["#f9ffba", "red"],
@@ -135,6 +149,7 @@ export const attributeMap = {
     },
     proportion_25_under: {
         textLabel: "% Population Under 25",
+        tag: "% Under 25",
         textValue: (county: County) => `${Math.round(county.proportion_25_under * 100)}%`,
         value: (county: County) => county.proportion_25_under,
         color: ["#f9ffba", "red"],
@@ -145,6 +160,9 @@ export const attributeMap = {
 // what to color by, list is to work around exporting non-const
 // to use attribute, do $derived(attributeState[0])
 export const attributeState: [MapKeys] = $state(["median_home_value"]);
+export const setAttribute = (attr: MapKeys) => {
+    attributeState[0] = attr;
+};
 const attribute = $derived(attributeState[0]);
 
 // color/color calculation used by map
