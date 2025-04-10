@@ -165,6 +165,13 @@ export const setAttribute = (attr: MapKeys) => {
 };
 const attribute = $derived(attributeState[0]);
 
+// list of attributes to allow map to display
+export const attributes: MapKeys[] = $state([]);
+export const setAttributes = (attrs: MapKeys[]) => {
+    attributes.length = 0;
+    for (const attr of attrs) attributes.push(attr);
+};
+
 // color/color calculation used by map
 export const cluster_colors = $state([
     scaleLinear<string>(),

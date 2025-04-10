@@ -3,19 +3,8 @@ attribute select component
  -->
 <script lang="ts">
     import { fly } from "svelte/transition";
-    import { attributeMap, setAttribute, type MapKeys } from "./store.svelte";
+    import { attributeMap, setAttribute, attributes } from "./store.svelte";
     import { quadInOut } from "svelte/easing";
-
-    let attributes: MapKeys[] = [
-        "white_alone",
-        "black_alone",
-        "native_alone",
-        "asian_alone",
-        "native_hawaiian_pacific_islander",
-        "some_other_race_alone",
-        "two_or_more",
-        "hispanic_or_latino"
-    ];
     let hover = $state(false);
 </script>
 
