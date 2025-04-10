@@ -12,6 +12,7 @@ map component used in verse 3 for visualizing geographic data
     import { fly } from "svelte/transition";
     import { cluster_colors, attributeState, getColor, reloadColors } from "./store.svelte";
     import CountyInfo from "./countyInfo.svelte";
+    import Title from "./title.svelte";
 
     // data
     const US = topo as unknown as Topology;
@@ -109,18 +110,13 @@ map component used in verse 3 for visualizing geographic data
 <div
     class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white/80 font-bold"
 >
-    <!-- title -->
-    <div
-        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
-    >
-        Median Housing Cost Percentage of Metro Area Maximum
-    </div>
+    <Title />
 
     <!-- reset zoom button -->
     {#if centroid !== -1}
         <button
             aria-label="reset-zoom"
-            class="reset-zoom btn absolute top-5 left-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
+            class="reset-zoom btn absolute left-5 top-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
             onclick={resetZoom}
             transition:fly={{ x: -500, duration: 700 }}
         >
@@ -150,7 +146,7 @@ map component used in verse 3 for visualizing geographic data
                     color={cluster_colors[centroid]}
                 />
                 <div
-                    class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
+                    class="text-md w-fit text-wrap rounded-md border-2 border-[gray] bg-white/80 px-5"
                 >
                     Metro Area:
                     {centroidNames[centroid]}
@@ -161,7 +157,7 @@ map component used in verse 3 for visualizing geographic data
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
         data-tip={"Click on a colored metro area to view details!" +
             "\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
     >
