@@ -116,7 +116,7 @@ map component used in verse 3 for visualizing geographic data
     {#if centroid !== -1}
         <button
             aria-label="reset-zoom"
-            class="reset-zoom btn absolute left-5 top-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
+            class="reset-zoom btn absolute top-5 left-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
             onclick={resetZoom}
             transition:fly={{ x: -500, duration: 700 }}
         >
@@ -146,7 +146,7 @@ map component used in verse 3 for visualizing geographic data
                     color={cluster_colors[centroid]}
                 />
                 <div
-                    class="text-md w-fit text-wrap rounded-md border-2 border-[gray] bg-white/80 px-5"
+                    class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
                 >
                     Metro Area:
                     {centroidNames[centroid]}
@@ -157,7 +157,7 @@ map component used in verse 3 for visualizing geographic data
 
     <!-- info tooltip -->
     <div
-        class="tooltip tooltip-left absolute bottom-5 right-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+        class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
         data-tip={"Click on a colored metro area to view details!" +
             "\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
     >
@@ -216,7 +216,8 @@ map component used in verse 3 for visualizing geographic data
                         <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                         <path
                             d={path(county)}
-                            fill={getColor(county)}
+                            fill={getColor(county, centroid)}
+                            style="transition: fill .4s ease;"
                             stroke="lightgray"
                             stroke-width="0.2"
                             role="button"
