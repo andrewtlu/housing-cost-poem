@@ -1,3 +1,6 @@
+<!-- @component
+hover county info; displays specific locale string value and area's education level
+ -->
 <script lang="ts">
     import type { County } from "$lib/data";
     import { fly } from "svelte/transition";

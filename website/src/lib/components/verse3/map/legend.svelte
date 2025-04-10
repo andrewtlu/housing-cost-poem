@@ -1,3 +1,6 @@
+<!-- @component
+legend for the map component; displays attribute name, color gradient, and gradient ticks
+ -->
 <script lang="ts">
     import { scaleLinear, type ScaleLinear } from "d3-scale";
     import { attributeMap, attributeState } from "./store.svelte";
@@ -47,7 +50,7 @@
             width={legendWidth + margin.left + margin.right}
             height={legendHeight + margin.top + margin.bottom}
         >
-            <!-- Gradient  -->
+            <!-- gradient  -->
             <defs>
                 <linearGradient id="gradient">
                     {#each gradientStops as stop (stop.offset)}
@@ -56,11 +59,18 @@
                 </linearGradient>
             </defs>
 
-            <!-- Axis -->
+            <!-- axis -->
             <g transform="translate({margin.left}, {(legendHeight - boxHeight + margin.top) / 2})">
-                <text dy="2.5em" text-anchor="start" fill="currentColor" class="font-medium"
-                    >{attributeMap[attribute].textLabel}</text
+                <!-- label -->
+                <text
+                    dy="2.5em"
+                    transform="translate({legendWidth / 2}, 0)"
+                    text-anchor="middle"
+                    fill="currentColor"
+                    class="font-medium">{attributeMap[attribute].textLabel}</text
                 >
+
+                <!-- color gradient -->
                 <rect
                     x="0"
                     y="0"
@@ -69,6 +79,8 @@
                     fill="url(#gradient)"
                     class="gradient"
                 />
+
+                <!-- gradient markers -->
                 {#each tickValues as tick (tick)}
                     <g transform="translate({(tick.offset * legendWidth) / 100}, -20)">
                         <line y1="18" y2="15" stroke="gray" />
