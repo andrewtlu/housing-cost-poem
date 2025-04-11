@@ -39,7 +39,7 @@ export const verse3Keyframes: Keyframe[] = [
         bolded: [0],
         toRun: [
             () => {
-                setCentroid(2);
+                if (centroidState[0] == -1) setCentroid(2);
                 setAttributes([
                     "white_alone",
                     "black_alone",
