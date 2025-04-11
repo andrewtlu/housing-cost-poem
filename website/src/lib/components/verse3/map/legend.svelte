@@ -25,7 +25,7 @@ legend for the map component; displays attribute name, color gradient, and gradi
 
     $effect(() => {
         // heuristic legend width
-        legendWidth = 7 * attributeMap[attribute].textLabel.length;
+        legendWidth = 7 * attributeMap[attribute].textLabel.length + 10;
 
         const domain = color.domain();
         const range = color.range();
@@ -35,9 +35,8 @@ legend for the map component; displays attribute name, color gradient, and gradi
         }));
 
         const scale = scaleLinear().domain(domain).range([0, width]);
-        const ticks = [...scale.ticks(4)];
-        ticks[0] = domain[0];
-        ticks[ticks.length - 1] = domain[1];
+        const interval = (domain[1] - domain[0]) / 3;
+        const ticks = [domain[0], domain[0] + interval, domain[0] + interval * 2, domain[1]];
 
         tickValues = ticks.map((tick) => ({
             value: attributeMap[attribute].tickFormat(tick),

@@ -96,7 +96,8 @@ map component used in verse 3 for visualizing geographic data
     let hovered_county: County | null = $state(null);
     const handleHover = (id: number) => {
         const county = data.get(id);
-        hovered_county = county !== undefined ? county : null;
+        if (county !== undefined && county.area_cluster == centroid) hovered_county = county;
+        else hovered_county = null;
     };
 
     // load variables dependent on data
