@@ -1,5 +1,5 @@
 import { type Keyframe } from "$lib/keyframe.svelte";
-import { attributes, attributeState, setAttributes, type MapKeys } from "./map/store.svelte";
+import { attributeState, setAttributes } from "./map/store.svelte";
 
 const verse = 3;
 
