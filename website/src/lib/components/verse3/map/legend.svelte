@@ -15,7 +15,7 @@ legend for the map component; displays attribute name, color gradient, and gradi
 
     // svg info
     let margin = { top: 5, left: 20, bottom: 5, right: 20 };
-    let legendWidth = 180;
+    let legendWidth = $state(180);
     let legendHeight = 60;
     let boxHeight = 15;
     let tickValues: { value: string; offset: number }[] = $state([]);
@@ -24,6 +24,9 @@ legend for the map component; displays attribute name, color gradient, and gradi
     const attribute = $derived(attributeState[0]);
 
     $effect(() => {
+        // heuristic legend width
+        legendWidth = 7 * attributeMap[attribute].textLabel.length;
+
         const domain = color.domain();
         const range = color.range();
         gradientStops = range.map((color, i) => ({
