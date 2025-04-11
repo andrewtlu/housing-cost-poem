@@ -53,7 +53,8 @@ export const attributeMap = {
     median_income: {
         textLabel: "Median Income",
         tag: "Median Income",
-        textValue: (county: County) => `$${county.median_income.toLocaleString("en-US")}`,
+        textValue: (county: County) =>
+            `$${county.median_income.toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
         value: (county: County) => county.median_income,
         color: ["azure", "hotpink"],
         tickFormat: (value: number) => `$${Math.round(value / 1000).toLocaleString("en-US")}k`
@@ -61,7 +62,8 @@ export const attributeMap = {
     median_home_value: {
         textLabel: "Median Home Value",
         tag: "Median Home Value",
-        textValue: (county: County) => `$${county.median_home_value.toLocaleString("en-US")}`,
+        textValue: (county: County) =>
+            `$${county.median_home_value.toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
         value: (county: County) => county.median_home_value,
         color: ["azure", "red"],
         tickFormat: (value: number) => `$${Math.round(value / 1000).toLocaleString("en-US")}k`
