@@ -1,13 +1,9 @@
-<!-- TODO: 
-    (Text Andrew - ToolTip Text, Legend, Dark Mode, Make Nav Triangle Larger (easier to navigate with), Sunrise on Last Verse (No Graph, Center Style Text))
--->
-
 <script lang="ts">
     import { data, type CountyRaces } from "$lib/data";
     import { extent, scaleSqrt, scaleOrdinal, scaleLinear } from "d3";
     import { fade } from "svelte/transition";
 
-    // chart data
+    // Chart Data
     const width = 700;
     const height = 500;
     const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
@@ -32,7 +28,7 @@
         "hispanic_or_latino"
     ];
 
-    // transformed data used by scatterplot
+    // Transformed Data used by Scatterplot
     let graphValues: {
         race: string;
         median_housing: number;
@@ -60,7 +56,7 @@
         }
     });
 
-    // race filtering
+    // Race Filtering
     let filter_race = $state("");
 
     function raceFiltering(race : string) {
@@ -71,7 +67,7 @@
         }
     }
 
-    // scales
+    // Scales
     const yTicks = [0, 86500, 246500, 406500, 566500, 726500, 886500, 1100000];
     const yTicks_formatted = ["0", "86,500", "246,500", "406,500", "566,500", "726,500", "886,500", "1,100,000"];
     let yScale = $derived(
@@ -100,16 +96,22 @@
     })
 
     let xTicks = $derived.by(() => {
-        const tickScale = scaleLinear().domain(xExtent).range([chartMargins.left, width - chartMargins.right])
         const interval = (xExtent[1] - xExtent[0]) / 5
-        return [xExtent[0], xExtent[0]+interval, xExtent[0]+interval*2, xExtent[0]+interval*3, xExtent[0]+interval*4, xExtent[1]]
+        return [
+            xExtent[0], 
+            xExtent[0]+interval, 
+            xExtent[0]+interval * 2, 
+            xExtent[0]+interval * 3, 
+            xExtent[0]+interval * 4, 
+            xExtent[1]
+        ]
     });
 
     let xScale = $derived(scaleSqrt()
             .domain(xExtent)
             .range([chartMargins.left, width - chartMargins.right]));
 
-    // color
+    // Color
     const point_colors = scaleOrdinal<string, string, never>()
         .range([
             "#1f77b4",
@@ -123,7 +125,7 @@
         ])
         .domain(racesLegend);
 
-    // hovering state
+    // Hovering State (For Data Point Tooltips)
     let hover = $state(-1);
 </script>
 
@@ -133,7 +135,7 @@
         width={width + chartMargins.left + chartMargins.right}
         height={height + chartMargins.top + chartMargins.bottom}
     >
-        <!-- x-axis -->
+        <!-- X-Axis -->
         <g class="axis x-axis">
             <line
                 x1={chartMargins.left}
@@ -189,7 +191,6 @@
             </g>
         {/each}
 
-
         <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
             {#if filter_race === "" || data_point.race === filter_race}
@@ -217,7 +218,8 @@
                     />
             {/if}
         {/each}
-    
+
+        <!-- Data Points Hoverable -->
         {#if hover != -1}
             <g>
                 <rect
@@ -260,7 +262,7 @@
         {/if}
     
 
-        <!-- y axis -->
+        <!-- Y-Axis -->
         <g class="axis y-axis">
             <line
                 x1={chartMargins.left}
