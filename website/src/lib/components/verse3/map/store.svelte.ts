@@ -6,10 +6,10 @@ import type { Feature, GeoJsonProperties, Geometry } from "geojson";
 
 // attribute of aggregate data to color by
 export type MapKeys =
-    | "median_income"
-    | "median_home_value"
     | "total_population"
     | "total_population_25_over"
+    | "median_income"
+    | "median_home_value"
     | "educational_attainment"
     | "white_alone"
     | "black_alone"
@@ -30,7 +30,7 @@ export const attributeMap = {
         tag: "Population",
         textValue: (county: County) => county.total_population.toLocaleString("en-US"),
         value: (county: County) => county.total_population,
-        color: ["azure", "red"],
+        color: ["azure", "gold"],
         tickFormat: (value: number) => `${Math.round(value / 1000).toLocaleString("en-US")}k`
     },
     total_population_25_over: {
@@ -38,7 +38,7 @@ export const attributeMap = {
         tag: "Over 25",
         textValue: (county: County) => county.total_population_25_over.toLocaleString("en-US"),
         value: (county: County) => county.total_population_25_over,
-        color: ["azure", "red"],
+        color: ["azure", "yellow"],
         tickFormat: (value: number) => `${Math.round(value / 1000).toLocaleString("en-US")}k`
     },
     educational_attainment: {
@@ -55,7 +55,7 @@ export const attributeMap = {
         tag: "Median Income",
         textValue: (county: County) => `$${county.median_income.toLocaleString("en-US")}`,
         value: (county: County) => county.median_income,
-        color: ["azure", "coral"],
+        color: ["azure", "hotpink"],
         tickFormat: (value: number) => `$${Math.round(value / 1000).toLocaleString("en-US")}k`
     },
     median_home_value: {
@@ -144,7 +144,7 @@ export const attributeMap = {
         tag: "Under 25",
         textValue: (county: County) => county.total_population_25_under.toLocaleString("en-US"),
         value: (county: County) => county.total_population_25_under,
-        color: ["azure", "red"],
+        color: ["azure", "goldenrod"],
         tickFormat: (value: number) => `${Math.round(value / 1000).toLocaleString("en-US")}k`
     },
     proportion_25_under: {
@@ -152,7 +152,7 @@ export const attributeMap = {
         tag: "% Under 25",
         textValue: (county: County) => `${Math.round(county.proportion_25_under * 100)}%`,
         value: (county: County) => county.proportion_25_under,
-        color: ["azure", "red"],
+        color: ["azure", "darkgoldenrod"],
         tickFormat: (value: number) => `${Math.round(value * 100)}%`
     }
 };
@@ -164,6 +164,13 @@ export const setAttribute = (attr: MapKeys) => {
     attributeState[0] = attr;
 };
 const attribute = $derived(attributeState[0]);
+
+// what centroid graph is focused on
+// to use attribute, do $derived(attributeState[0])
+export const centroidState: number[] = $state([-1]);
+export const setCentroid = (centroid: number) => {
+    centroidState[0] = centroid;
+};
 
 // list of attributes to allow map to display
 export const attributes: MapKeys[] = $state([]);

@@ -10,7 +10,14 @@ map component used in verse 3 for visualizing geographic data
     import type { FeatureCollection } from "geojson";
     import Legend from "./legend.svelte";
     import { fly } from "svelte/transition";
-    import { cluster_colors, attributeState, getColor, reloadColors } from "./store.svelte";
+    import {
+        cluster_colors,
+        attributeState,
+        getColor,
+        reloadColors,
+        setCentroid,
+        centroidState
+    } from "./store.svelte";
     import CountyInfo from "./countyInfo.svelte";
     import Title from "./title.svelte";
     import AttributeSelect from "./attributeSelect.svelte";
@@ -33,7 +40,7 @@ map component used in verse 3 for visualizing geographic data
             .translate([width / 2, height / 2])
     );
     const path = $derived(geoPath().projection(projection));
-    let centroid = $state(-1);
+    let centroid = $derived(centroidState[0]);
     // centroid of each cluster on map
     const centroids = $derived(
         (() => {
@@ -77,20 +84,19 @@ map component used in verse 3 for visualizing geographic data
     let scale = $state(1);
     let translate = $state([0, 0]);
     let transform: ZoomTransform = $state(zoomIdentity.translate(0, 0));
-    const zoomToCluster = (cluster_idx: number) => {
-        centroid = cluster_idx;
-        scale = width / (radius * 2);
-        translate[0] = width / 2 - centroids[centroid][0] + margin.left;
-        translate[1] = height / 2 - centroids[centroid][1] + margin.top;
+    $effect(() => {
+        if (centroid == -1) {
+            scale = 1;
+            translate = [0, 0];
+            transform = zoomIdentity.translate(translate[0], translate[1]).scale(scale);
+        } else {
+            scale = width / (radius * 2);
+            translate[0] = width / 2 - centroids[centroid][0] + margin.left;
+            translate[1] = height / 2 - centroids[centroid][1] + margin.top;
 
-        transform = zoomIdentity.scale(scale).translate(translate[0], translate[1]);
-    };
-    const resetZoom = () => {
-        centroid = -1;
-        scale = 1;
-        translate = [0, 0];
-        transform = zoomIdentity.translate(translate[0], translate[1]).scale(scale);
-    };
+            transform = zoomIdentity.scale(scale).translate(translate[0], translate[1]);
+        }
+    });
 
     // county hovering handling
     let hovered_county: County | null = $state(null);
@@ -119,7 +125,7 @@ map component used in verse 3 for visualizing geographic data
         <button
             aria-label="reset-zoom"
             class="reset-zoom btn absolute top-5 left-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
-            onclick={resetZoom}
+            onclick={() => setCentroid(-1)}
             transition:fly={{ x: -500, duration: 700 }}
         >
             <svg
@@ -160,8 +166,7 @@ map component used in verse 3 for visualizing geographic data
     <!-- info tooltip -->
     <div
         class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
-        data-tip={"Click on a colored metro area to view details!" +
-            "\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
+        data-tip={"Click on a colored metro area to view details, or a dot to change the attribute! Data collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
     >
         <svg
             fill="#000000"
@@ -233,7 +238,7 @@ map component used in verse 3 for visualizing geographic data
                             }}
                             onclick={() => {
                                 const cty = data.get(county.id as number);
-                                if (cty && cty !== undefined) zoomToCluster(cty.area_cluster);
+                                if (cty && cty !== undefined) setCentroid(cty.area_cluster);
                             }}
                         />
                     {/if}
@@ -258,7 +263,7 @@ map component used in verse 3 for visualizing geographic data
                         class={`opacity-0 ${scale == 1 ? "hover:cursor-pointer" : "pointer-events-none"}`}
                         role="button"
                         tabindex={idx}
-                        onclick={() => zoomToCluster(idx)}
+                        onclick={() => setCentroid(idx)}
                     />
                 {/each}
             </svg>
