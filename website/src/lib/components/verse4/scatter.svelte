@@ -1,16 +1,11 @@
 <!-- TODO: 
-    - Make Data Points Hoverable (2)
-    - xTICKS (3)
-    - Grey Out Legend...?
-    - Line of Best Fit (4)
-
-    - Transitions?
-    - Console Errors?
+    (Text Andrew - ToolTip Text, Legend, Dark Mode, Make Nav Triangle Larger (easier to navigate with), Sunrise on Last Verse (No Graph, Center Style Text))
 -->
 
 <script lang="ts">
     import { data, type CountyRaces } from "$lib/data";
-    import { extent, scaleLog, scaleSqrt, scaleOrdinal, filter } from "d3";
+    import { extent, scaleSqrt, scaleOrdinal, scaleLinear } from "d3";
+    import { fade } from "svelte/transition";
 
     // chart data
     const width = 700;
@@ -77,29 +72,15 @@
     }
 
     // scales
-    let yExtent = $derived(
-        extent(graphValues, (d) => {
-            return d.median_housing;
-        }) as [number, number]
-    );
-    let yRange = $derived(yExtent[1] - yExtent[0]);
-    let yTicks = $derived([
-        Math.round(yExtent[0]),
-        Math.round(yExtent[0] + yRange * 0.2),
-        Math.round(yExtent[0] + yRange * 0.4),
-        Math.round(yExtent[0] + yRange * 0.6),
-        Math.round(yExtent[0] + yRange * 0.8),
-        Math.round(yExtent[1])
-    ]);
+    const yTicks = [0, 86500, 246500, 406500, 566500, 726500, 886500, 1100000];
+    const yTicks_formatted = ["0", "86,500", "246,500", "406,500", "566,500", "726,500", "886,500", "1,100,000"];
     let yScale = $derived(
-        scaleLog()
-            .domain(yExtent)
+        scaleLinear()
+            .domain([0, 1100000])
             .range([height - chartMargins.bottom, chartMargins.top])
     );
 
-    const xTicks = [0, 20, 40, 60, 80, 100];
-
-    let xScale = $derived((() => {
+    let xExtent = $derived.by(() => {
         const graphValues_filtered = graphValues.filter( (d) => {
             if (filter_race !== "") {
                 return d.race === filter_race;
@@ -114,15 +95,19 @@
         } else {
             xExtent = extent(graphValues_filtered, (d) => d.race_percent) as [number, number];
         }
-        
-        return scaleSqrt()
-            .domain(xExtent)
-            .range([chartMargins.left, width - chartMargins.right]);
-    })());
 
-    // const xScale = scaleSqrt()
-    //     .domain([0,100])
-    //     .range([chartMargins.left, width - chartMargins.right]);
+        return xExtent;
+    })
+
+    let xTicks = $derived.by(() => {
+        const tickScale = scaleLinear().domain(xExtent).range([chartMargins.left, width - chartMargins.right])
+        const interval = (xExtent[1] - xExtent[0]) / 5
+        return [xExtent[0], xExtent[0]+interval, xExtent[0]+interval*2, xExtent[0]+interval*3, xExtent[0]+interval*4, xExtent[1]]
+    });
+
+    let xScale = $derived(scaleSqrt()
+            .domain(xExtent)
+            .range([chartMargins.left, width - chartMargins.right]));
 
     // color
     const point_colors = scaleOrdinal<string, string, never>()
@@ -138,29 +123,17 @@
         ])
         .domain(racesLegend);
 
+    // hovering state
+    let hover = $state(-1);
 </script>
+
 
 <div class="relative flex items-center gap-2">
     <svg
         width={width + chartMargins.left + chartMargins.right}
         height={height + chartMargins.top + chartMargins.bottom}
     >
-    <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
-        {#each graphValues as data_point, idx (idx)}
-            {#if filter_race === "" || data_point.race === filter_race}
-                <!-- <div> -->
-                    <circle
-                        cx={xScale(data_point.race_percent)}
-                        cy={yScale(data_point.median_housing)}
-                        r="5"
-                        fill={point_colors(data_point.race)}
-                        opacity="1"
-                    />
-                <!-- </div> -->
-            {/if}
-        {/each}
-
-        <!-- Adding Axis -->
+        <!-- x-axis -->
         <g class="axis x-axis">
             <line
                 x1={chartMargins.left}
@@ -181,12 +154,113 @@
             </text>
             {#each xTicks as x_val, idx (idx)}
                 <g transform="translate({xScale(x_val)}, {height - chartMargins.bottom})">
-                    <text class="x-axis-tick" y="20" x="-6">
-                        {x_val}
+                    <text class="x-axis-tick" y="20" x="-6" transition:fade ={{duration: 500}}>
+                        {x_val.toFixed(2)}
                     </text>
                 </g>
             {/each}
         </g>
+
+        <!-- Grid Lines (x & Y) -->
+        {#each yTicks as y_val, idx (idx)}
+            <g transform="translate(0, {yScale(y_val)})">
+                {#if idx != 0}
+                    <line 
+                        x1={chartMargins.left}
+                        x2={width - chartMargins.right}
+                        stroke="#d4d4d4" 
+                        style="stroke-dasharray: 2;" 
+                    />
+                {/if}
+            </g>
+        {/each}
+
+        {#each xTicks as x_val, idx (idx)}
+            <g transform="translate({xScale(x_val)}, 0)">
+                {#if idx != 0}
+                    <line 
+                        y1={chartMargins.top}
+                        y2={height-chartMargins.bottom}
+                        stroke="#d4d4d4" 
+                        style="stroke-dasharray: 2;" 
+                        transition:fade ={{duration: 500}}
+                    />
+                {/if}
+            </g>
+        {/each}
+
+
+        <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
+        {#each graphValues as data_point, idx (idx)}
+            {#if filter_race === "" || data_point.race === filter_race}
+                    <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+                    <!-- svelte-ignore a11y_no_static_element_interactions -->
+                    <circle    
+                        class="data_point"  
+                        cursor="pointer"        
+                        cx={xScale(data_point.race_percent)}
+                        cy={yScale(data_point.median_housing)}
+                        r="5"
+                        fill={point_colors(data_point.race)}
+                        opacity="1"
+                        transition:fade ={{duration: 500}}
+                        onmouseover={
+                            () => {
+                                hover=idx;
+                            }
+                        }
+                        onmouseleave={
+                            () => {
+                                hover=-1;
+                            }
+                        }
+                    />
+            {/if}
+        {/each}
+    
+        {#if hover != -1}
+            <g>
+                <rect
+                    x={xScale(graphValues[hover].race_percent)} 
+                    y={yScale(graphValues[hover].median_housing)}
+                    width=230
+                    height=50
+                    stroke="black"
+                    stroke-width=2
+                    fill="white"
+                />
+                <text
+                    x={xScale(graphValues[hover].race_percent) + 5} 
+                    y={yScale(graphValues[hover].median_housing) + 15}
+                    text-anchor="left"
+                    font-size=12
+                    fill="black"
+                >
+                    Race: {racesLegend[racesDataAttr.indexOf(graphValues[hover].race)]}
+                </text>
+                <text
+                    x={xScale(graphValues[hover].race_percent) + 5} 
+                    y={yScale(graphValues[hover].median_housing) + 30}
+                    text-anchor="left"
+                    font-size=12
+                    fill="black"
+                >
+                    Population %: {graphValues[hover].race_percent.toFixed(2)}
+                </text>
+                <text
+                    x={xScale(graphValues[hover].race_percent) + 5} 
+                    y={yScale(graphValues[hover].median_housing) + 45}
+                    text-anchor="left"
+                    font-size=12
+                    fill="black"
+                >
+                    Median Housing $: {graphValues[hover].median_housing}
+                </text>
+            </g>
+        {/if}
+    
+
+        <!-- y axis -->
         <g class="axis y-axis">
             <line
                 x1={chartMargins.left}
@@ -208,8 +282,8 @@
             </text>
             {#each yTicks as y_val, idx (idx)}
                 <g transform="translate(0, {yScale(y_val)})">
-                    <text class="y-axis-tick" x="35" y="0">
-                        {y_val}
+                    <text class="y-axis-tick" x="100" y="10" text-anchor="end">
+                        {yTicks_formatted[idx]}
                     </text>
                 </g>
             {/each}
@@ -256,7 +330,8 @@
         data-tip=
         {
             "Select Races from Legend to Filter the Graph." +
-            "\nSelect the Same Race Again to Return Graph to Original State (Showing All Races)"
+            "\nSelect the Same Race Again to Return Graph to Original State (Showing All Races)." + 
+            "\n Hover Over Data Points for More In-Depth Information"
         }
         > 
         
