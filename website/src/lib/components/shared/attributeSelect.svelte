@@ -7,16 +7,17 @@ attribute select component
     import { attributeMap, type MapKeys } from "$lib/data";
 
     let {
+        selected,
         attributes,
         setAttribute
-    }: { attributes: MapKeys[]; setAttribute: (arg0: MapKeys) => void } = $props();
+    }: { selected: MapKeys | ""; attributes: MapKeys[]; setAttribute: (arg0: MapKeys) => void } =
+        $props();
     let hover = $state(false);
 </script>
 
 <div
     class="pointer-events-none absolute top-1/2 right-5 flex -translate-y-1/2 flex-col p-2 transition-all"
 >
-    <!-- TODO: make unselected opacity less -->
     {#each attributes as attribute (attribute)}
         <div class="flex h-7 flex-row items-center justify-end overflow-hidden">
             {#if hover}
@@ -38,14 +39,17 @@ attribute select component
                     hover = false;
                 }}
             >
-                <button
-                    class="btn btn-circle pointer-events-auto h-5 w-5 border-0 p-0"
-                    aria-label={attribute}
-                    onclick={() => {
-                        setAttribute(attribute);
-                    }}
-                    style="background-color: {attributeMap[attribute].color[1]};"
-                ></button>
+                <!-- hacky blank background to hide text flying out -->
+                <div class="h-fit w-fit rounded-xl bg-white">
+                    <button
+                        class="btn btn-circle pointer-events-auto h-5 w-5 border-0 p-0 transition-opacity duration-300"
+                        style={`background-color: ${attributeMap[attribute].color[1]}; opacity: ${attribute === selected || selected === "" ? 1 : 0.4};`}
+                        aria-label={attribute}
+                        onclick={() => {
+                            setAttribute(attribute);
+                        }}
+                    ></button>
+                </div>
             </div>
         </div>
     {/each}

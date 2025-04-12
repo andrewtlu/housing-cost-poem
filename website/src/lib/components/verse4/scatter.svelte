@@ -268,7 +268,7 @@
     </svg>
 
     <!-- Chart Legend -->
-    <AttributeSelect attributes={races} setAttribute={filterBy} />
+    <AttributeSelect attributes={races} setAttribute={filterBy} selected={filter_race} />
 
     <!-- Chart Tooltip -->
     <Info
