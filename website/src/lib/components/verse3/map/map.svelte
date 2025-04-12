@@ -171,7 +171,7 @@ map component used in verse 3 for visualizing geographic data
     <!-- info tooltip -->
     <div
         class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
-        data-tip={"Click on a colored metro area to view details, or a dot to change the attribute! Data collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
+        data-tip="Click on a colored metro area to view details, or a dot to change the attribute! Data collected from US Census Bureau, censusreporter.org, and Logan et al.'s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
     >
         <svg
             fill="#000000"
