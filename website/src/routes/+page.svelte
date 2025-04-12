@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import "../app.css";
     import { overrideScroll } from "$lib";
-    import { Title, Verse1, Verse2, Verse3, Verse4, Parallax, Nav, Verse5 } from "$lib/components";
+    import { Title, Verse1, Verse2, Verse3, Verse4, Parallax, Nav } from "$lib/components";
 
     /** Main content DOM element */
     let content: Element | null = $state(null);
@@ -11,7 +11,7 @@
     /** Unmount for scroll listener */
     let unmount: ReturnType<typeof overrideScroll>["unmount"];
 
-    let verses = [Title, Verse1, Verse2, Verse3, Verse4, Verse5];
+    let verses = [Title, Verse1, Verse2, Verse3, Verse4];
 
     onMount(() => {
         // when mounted, content will not be null
