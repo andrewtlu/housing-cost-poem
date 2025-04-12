@@ -68,6 +68,7 @@ export const verse3Keyframes: Keyframe[] = [
         toRun: [
             () => {
                 selectedGraphState[0] = Map;
+                if (centroidState[0] == -1) setCentroid(2);
                 setAttributes(["median_income", "median_home_value"]);
                 attributeState[0] = "median_home_value";
             }
