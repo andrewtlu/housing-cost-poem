@@ -1,6 +1,4 @@
 <script lang="ts">
-    import Scatter from "./scatter.svelte";
-
     // quotations are curled :)
     let lines = [
         "...hopeless. Yet, hopes still remain.",
@@ -15,5 +13,3 @@
         <li>{line}</li>
     {/each}
 </ul>
-
-<Scatter />

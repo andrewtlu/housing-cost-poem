@@ -3,6 +3,7 @@
     import { extent, scaleSqrt, scaleLinear } from "d3";
     import { fade } from "svelte/transition";
     import { AttributeSelect, Info, Title } from "$lib/components/shared";
+    import { selectedState, setSelected } from "./store.svelte";
 
     // Chart Data
     const width = 800;
@@ -55,14 +56,7 @@
     });
 
     // Race Filtering
-    let filter_race: MapKeys | "" = $state("");
-    const filterBy = (race: MapKeys) => {
-        if (filter_race === race) {
-            filter_race = "";
-        } else {
-            filter_race = race;
-        }
-    };
+    let filter_race: MapKeys | "" = $derived(selectedState[0]);
 
     // Scales
     const yTicks = [0, 86500, 246500, 406500, 566500, 726500, 886500, 1100000];
@@ -329,7 +323,7 @@
     </svg>
 
     <!-- Chart Legend -->
-    <AttributeSelect attributes={races} setAttribute={filterBy} selected={filter_race} />
+    <AttributeSelect attributes={races} setAttribute={setSelected} selected={filter_race} />
 
     <!-- Chart Tooltip -->
     <Info
