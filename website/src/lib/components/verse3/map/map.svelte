@@ -16,10 +16,11 @@ map component used in verse 3 for visualizing geographic data
         getColor,
         reloadColors,
         setCentroid,
-        centroidState
+        centroidState,
+        attributeMap
     } from "./store.svelte";
     import CountyInfo from "./countyInfo.svelte";
-    import Title from "./title.svelte";
+    import Title from "../../shared/title.svelte";
     import AttributeSelect from "./attributeSelect.svelte";
     import { untrack } from "svelte";
 
@@ -123,7 +124,7 @@ map component used in verse 3 for visualizing geographic data
 <div
     class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white/80 font-bold"
 >
-    <Title />
+    <Title title={`${attributeMap[attribute].textLabel} Compared to Metro Area Maximum`} />
 
     <!-- reset zoom button -->
     {#if centroid !== -1}

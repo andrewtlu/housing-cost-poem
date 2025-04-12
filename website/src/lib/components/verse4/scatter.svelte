@@ -4,7 +4,7 @@
     import { fade } from "svelte/transition";
 
     // Chart Data
-    const width = 700;
+    const width = 780;
     const height = 500;
     const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
     const racesLegend = [
@@ -58,61 +58,59 @@
 
     // Race Filtering
     let filter_race = $state("");
-
-    function raceFiltering(race : string) {
+    const filterBy = (race: string) => {
         if (filter_race === race) {
             filter_race = "";
         } else {
             filter_race = race;
         }
-    }
+    };
 
     // Scales
     const yTicks = [0, 86500, 246500, 406500, 566500, 726500, 886500, 1100000];
-    const yTicks_formatted = ["0", "86,500", "246,500", "406,500", "566,500", "726,500", "886,500", "1,100,000"];
     let yScale = $derived(
         scaleLinear()
-            .domain([0, 1100000])
+            .domain([yTicks[0], yTicks[yTicks.length - 1]])
             .range([height - chartMargins.bottom, chartMargins.top])
     );
 
     let xExtent = $derived.by(() => {
-        const graphValues_filtered = graphValues.filter( (d) => {
+        const graphValues_filtered = graphValues.filter((d) => {
             if (filter_race !== "") {
                 return d.race === filter_race;
             } else {
                 return true;
             }
-         });
+        });
 
         let xExtent;
         if (filter_race === "") {
-            xExtent = [0,100];
+            xExtent = [0, 100];
         } else {
             xExtent = extent(graphValues_filtered, (d) => d.race_percent) as [number, number];
         }
 
         return xExtent;
-    })
-
-    let xTicks = $derived.by(() => {
-        const interval = (xExtent[1] - xExtent[0]) / 5
-        return [
-            xExtent[0], 
-            xExtent[0]+interval, 
-            xExtent[0]+interval * 2, 
-            xExtent[0]+interval * 3, 
-            xExtent[0]+interval * 4, 
-            xExtent[1]
-        ]
     });
-
-    let xScale = $derived(scaleSqrt()
+    let xTicks = $derived.by(() => {
+        const interval = (xExtent[1] - xExtent[0]) / 5;
+        return [
+            xExtent[0],
+            xExtent[0] + interval,
+            xExtent[0] + interval * 2,
+            xExtent[0] + interval * 3,
+            xExtent[0] + interval * 4,
+            xExtent[1]
+        ];
+    });
+    let xScale = $derived(
+        scaleSqrt()
             .domain(xExtent)
-            .range([chartMargins.left, width - chartMargins.right]));
+            .range([chartMargins.left, width - chartMargins.right])
+    );
 
     // Color
-    const point_colors = scaleOrdinal<string, string, never>()
+    const point_colors = scaleOrdinal<string>()
         .range([
             "#1f77b4",
             "#ff7f03",
@@ -128,7 +126,6 @@
     // Hovering State (For Data Point Tooltips)
     let hover = $state(-1);
 </script>
-
 
 <div class="relative flex items-center gap-2">
     <svg
@@ -156,7 +153,7 @@
             </text>
             {#each xTicks as x_val, idx (idx)}
                 <g transform="translate({xScale(x_val)}, {height - chartMargins.bottom})">
-                    <text class="x-axis-tick" y="20" x="-6" transition:fade ={{duration: 500}}>
+                    <text class="x-axis-tick" y="20" x="-6" transition:fade={{ duration: 500 }}>
                         {x_val.toFixed(2)}
                     </text>
                 </g>
@@ -167,11 +164,11 @@
         {#each yTicks as y_val, idx (idx)}
             <g transform="translate(0, {yScale(y_val)})">
                 {#if idx != 0}
-                    <line 
+                    <line
                         x1={chartMargins.left}
                         x2={width - chartMargins.right}
-                        stroke="#d4d4d4" 
-                        style="stroke-dasharray: 2;" 
+                        stroke="#d4d4d4"
+                        style="stroke-dasharray: 2;"
                     />
                 {/if}
             </g>
@@ -180,12 +177,12 @@
         {#each xTicks as x_val, idx (idx)}
             <g transform="translate({xScale(x_val)}, 0)">
                 {#if idx != 0}
-                    <line 
+                    <line
                         y1={chartMargins.top}
-                        y2={height-chartMargins.bottom}
-                        stroke="#d4d4d4" 
-                        style="stroke-dasharray: 2;" 
-                        transition:fade ={{duration: 500}}
+                        y2={height - chartMargins.bottom}
+                        stroke="#d4d4d4"
+                        style="stroke-dasharray: 2;"
+                        transition:fade={{ duration: 500 }}
                     />
                 {/if}
             </g>
@@ -194,28 +191,24 @@
         <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
             {#if filter_race === "" || data_point.race === filter_race}
-                    <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-                    <!-- svelte-ignore a11y_no_static_element_interactions -->
-                    <circle    
-                        class="data_point"  
-                        cursor="pointer"        
-                        cx={xScale(data_point.race_percent)}
-                        cy={yScale(data_point.median_housing)}
-                        r="5"
-                        fill={point_colors(data_point.race)}
-                        opacity="1"
-                        transition:fade ={{duration: 500}}
-                        onmouseover={
-                            () => {
-                                hover=idx;
-                            }
-                        }
-                        onmouseleave={
-                            () => {
-                                hover=-1;
-                            }
-                        }
-                    />
+                <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <circle
+                    class="data_point"
+                    cursor="pointer"
+                    cx={xScale(data_point.race_percent)}
+                    cy={yScale(data_point.median_housing)}
+                    r="5"
+                    fill={point_colors(data_point.race)}
+                    opacity="1"
+                    transition:fade={{ duration: 500 }}
+                    onmouseover={() => {
+                        hover = idx;
+                    }}
+                    onmouseleave={() => {
+                        hover = -1;
+                    }}
+                />
             {/if}
         {/each}
 
@@ -223,44 +216,43 @@
         {#if hover != -1}
             <g>
                 <rect
-                    x={xScale(graphValues[hover].race_percent)} 
+                    x={xScale(graphValues[hover].race_percent)}
                     y={yScale(graphValues[hover].median_housing)}
-                    width=230
-                    height=50
+                    width="230"
+                    height="50"
                     stroke="black"
-                    stroke-width=2
+                    stroke-width="2"
                     fill="white"
                 />
                 <text
-                    x={xScale(graphValues[hover].race_percent) + 5} 
+                    x={xScale(graphValues[hover].race_percent) + 5}
                     y={yScale(graphValues[hover].median_housing) + 15}
                     text-anchor="left"
-                    font-size=12
+                    font-size="12"
                     fill="black"
                 >
                     Race: {racesLegend[racesDataAttr.indexOf(graphValues[hover].race)]}
                 </text>
                 <text
-                    x={xScale(graphValues[hover].race_percent) + 5} 
+                    x={xScale(graphValues[hover].race_percent) + 5}
                     y={yScale(graphValues[hover].median_housing) + 30}
                     text-anchor="left"
-                    font-size=12
+                    font-size="12"
                     fill="black"
                 >
                     Population %: {graphValues[hover].race_percent.toFixed(2)}
                 </text>
                 <text
-                    x={xScale(graphValues[hover].race_percent) + 5} 
+                    x={xScale(graphValues[hover].race_percent) + 5}
                     y={yScale(graphValues[hover].median_housing) + 45}
                     text-anchor="left"
-                    font-size=12
+                    font-size="12"
                     fill="black"
                 >
                     Median Housing $: {graphValues[hover].median_housing}
                 </text>
             </g>
         {/if}
-    
 
         <!-- Y-Axis -->
         <g class="axis y-axis">
@@ -285,7 +277,7 @@
             {#each yTicks as y_val, idx (idx)}
                 <g transform="translate(0, {yScale(y_val)})">
                     <text class="y-axis-tick" x="100" y="10" text-anchor="end">
-                        {yTicks_formatted[idx]}
+                        {yTicks[idx].toLocaleString("en-US")}
                     </text>
                 </g>
             {/each}
@@ -295,49 +287,52 @@
     <!-- Chart Legend -->
     <div class="-ml-20 pr-5">
         <ul class="flex flex-col gap-1.25">
-        {#if filter_race === ""}
-            {#each racesLegend as race, idx (idx)}
+            {#if filter_race === ""}
+                {#each racesLegend as race, idx (idx)}
                     <li>
-                        <button class="flex items-center cursor-pointer" onclick={() => raceFiltering(racesDataAttr[idx])} > 
+                        <button
+                            class="flex cursor-pointer items-center"
+                            onclick={() => filterBy(racesDataAttr[idx])}
+                        >
                             <div
                                 class="mr-2 h-4 w-4 shrink-0 rounded-full"
                                 style="background-color: {point_colors(race)};"
                             ></div>
                             <text class="">{race}</text>
                         </button>
-                    </li>       
-            {/each}
-        {:else}
-            {#each racesLegend as race, idx (idx)}
+                    </li>
+                {/each}
+            {:else}
+                {#each racesLegend as race, idx (idx)}
                     <li>
-                        <button 
-                            class="flex items-center cursor-pointer" 
-                            style="opacity: {filter_race === racesDataAttr[idx]  || filter_race === "" ? 1 : 0.4};" 
-                            onclick={() => raceFiltering(racesDataAttr[idx])} > 
+                        <button
+                            class="flex cursor-pointer items-center"
+                            style="opacity: {filter_race === racesDataAttr[idx] ||
+                            filter_race === ''
+                                ? 1
+                                : 0.4};"
+                            onclick={() => filterBy(racesDataAttr[idx])}
+                        >
                             <div
                                 class="mr-2 h-4 w-4 shrink-0 rounded-full"
                                 style="background-color: {point_colors(race)};"
                             ></div>
                             <text class="">{race}</text>
                         </button>
-                    </li>       
-            {/each}
-        {/if}
+                    </li>
+                {/each}
+            {/if}
         </ul>
     </div>
 
     <!-- Chart Tooltip -->
-    <div 
-        class="tooltip tooltip-left absolute bottom-5 right-5 rounded-full hover:cursor-pointer" 
-        data-tip=
-        {
-            "Select Races from Legend to Filter the Graph." +
-            "\nSelect the Same Race Again to Return Graph to Original State (Showing All Races)." + 
-            "\n Hover Over Data Points for More In-Depth Information"
-        }
-        > 
-        
-        <svg  
+    <div
+        class="tooltip tooltip-left absolute right-5 bottom-5 rounded-full hover:cursor-pointer"
+        data-tip={"Select Races from Legend to Filter the Graph." +
+            "\nSelect the Same Race Again to Return Graph to Original State (Showing All Races)." +
+            "\n Hover Over Data Points for More In-Depth Information"}
+    >
+        <svg
             fill="#000000"
             xmlns="http://www.w3.org/2000/svg"
             width="25px"
@@ -345,24 +340,24 @@
             viewBox="0 0 488.484 488.484"
             xml:space="preserve"
         >
-        <g>
             <g>
-                <path
-                    d="M244.236,0.002C109.562,0.002,0,109.565,0,244.238c0,134.679,109.563,244.244,244.236,244.244
+                <g>
+                    <path
+                        d="M244.236,0.002C109.562,0.002,0,109.565,0,244.238c0,134.679,109.563,244.244,244.236,244.244
                 c134.684,0,244.249-109.564,244.249-244.244C488.484,109.566,378.92,0.002,244.236,0.002z M244.236,413.619
                 c-93.4,0-169.38-75.979-169.38-169.379c0-93.396,75.979-169.375,169.38-169.375s169.391,75.979,169.391,169.375
                 C413.627,337.641,337.637,413.619,244.236,413.619z"
-                />
-                <path
-                    d="M244.236,206.816c-14.757,0-26.619,11.962-26.619,26.73v118.709c0,14.769,11.862,26.735,26.619,26.735
+                    />
+                    <path
+                        d="M244.236,206.816c-14.757,0-26.619,11.962-26.619,26.73v118.709c0,14.769,11.862,26.735,26.619,26.735
                 c14.769,0,26.62-11.967,26.62-26.735V233.546C270.855,218.778,259.005,206.816,244.236,206.816z"
-                />
-                <path
-                    d="M244.236,107.893c-19.949,0-36.102,16.158-36.102,36.091c0,19.934,16.152,36.092,36.102,36.092
+                    />
+                    <path
+                        d="M244.236,107.893c-19.949,0-36.102,16.158-36.102,36.091c0,19.934,16.152,36.092,36.102,36.092
                 c19.929,0,36.081-16.158,36.081-36.092C280.316,124.051,264.165,107.893,244.236,107.893z"
-                />
+                    />
+                </g>
             </g>
-        </g>
-    </svg>
+        </svg>
     </div>
 </div>

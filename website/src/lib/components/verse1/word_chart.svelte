@@ -7,6 +7,7 @@ map component used in verse 3 for visualizing geographic data
     import { defaultWords } from "./keyframe.svelte";
     import cloud from "d3-cloud";
     import { fade } from "svelte/transition";
+    import Title from "../shared/title.svelte";
 
     // chart limits
     const similarityExtent = extent(homeSimilarityData.values()) as [number, number];
@@ -83,11 +84,7 @@ map component used in verse 3 for visualizing geographic data
     class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white/80 font-bold"
 >
     <!-- title -->
-    <div
-        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
-    >
-        What Does Home Mean to You?
-    </div>
+    <Title title="What Does Home Mean to You?" />
 
     <!-- info tooltip -->
     <div
