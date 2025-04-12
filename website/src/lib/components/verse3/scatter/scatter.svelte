@@ -4,6 +4,8 @@
     import { fade } from "svelte/transition";
     import { AttributeSelect, Info, Title } from "$lib/components/common";
     import { selectedState, setSelected } from "./store.svelte";
+    import { Tween } from "svelte/motion";
+    import { cubicInOut } from "svelte/easing";
 
     // Chart Data
     const width = 800;
@@ -85,21 +87,38 @@
         return xExtent;
     });
     let xTicks = $derived.by(() => {
-        const interval = (xExtent[1] - xExtent[0]) / 5;
-        return [
-            xExtent[0],
-            xExtent[0] + interval,
-            xExtent[0] + interval * 2,
-            xExtent[0] + interval * 3,
-            xExtent[0] + interval * 4,
-            xExtent[1]
-        ];
+        if (xExtent[0] !== undefined && xExtent[1] !== undefined) {
+            const interval = (xExtent[1] - xExtent[0]) / 5;
+            return [
+                xExtent[0],
+                xExtent[0] + interval,
+                xExtent[0] + interval * 2,
+                xExtent[0] + interval * 3,
+                xExtent[0] + interval * 4,
+                xExtent[1]
+            ];
+        } else return [0, 20, 40, 60, 80, 100];
     });
     let xScale = $derived(
         scaleSqrt()
             .domain(xExtent)
             .range([chartMargins.left, chartWidth - chartMargins.right])
     );
+
+    // tweened x position for each point on the graph
+    const tweenedXPositions: { [key: number]: Tween<number> } = $derived(
+        graphValues.map(
+            () => new Tween(chartMargins.left, { duration: 400, easing: cubicInOut, delay: 150 })
+        )
+    );
+    $effect(() => {
+        if (graphValues) {
+            graphValues.forEach((point, idx) => {
+                const xPos = xScale(point.race_percent);
+                tweenedXPositions[idx].set(xPos);
+            });
+        }
+    });
 
     // point being hovered
     let hover: GraphValue | null = $state(null);
@@ -141,6 +160,9 @@
         width={width + margins.left + margins.right}
         height={height + margins.top + margins.bottom}
     >
+        <!-- clipping bounds for circles in graph (so circles not within the graph axes are not shown) -->
+        <!-- <defs>  -->
+
         <!-- Grid Lines (x & Y) -->
         {#each yTicks as y_val, idx (idx)}
             <g transform="translate(0, {yScale(y_val)})">
@@ -231,25 +253,23 @@
 
         <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
-            {#if filter_race === "" || data_point.race === filter_race}
-                <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-                <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <circle
-                    cursor="pointer"
-                    cx={xScale(data_point.race_percent)}
-                    cy={yScale(data_point.median_housing)}
-                    r="5"
-                    fill={attributeMap[data_point.race].color[1]}
-                    opacity="1"
-                    transition:fade={{ duration: 500 }}
-                    onmouseover={() => {
-                        hover = data_point;
-                    }}
-                    onmouseleave={() => {
-                        hover = null;
-                    }}
-                />
-            {/if}
+            <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <circle
+                cursor="pointer"
+                style="transition: opacity .4s ease;"
+                cx={tweenedXPositions[idx].current}
+                cy={yScale(data_point.median_housing)}
+                r="5"
+                fill={attributeMap[data_point.race].color[1]}
+                opacity={filter_race === "" || data_point.race === filter_race ? "1" : "0"}
+                onmouseover={() => {
+                    hover = data_point;
+                }}
+                onmouseleave={() => {
+                    hover = null;
+                }}
+            />
         {/each}
 
         <!-- data point hover tooltip -->
