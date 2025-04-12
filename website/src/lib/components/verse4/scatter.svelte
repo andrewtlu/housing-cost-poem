@@ -26,13 +26,14 @@
     ];
 
     // Transformed Data used by Scatterplot
-    let graphValues: {
+    type GraphValue = {
         race: MapKeys;
         median_housing: number;
         race_percent: number;
         county_name: string;
         city_name: string;
-    }[] = $state([]);
+    };
+    let graphValues: GraphValue[] = $state([]);
     $effect(() => {
         if (data) {
             const tmp = [];
@@ -106,8 +107,33 @@
             .range([chartMargins.left, chartWidth - chartMargins.right])
     );
 
-    // Hovering State (For Data Point Tooltips)
-    let hover = $state(-1);
+    // point being hovered
+    let hover: GraphValue | null = $state(null);
+    let raceLine: SVGTextElement | null = $state(null);
+    let countyStateLine: SVGTextElement | null = $state(null);
+    let popProportionLine: SVGTextElement | null = $state(null);
+    let homeCostLine: SVGTextElement | null = $state(null);
+    const textYOffset = 20;
+    const lineHeight = 20;
+    const textMargins = { top: 22, left: 10, bottom: 22, right: 10 };
+    let hoverHeight = $state(100);
+    let hoverWidth = $state(230);
+
+    $effect(() => {
+        if (hover && raceLine && countyStateLine && popProportionLine && homeCostLine) {
+            const lines = 4;
+            hoverHeight = (lineHeight * lines) / 1.7 + textMargins.top + textMargins.bottom;
+            hoverWidth =
+                Math.max(
+                    raceLine.getBBox().width,
+                    countyStateLine.getBBox().width,
+                    popProportionLine.getBBox().width,
+                    homeCostLine.getBBox().width
+                ) +
+                textMargins.left +
+                textMargins.right;
+        }
+    });
 </script>
 
 <div
@@ -198,7 +224,7 @@
                 font-size="15px"
                 text-anchor="middle"
             >
-                Median House Value ($)
+                Median Home Cost ($)
             </text>
             {#each yTicks as y_val, idx (idx)}
                 <g transform="translate({chartMargins.left}, {yScale(y_val)})">
@@ -223,57 +249,76 @@
                     opacity="1"
                     transition:fade={{ duration: 500 }}
                     onmouseover={() => {
-                        hover = idx;
+                        hover = data_point;
                     }}
                     onmouseleave={() => {
-                        hover = -1;
+                        hover = null;
                     }}
                 />
             {/if}
         {/each}
 
         <!-- data point hover tooltip -->
-        {#if hover != -1}
+        {#if hover}
             <!-- todo: heuristic length, shift left if overflow -->
             <g class="pointer-events-none">
                 <rect
-                    x={xScale(graphValues[hover].race_percent)}
-                    y={yScale(graphValues[hover].median_housing)}
-                    width="230"
-                    height="100"
+                    x={xScale(hover.race_percent)}
+                    y={yScale(hover.median_housing) + textYOffset}
+                    width={hoverWidth}
+                    height={hoverHeight}
                     stroke="gray"
                     stroke-width="2px"
                     fill="white"
                     rx="0.375rem"
                 />
                 <text
-                    x={xScale(graphValues[hover].race_percent) + 5}
-                    y={yScale(graphValues[hover].median_housing) + 15}
+                    x={xScale(hover.race_percent) + textMargins.left}
+                    y={yScale(hover.median_housing) + textMargins.top + textYOffset}
                     text-anchor="left"
-                    font-size="12"
+                    font-size="22px"
                     fill="black"
+                    bind:this={raceLine}
                 >
-                    Race: {attributeMap[graphValues[hover].race].tag}
+                    {attributeMap[hover.race].tag}
                 </text>
                 <text
-                    x={xScale(graphValues[hover].race_percent) + 5}
-                    y={yScale(graphValues[hover].median_housing) + 30}
+                    x={xScale(hover.race_percent) + textMargins.left}
+                    y={yScale(hover.median_housing) + textMargins.top + textYOffset + lineHeight}
                     text-anchor="left"
-                    font-size="12"
+                    font-size="16px"
                     fill="black"
+                    bind:this={countyStateLine}
                 >
-                    {attributeMap[graphValues[hover].race].tickFormat(
-                        graphValues[hover].race_percent
-                    )} of county population
+                    {hover.county_name}, {hover.city_name}
                 </text>
                 <text
-                    x={xScale(graphValues[hover].race_percent) + 5}
-                    y={yScale(graphValues[hover].median_housing) + 45}
+                    x={xScale(hover.race_percent) + textMargins.left}
+                    y={yScale(hover.median_housing) +
+                        textMargins.top +
+                        textYOffset +
+                        lineHeight * 2}
                     text-anchor="left"
-                    font-size="12"
+                    font-size="16px"
                     fill="black"
+                    bind:this={popProportionLine}
                 >
-                    Median Housing $: {graphValues[hover].median_housing}
+                    {attributeMap[hover.race].tickFormat(hover.race_percent / 100)} of county population
+                </text>
+                <text
+                    x={xScale(hover.race_percent) + textMargins.left}
+                    y={yScale(hover.median_housing) +
+                        textMargins.top +
+                        textYOffset +
+                        lineHeight * 3}
+                    text-anchor="left"
+                    font-size="16px"
+                    fill="black"
+                    bind:this={homeCostLine}
+                >
+                    Median Home Cost: ${hover.median_housing.toLocaleString("en-US", {
+                        minimumFractionDigits: 2
+                    })}
                 </text>
             </g>
         {/if}
