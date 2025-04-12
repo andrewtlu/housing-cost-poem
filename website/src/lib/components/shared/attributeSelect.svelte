@@ -29,8 +29,9 @@ attribute select component
                 </div>
             {/if}
 
+            <!-- hacky blank background to hide text flying out -->
             <div
-                class="pointer-events-auto z-20 h-7 pl-1"
+                class="pointer-events-auto z-20 flex h-7 w-7 items-center justify-center overflow-hidden rounded-xl bg-white"
                 role="group"
                 onmouseenter={() => {
                     hover = true;
@@ -39,17 +40,14 @@ attribute select component
                     hover = false;
                 }}
             >
-                <!-- hacky blank background to hide text flying out -->
-                <div class="h-fit w-fit rounded-xl bg-white">
-                    <button
-                        class="btn btn-circle pointer-events-auto h-5 w-5 border-0 p-0 transition-opacity duration-300"
-                        style={`background-color: ${attributeMap[attribute].color[1]}; opacity: ${attribute === selected || selected === "" ? 1 : 0.4};`}
-                        aria-label={attribute}
-                        onclick={() => {
-                            setAttribute(attribute);
-                        }}
-                    ></button>
-                </div>
+                <button
+                    class="btn btn-circle pointer-events-auto h-5 w-5 border-0 p-0 transition-opacity duration-300"
+                    style={`background-color: ${attributeMap[attribute].color[1]}; opacity: ${attribute === selected || selected === "" || hover ? 1 : 0.4};`}
+                    aria-label={attribute}
+                    onclick={() => {
+                        setAttribute(attribute);
+                    }}
+                ></button>
             </div>
         </div>
     {/each}

@@ -5,9 +5,15 @@
     import { AttributeSelect, Info, Title } from "$lib/components/shared";
 
     // Chart Data
-    const width = 790;
-    const height = 580;
-    const chartMargins = { top: 30, right: -15, bottom: 20, left: 110 };
+    const width = 800;
+    const height = 640;
+    /* margin b/t svg and chart start */
+    const margins = { top: 10, right: 10, left: 10, bottom: 10 };
+
+    const chartWidth = width - margins.right - margins.left;
+    const chartHeight = height - margins.top - margins.bottom;
+    /* margin between svg and axes */
+    const chartMargins = { top: 20, left: 90, bottom: 28, right: 20 };
     const races: MapKeys[] = [
         "white_alone",
         "black_alone",
@@ -62,7 +68,7 @@
     let yScale = $derived(
         scaleLinear()
             .domain([yTicks[0], yTicks[yTicks.length - 1]])
-            .range([height - chartMargins.bottom, chartMargins.top])
+            .range([chartHeight - chartMargins.bottom, chartMargins.top])
     );
 
     let xExtent = $derived.by(() => {
@@ -97,7 +103,7 @@
     let xScale = $derived(
         scaleSqrt()
             .domain(xExtent)
-            .range([chartMargins.left, width - chartMargins.right])
+            .range([chartMargins.left, chartWidth - chartMargins.right])
     );
 
     // Hovering State (For Data Point Tooltips)
@@ -105,64 +111,35 @@
 </script>
 
 <div
-    class="relative flex flex-col items-center rounded-md border-2 border-[gray] bg-white font-bold"
+    class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white font-bold"
 >
     <!-- title -->
     <Title title="Impact of Racial Demographic on Housing Value" />
 
     <!-- graph -->
     <svg
-        width={width + chartMargins.left + chartMargins.right}
-        height={height + chartMargins.top + chartMargins.bottom}
+        width={width + margins.left + margins.right}
+        height={height + margins.top + margins.bottom}
     >
-        <!-- X-Axis -->
-        <g class="axis x-axis">
-            <line
-                x1={chartMargins.left}
-                y1={height - chartMargins.bottom}
-                x2={width - chartMargins.right}
-                y2={height - chartMargins.bottom}
-                stroke="black"
-                stroke-width="3"
-            />
-            <text
-                class="x-axis_label"
-                x={width / 2}
-                y={height + 30}
-                font-size="15px"
-                text-anchor="middle"
-            >
-                Percent of Total Population (%)
-            </text>
-            {#each xTicks as x_val, idx (idx)}
-                <g transform="translate({xScale(x_val)}, {height - chartMargins.bottom})">
-                    <text class="x-axis-tick" y="20" x="-6" transition:fade={{ duration: 500 }}>
-                        {x_val.toFixed(2)}
-                    </text>
-                </g>
-            {/each}
-        </g>
-
         <!-- Grid Lines (x & Y) -->
         {#each yTicks as y_val, idx (idx)}
             <g transform="translate(0, {yScale(y_val)})">
                 {#if idx != 0}
                     <line
                         x1={chartMargins.left}
-                        x2={width - chartMargins.right}
+                        x2={chartWidth - chartMargins.right}
                         stroke="#d4d4d4"
                         style="stroke-dasharray: 2;"
                     />
                 {/if}
             </g>
         {/each}
-
         {#each xTicks as x_val, idx (idx)}
             <g transform="translate({xScale(x_val)}, 0)">
                 {#if idx != 0}
                     <line
                         y1={chartMargins.top}
-                        y2={height - chartMargins.bottom}
+                        y2={chartHeight - chartMargins.bottom}
                         stroke="#d4d4d4"
                         style="stroke-dasharray: 2;"
                         transition:fade={{ duration: 500 }}
@@ -171,13 +148,73 @@
             </g>
         {/each}
 
+        <!-- X-Axis -->
+        <g>
+            <line
+                x1={chartMargins.left}
+                y1={chartHeight - chartMargins.bottom}
+                x2={chartWidth - chartMargins.right}
+                y2={chartHeight - chartMargins.bottom}
+                stroke="black"
+                stroke-width="3"
+            />
+            <text
+                x={chartWidth / 2}
+                y={chartHeight + chartMargins.bottom / 3}
+                font-size="15px"
+                text-anchor="middle"
+            >
+                Percent of Total Population (%)
+            </text>
+            {#each xTicks as x_val, idx (idx)}
+                <g transform="translate({xScale(x_val)}, {chartHeight - chartMargins.bottom})">
+                    <text
+                        font-weight="lighter"
+                        font-size="15px"
+                        y="18"
+                        x="-7"
+                        transition:fade={{ duration: 500 }}
+                    >
+                        {x_val.toFixed(2)}
+                    </text>
+                </g>
+            {/each}
+        </g>
+
+        <!-- Y-Axis -->
+        <g>
+            <line
+                x1={chartMargins.left}
+                y1={chartMargins.top}
+                x2={chartMargins.left}
+                y2={chartHeight - chartMargins.bottom}
+                stroke="black"
+                stroke-width="3"
+            />
+            <text
+                transform="rotate(-90)"
+                x={-chartHeight / 2}
+                y={chartMargins.left / 5}
+                font-size="15px"
+                text-anchor="middle"
+            >
+                Median House Value ($)
+            </text>
+            {#each yTicks as y_val, idx (idx)}
+                <g transform="translate({chartMargins.left}, {yScale(y_val)})">
+                    <text font-size="15px" font-weight="lighter" x="-8" y="7" text-anchor="end">
+                        {yTicks[idx].toLocaleString("en-US")}
+                    </text>
+                </g>
+            {/each}
+        </g>
+
         <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
             {#if filter_race === "" || data_point.race === filter_race}
                 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <circle
-                    class="data_point"
                     cursor="pointer"
                     cx={xScale(data_point.race_percent)}
                     cy={yScale(data_point.median_housing)}
@@ -195,17 +232,19 @@
             {/if}
         {/each}
 
-        <!-- Data Points Hoverable -->
+        <!-- data point hover tooltip -->
         {#if hover != -1}
+            <!-- todo: heuristic length, shift left if overflow -->
             <g class="pointer-events-none">
                 <rect
                     x={xScale(graphValues[hover].race_percent)}
                     y={yScale(graphValues[hover].median_housing)}
                     width="230"
-                    height="50"
-                    stroke="black"
-                    stroke-width="2"
+                    height="100"
+                    stroke="gray"
+                    stroke-width="2px"
                     fill="white"
+                    rx="0.375rem"
                 />
                 <text
                     x={xScale(graphValues[hover].race_percent) + 5}
@@ -214,7 +253,7 @@
                     font-size="12"
                     fill="black"
                 >
-                    Race: {attributeMap[graphValues[hover].race].textLabel}
+                    Race: {attributeMap[graphValues[hover].race].tag}
                 </text>
                 <text
                     x={xScale(graphValues[hover].race_percent) + 5}
@@ -223,7 +262,9 @@
                     font-size="12"
                     fill="black"
                 >
-                    Population %: {graphValues[hover].race_percent.toFixed(2)}
+                    {attributeMap[graphValues[hover].race].tickFormat(
+                        graphValues[hover].race_percent
+                    )} of county population
                 </text>
                 <text
                     x={xScale(graphValues[hover].race_percent) + 5}
@@ -236,35 +277,6 @@
                 </text>
             </g>
         {/if}
-
-        <!-- Y-Axis -->
-        <g class="axis y-axis">
-            <line
-                x1={chartMargins.left}
-                y1={chartMargins.top}
-                x2={chartMargins.left}
-                y2={height - chartMargins.bottom}
-                stroke="black"
-                stroke-width="3"
-            />
-            <text
-                class="y-axis_label"
-                transform="rotate(-90)"
-                x={-height / 2}
-                y={chartMargins.left - 95}
-                font-size="15px"
-                text-anchor="middle"
-            >
-                Median House Value ($)
-            </text>
-            {#each yTicks as y_val, idx (idx)}
-                <g transform="translate(0, {yScale(y_val)})">
-                    <text class="y-axis-tick" x="100" y="10" text-anchor="end">
-                        {yTicks[idx].toLocaleString("en-US")}
-                    </text>
-                </g>
-            {/each}
-        </g>
     </svg>
 
     <!-- Chart Legend -->

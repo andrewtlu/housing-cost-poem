@@ -26,8 +26,6 @@
     $effect(() => {
         content!.scrollLeft = scrollPosition.current;
     });
-
-    // TODO: image scale may be broken on chrome, make sure to check
 </script>
 
 {#if content}
