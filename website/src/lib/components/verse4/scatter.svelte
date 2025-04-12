@@ -260,8 +260,12 @@
 
         <!-- data point hover tooltip -->
         {#if hover}
-            <!-- todo: heuristic length, shift left if overflow -->
-            <g class="pointer-events-none">
+            <g
+                class="pointer-events-none"
+                transform={hoverWidth + xScale(hover.race_percent) > chartWidth
+                    ? `translate(-${hoverWidth - 10}, 0)`
+                    : "translate(0, 0)"}
+            >
                 <rect
                     x={xScale(hover.race_percent)}
                     y={yScale(hover.median_housing) + textYOffset}
