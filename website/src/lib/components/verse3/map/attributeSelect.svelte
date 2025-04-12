@@ -3,8 +3,9 @@ attribute select component
  -->
 <script lang="ts">
     import { fly } from "svelte/transition";
-    import { attributeMap, setAttribute, attributes } from "./store.svelte";
+    import { setAttribute, attributes } from "./store.svelte";
     import { quadInOut } from "svelte/easing";
+    import { attributeMap } from "$lib/data";
     let hover = $state(false);
 </script>
 

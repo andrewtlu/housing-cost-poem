@@ -2,9 +2,9 @@
 hover county info; displays specific locale string value and area's education level
  -->
 <script lang="ts">
-    import type { County } from "$lib/data";
+    import { attributeMap, type County } from "$lib/data";
     import { fly } from "svelte/transition";
-    import { attributeMap, attributeState } from "./store.svelte";
+    import { attributeState } from "./store.svelte";
 
     const attribute = $derived(attributeState[0]);
     const { hovered_county }: { hovered_county: County | null } = $props();
