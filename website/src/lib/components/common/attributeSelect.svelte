@@ -8,10 +8,15 @@ attribute select component
 
     let {
         selected,
+        canDeselect = false, // should only be true if setAttribute/selected can also be "", not just mapkeys
         attributes,
         setAttribute
-    }: { selected: MapKeys | ""; attributes: MapKeys[]; setAttribute: (arg0: MapKeys) => void } =
-        $props();
+    }: {
+        selected: MapKeys | "";
+        canDeselect?: boolean;
+        attributes: MapKeys[];
+        setAttribute: (arg0: MapKeys | "") => void;
+    } = $props();
     let hover = $state(false);
 </script>
 
@@ -45,7 +50,8 @@ attribute select component
                     style={`background-color: ${attributeMap[attribute].color[1]}; opacity: ${attribute === selected || selected === "" || hover ? 1 : 0.4};`}
                     aria-label={attribute}
                     onclick={() => {
-                        setAttribute(attribute);
+                        if (!canDeselect || attribute != selected) setAttribute(attribute);
+                        else setAttribute("");
                     }}
                 ></button>
             </div>

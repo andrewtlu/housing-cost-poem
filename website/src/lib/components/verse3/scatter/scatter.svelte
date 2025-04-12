@@ -323,7 +323,12 @@
     </svg>
 
     <!-- Chart Legend -->
-    <AttributeSelect attributes={races} setAttribute={setSelected} selected={filter_race} />
+    <AttributeSelect
+        attributes={races}
+        setAttribute={setSelected}
+        selected={filter_race}
+        canDeselect={true}
+    />
 
     <!-- Chart Tooltip -->
     <Info
