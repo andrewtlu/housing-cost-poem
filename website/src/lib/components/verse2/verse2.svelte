@@ -13,6 +13,7 @@
         median_income: number;
         education_attainment: number;
         total_population: number;
+        education_attainment_population: number;
     }[] = points;
 
     let lines = [
@@ -138,28 +139,73 @@
                     .on("mouseover", function() {
                         d3.select(this)
                             .attr("stroke", "white") // Add white border on mouseover
-                            .attr("stroke-width", 3); // Make the stroke bold
+                            .attr("stroke-width", 2); // Make the stroke bold
                         d3.select(this.parentNode)
                             .append("rect")
                             .attr("class", "text-background") // Class to style the background
-                            .attr("x", radius - 10) // Adjust position (x) for padding
-                            .attr("y", -radius / 2 - (radius / 4) - 10) // Adjust position (y) for padding
-                            .attr("width", 30) // Set width of the background rectangle
-                            .attr("height", 17) // Set height of the background rectangle
-                            .attr("fill", "white") // Set the fill color to white for the background
-                            .attr("stroke", "none"); // No border for the background
+                            .attr("x", 0.78*(radius + 20) - 16) // Adjust position (x) for padding
+                            .attr("y", 0.78*(-radius) - 10) // Adjust position (y) for padding attr("y", -radius / 2 - (radius / 4) + 10)
+                            .attr("width", 34) // Set width of the background rectangle
+                            .attr("height", 18) // Set height of the background rectangle
+                            .attr("rx", 5)
+                            .attr("ry", 5)
+                            .attr("fill", "darkgreen") // Set the fill color to white for the background
+                            .attr("stroke", "none") // No border for the background
+                            .attr("opacity", 0.4);
                         d3.select(this.parentNode) // Select the group containing the pie slice
                             .append("text")
                             .attr("class", "hover-text") // Add a class to style the text
-                            .attr("x", radius + 10)
-                            .attr("y", -radius / 2 - (radius / 4)) // Center the text vertically
+                            .attr("x", 0.78*(radius + 21))
+                            .attr("y", 0.78*(-radius)) // Center the text vertically
                             .attr("text-anchor", "middle")
                             .attr("dominant-baseline", "middle")
                             .attr("font-size", "16px")
                             .attr("fill", "black")
                             .text(d3.format(".0%")(d.education_attainment / 100))
-                            })
-                        
+                        d3.select(this.parentNode)
+                            .append("rect")
+                            .attr("class", "text-background") // Class to style the background
+                            .attr("x", 0.78*(radius + 20) + 21) // Adjust position (x) for padding
+                            .attr("y", 0.78*(-radius) + 14) // Adjust position (y) for padding attr("y", -radius / 2 - (radius / 4) + 10)
+                            .attr("width", 110) // Set width of the background rectangle
+                            .attr("height", 12) // Set height of the background rectangle
+                            .attr("rx", 5)
+                            .attr("ry", 5)
+                            .attr("fill", "white") // Set the fill color to white for the background
+                            .attr("stroke", "none") // No border for the background
+                            .attr("opacity", 0.7);
+                        d3.select(this.parentNode)
+                            .append("text")
+                            .attr("class", "hover-text")
+                            .attr("x", 0.78*(radius + 21))
+                            .attr("y", 0.78*(-radius) + 14)
+                            .attr("text-anchor", "middle")
+                            .attr("dominant-baseline", "middle")
+                            .attr("font-size", "12px")
+                            .attr("fill", "black")
+                            .text((d) => `${d.education_attainment_population.toLocaleString()}`);
+                        d3.select(this.parentNode)
+                            .append("rect")
+                            .attr("class", "text-background") // Class to style the background
+                            .attr("x", -110 / 2) // Adjust position (x) for padding
+                            .attr("y", radius + 18) // Adjust position (y) for padding attr("y", -radius / 2 - (radius / 4) + 10)
+                            .attr("width", 110) // Set width of the background rectangle
+                            .attr("height", 12) // Set height of the background rectangle
+                            .attr("rx", 5)
+                            .attr("ry", 5)
+                            .attr("fill", "white") // Set the fill color to white for the background
+                            .attr("stroke", "none") // No border for the background
+                            .attr("opacity", 0.7);
+                        d3.select(this.parentNode)
+                            .attr("text-anchor", "middle")
+                            .append("text")
+                            .attr("class", "text-population")
+                            .attr("x", 0) // Center horizontally
+                            .attr("y", radius + 28)
+                            .attr("font-size", "12px")
+                            .attr("fill", "#black")
+                            .text((d) => `Total pop: ${d.total_population.toLocaleString()}`);
+                        })
 
                     .on("mouseout", function() {
                         d3.select(this)
@@ -169,15 +215,18 @@
                             .selectAll(".hover-text") // Select the text element with the class "hover-text"
                             .remove(); // Remove the text
                         d3.select(this.parentNode)
-                        .selectAll(".text-background") // Select the background rectangle
-                        .remove(); // Remove the background rectangle
+                            .selectAll(".text-background") // Select the background rectangle
+                            .remove(); // Remove the background rectangle
+                        d3.select(this.parentNode)
+                            .selectAll(".text-population")
+                            .remove(); // Remove the text
                     });
 
             })
 
 
         // Add labels
-        svg.selectAll("text")
+        svg.selectAll("text.metro")
             .data(data)
             .enter()
             .append("text")
@@ -187,8 +236,9 @@
             .attr("dominant-baseline", "middle") // Center text vertically
             .attr("font-size", "16px")
             .attr("fill", "#333")
-            .text((d) => d.metro_area)
+            .text((d) => d.metro_area);
     });
+
 </script>
 
 <ul>
