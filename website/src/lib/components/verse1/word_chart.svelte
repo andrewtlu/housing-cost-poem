@@ -7,7 +7,7 @@ map component used in verse 3 for visualizing geographic data
     import { defaultWords } from "./keyframe.svelte";
     import cloud from "d3-cloud";
     import { fade } from "svelte/transition";
-    import { Title, Info } from "$lib/components/shared";
+    import { Title, Info } from "$lib/components/common";
 
     // chart limits
     const similarityExtent = extent(homeSimilarityData.values()) as [number, number];

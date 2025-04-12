@@ -24,6 +24,7 @@
     {/each}
 </ul>
 
+<!-- TODO: maybe use snippets to wrap both graphs and shared elements so that less rerendering happens -->
 {#key SelectedGraph}
     {#if SelectedGraph}
         <SelectedGraph />

@@ -1,5 +1,6 @@
 import { type Keyframe } from "$lib/keyframe.svelte";
 import { attributeState, centroidState, setAttributes, setCentroid } from "./map/store.svelte";
+import { selectedState, setSelected } from "./scatter/store.svelte";
 import { Map } from "./map";
 import { ScatterPlot } from "./scatter";
 import type { Component } from "svelte";
@@ -78,7 +79,7 @@ export const verse3Keyframes: Keyframe[] = [
         toRun: [
             () => {
                 selectedGraphState[0] = ScatterPlot;
-                // general
+                setSelected("");
             }
         ]
     },
@@ -88,7 +89,7 @@ export const verse3Keyframes: Keyframe[] = [
         toRun: [
             () => {
                 selectedGraphState[0] = ScatterPlot;
-                // black if not picked
+                if (selectedState[0] == "") setSelected("black_alone");
             }
         ]
     }
