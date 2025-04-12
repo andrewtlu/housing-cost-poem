@@ -161,7 +161,16 @@
         height={height + margins.top + margins.bottom}
     >
         <!-- clipping bounds for circles in graph (so circles not within the graph axes are not shown) -->
-        <!-- <defs>  -->
+        <defs>
+            <clipPath id="scatter-chart-area">
+                <rect
+                    x={chartMargins.left}
+                    y={chartMargins.right}
+                    width={chartWidth - chartMargins.left - chartMargins.right}
+                    height={chartHeight - chartMargins.top - chartMargins.bottom}
+                />
+            </clipPath>
+        </defs>
 
         <!-- Grid Lines (x & Y) -->
         {#each yTicks as y_val, idx (idx)}
@@ -256,6 +265,7 @@
             <!-- svelte-ignore a11y_mouse_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <circle
+                clip-path="url(#scatter-chart-area)"
                 cursor="pointer"
                 style="transition: opacity .4s ease;"
                 cx={tweenedXPositions[idx].current}
