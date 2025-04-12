@@ -4,12 +4,24 @@ map component used in verse 3 for visualizing geographic data
 <script lang="ts">
     import { data, type County } from "$lib/data";
     import topo from "$lib/data/us-counties.topojson.json";
-    import { geoPath, geoAlbers, scaleLinear, extent, zoomIdentity, ZoomTransform } from "d3";
+    import { geoPath, geoAlbers, zoomIdentity, ZoomTransform } from "d3";
     import { feature, mesh } from "topojson-client";
     import type { Topology, GeometryObject } from "topojson-specification";
-    import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
+    import type { FeatureCollection } from "geojson";
     import Legend from "./legend.svelte";
     import { fly } from "svelte/transition";
+    import {
+        cluster_colors,
+        attributeState,
+        getColor,
+        reloadColors,
+        setCentroid,
+        centroidState
+    } from "./store.svelte";
+    import CountyInfo from "./countyInfo.svelte";
+    import Title from "./title.svelte";
+    import AttributeSelect from "./attributeSelect.svelte";
+    import { untrack } from "svelte";
 
     // data
     const US = topo as unknown as Topology;
@@ -29,9 +41,8 @@ map component used in verse 3 for visualizing geographic data
             .translate([width / 2, height / 2])
     );
     const path = $derived(geoPath().projection(projection));
-    let centroid = $state(-1);
+    let centroid = $derived(centroidState[0]);
     // centroid of each cluster on map
-    // TODO: may be worth clustering DC & Balti together
     const centroids = $derived(
         (() => {
             const out: [number, number][] = [
@@ -69,62 +80,42 @@ map component used in verse 3 for visualizing geographic data
         })()
     );
 
-    // color
-    let cluster_colors = $state([
-        scaleLinear<string>(),
-        scaleLinear<string>(),
-        scaleLinear<string>(),
-        scaleLinear<string>(),
-        scaleLinear<string>()
-    ]);
-    const cluster_ranges: number[][] = [[], [], [], [], []];
-    const getColor = (county: Feature<Geometry, GeoJsonProperties>) => {
-        let county_data = data.get(county.id as number);
-        if (county_data !== undefined) {
-            return cluster_colors[county_data.area_cluster](county_data.median_home_value);
-        }
-        return "white";
-    };
-
     // zoom handling
-    // TODO: fix blurryness
     const radius = 30;
     let scale = $state(1);
     let translate = $state([0, 0]);
     let transform: ZoomTransform = $state(zoomIdentity.translate(0, 0));
-    const zoomToCluster = (cluster_idx: number) => {
-        centroid = cluster_idx;
-        scale = width / (radius * 2);
-        translate[0] = width / 2 - centroids[centroid][0] + margin.left;
-        translate[1] = height / 2 - centroids[centroid][1] + margin.top;
+    const zoomUpdate = (centroid: number) => {
+        if (centroid == -1) {
+            scale = 1;
+            translate = [0, 0];
+            transform = zoomIdentity.translate(translate[0], translate[1]).scale(scale);
+        } else {
+            scale = width / (radius * 2);
+            translate[0] = width / 2 - centroids[centroid][0] + margin.left;
+            translate[1] = height / 2 - centroids[centroid][1] + margin.top;
 
-        transform = zoomIdentity.scale(scale).translate(translate[0], translate[1]);
+            transform = zoomIdentity.scale(scale).translate(translate[0], translate[1]);
+        }
     };
-    const resetZoom = () => {
-        centroid = -1;
-        scale = 1;
-        translate = [0, 0];
-        transform = zoomIdentity.translate(translate[0], translate[1]).scale(scale);
-    };
+    $effect(() => {
+        // for some reason having raw zoomUpdate() without untrack causes infinite effect loop
+        if (centroid !== null) untrack(() => zoomUpdate(centroid));
+    });
 
     // county hovering handling
     let hovered_county: County | null = $state(null);
     const handleHover = (id: number) => {
         const county = data.get(id);
-        hovered_county = county !== undefined ? county : null;
+        if (county !== undefined && county.area_cluster == centroid) hovered_county = county;
+        else hovered_county = null;
     };
 
     // load variables dependent on data
+    const attribute = $derived(attributeState[0]);
     $effect(() => {
-        if (data) {
-            data.values().forEach((element) =>
-                cluster_ranges[element.area_cluster].push(element.median_home_value)
-            );
-            cluster_ranges.forEach((range, idx) => {
-                cluster_colors[idx] = scaleLinear<string>()
-                    .domain(extent(range) as [number, number])
-                    .range(["yellow", "red"]);
-            });
+        if (data && attribute) {
+            reloadColors();
         }
     });
 </script>
@@ -132,19 +123,14 @@ map component used in verse 3 for visualizing geographic data
 <div
     class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white/80 font-bold"
 >
-    <!-- title -->
-    <div
-        class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
-    >
-        Median Housing Cost Percentage of Metro Area Maximum
-    </div>
+    <Title />
 
     <!-- reset zoom button -->
     {#if centroid !== -1}
         <button
             aria-label="reset-zoom"
             class="reset-zoom btn absolute top-5 left-5 z-10 flex h-fit w-fit items-center rounded-full p-0 pr-2 align-middle"
-            onclick={resetZoom}
+            onclick={() => setCentroid(-1)}
             transition:fly={{ x: -500, duration: 700 }}
         >
             <svg
@@ -167,30 +153,11 @@ map component used in verse 3 for visualizing geographic data
             transition:fly={{ x: -500, duration: 700 }}
         >
             {#key centroid}
-                {#if hovered_county}
-                    <div
-                        class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5"
-                        transition:fly={{ x: -500, duration: 700 }}
-                    >
-                        <ul>
-                            <li>{hovered_county.county}</li>
-                            <li>Median Home Value: ${hovered_county.median_home_value}</li>
-                            <li>
-                                % Pop w/ College Degree: {Math.round(
-                                    (hovered_county.educational_attainment /
-                                        hovered_county.total_population) *
-                                        100
-                                )}%
-                            </li>
-                        </ul>
-                    </div>
-                {/if}
-                <div class="w-fit rounded-md border-2 border-[gray] bg-white/80 px-5">
-                    <Legend
-                        width={width + margin.left + margin.right}
-                        color={cluster_colors[centroid]}
-                    />
-                </div>
+                <CountyInfo {hovered_county} />
+                <Legend
+                    width={width + margin.left + margin.right}
+                    color={cluster_colors[centroid]}
+                />
                 <div
                     class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
                 >
@@ -204,8 +171,7 @@ map component used in verse 3 for visualizing geographic data
     <!-- info tooltip -->
     <div
         class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
-        data-tip={"Click on a colored metro area to view details!" +
-            "\nData collected from US Census Bureau, censusreporter.org, and Logan et al.’s Longitudinal Tract Data Base (2000) and compiled on Kaggle."}
+        data-tip="Click on a colored metro area to view details, or a dot to change the attribute! Data collected from US Census Bureau, censusreporter.org, and Logan et al.'s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
     >
         <svg
             fill="#000000"
@@ -262,7 +228,8 @@ map component used in verse 3 for visualizing geographic data
                         <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                         <path
                             d={path(county)}
-                            fill={getColor(county)}
+                            fill={getColor(county, centroid)}
+                            style="transition: fill .4s ease;"
                             stroke="lightgray"
                             stroke-width="0.2"
                             role="button"
@@ -276,7 +243,7 @@ map component used in verse 3 for visualizing geographic data
                             }}
                             onclick={() => {
                                 const cty = data.get(county.id as number);
-                                if (cty && cty !== undefined) zoomToCluster(cty.area_cluster);
+                                if (cty && cty !== undefined) setCentroid(cty.area_cluster);
                             }}
                         />
                     {/if}
@@ -301,12 +268,12 @@ map component used in verse 3 for visualizing geographic data
                         class={`opacity-0 ${scale == 1 ? "hover:cursor-pointer" : "pointer-events-none"}`}
                         role="button"
                         tabindex={idx}
-                        onclick={() => zoomToCluster(idx)}
+                        onclick={() => setCentroid(idx)}
                     />
                 {/each}
-
-                <!-- TODO: legend, interactive components -->
             </svg>
         {/if}
     </div>
+
+    <AttributeSelect />
 </div>
