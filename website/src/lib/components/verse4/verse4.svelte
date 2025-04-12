@@ -16,9 +16,4 @@
     {/each}
 </ul>
 
-<div class="bg-white">
-    <h2 class="mb-2.5 text-center text-2xl font-bold">
-        Impact of Racial Demographic on Housing Value
-    </h2>
-    <Scatter />
-</div>
+<Scatter />

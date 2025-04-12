@@ -2,12 +2,12 @@
     import { attributeMap, data, type CountyRaces, type MapKeys } from "$lib/data";
     import { extent, scaleSqrt, scaleLinear } from "d3";
     import { fade } from "svelte/transition";
-    import { Info } from "$lib/components/shared";
+    import { AttributeSelect, Info, Title } from "$lib/components/shared";
 
     // Chart Data
-    const width = 780;
-    const height = 500;
-    const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
+    const width = 790;
+    const height = 580;
+    const chartMargins = { top: 30, right: -15, bottom: 20, left: 110 };
     const races: MapKeys[] = [
         "white_alone",
         "black_alone",
@@ -104,7 +104,13 @@
     let hover = $state(-1);
 </script>
 
-<div class="relative flex items-center gap-2">
+<div
+    class="relative flex flex-col items-center rounded-md border-2 border-[gray] bg-white font-bold"
+>
+    <!-- title -->
+    <Title title="Impact of Racial Demographic on Housing Value" />
+
+    <!-- graph -->
     <svg
         width={width + chartMargins.left + chartMargins.right}
         height={height + chartMargins.top + chartMargins.bottom}
@@ -262,27 +268,7 @@
     </svg>
 
     <!-- Chart Legend -->
-    <div class="-ml-20 pr-5">
-        <ul class="flex flex-col gap-1.25">
-            {#each races as race, idx (idx)}
-                <li>
-                    <button
-                        class="flex cursor-pointer items-center"
-                        style="opacity: {filter_race === races[idx] || filter_race === ''
-                            ? 1
-                            : 0.4}; transition: opacity .4s ease;"
-                        onclick={() => filterBy(races[idx])}
-                    >
-                        <div
-                            class="mr-2 h-4 w-4 shrink-0 rounded-full"
-                            style="background-color: {attributeMap[race].color[1]};"
-                        ></div>
-                        <text class="">{attributeMap[race].tag}</text>
-                    </button>
-                </li>
-            {/each}
-        </ul>
-    </div>
+    <AttributeSelect attributes={races} setAttribute={filterBy} />
 
     <!-- Chart Tooltip -->
     <Info

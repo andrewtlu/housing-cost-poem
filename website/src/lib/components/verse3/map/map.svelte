@@ -19,13 +19,14 @@ map component used in verse 3 for visualizing geographic data
         getColor,
         reloadColors,
         setCentroid,
-        centroidState
+        centroidState,
+        attributes,
+        setAttribute
     } from "./store.svelte";
 
     import Legend from "./legend.svelte";
     import CountyInfo from "./countyInfo.svelte";
-    import AttributeSelect from "./attributeSelect.svelte";
-    import { Title, Info } from "$lib/components/shared";
+    import { Title, Info, AttributeSelect } from "$lib/components/shared";
 
     // data
     const US = topo as unknown as Topology;
@@ -250,5 +251,5 @@ map component used in verse 3 for visualizing geographic data
         {/if}
     </div>
 
-    <AttributeSelect />
+    <AttributeSelect {attributes} {setAttribute} />
 </div>

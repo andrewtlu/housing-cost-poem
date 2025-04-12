@@ -3,15 +3,20 @@ attribute select component
  -->
 <script lang="ts">
     import { fly } from "svelte/transition";
-    import { setAttribute, attributes } from "./store.svelte";
     import { quadInOut } from "svelte/easing";
-    import { attributeMap } from "$lib/data";
+    import { attributeMap, type MapKeys } from "$lib/data";
+
+    let {
+        attributes,
+        setAttribute
+    }: { attributes: MapKeys[]; setAttribute: (arg0: MapKeys) => void } = $props();
     let hover = $state(false);
 </script>
 
 <div
     class="pointer-events-none absolute top-1/2 right-5 flex -translate-y-1/2 flex-col p-2 transition-all"
 >
+    <!-- TODO: make unselected opacity less -->
     {#each attributes as attribute (attribute)}
         <div class="flex h-7 flex-row items-center justify-end overflow-hidden">
             {#if hover}
