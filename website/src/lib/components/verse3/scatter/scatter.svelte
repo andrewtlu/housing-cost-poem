@@ -266,20 +266,18 @@
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <circle
                 clip-path="url(#scatter-chart-area)"
-                cursor={filter_race === "" || data_point.race === filter_race
-                    ? "pointer"
-                    : "normal"}
-                style="transition: opacity .4s ease;"
+                cursor="pointer"
+                style={`transition: opacity .4s ease; ${filter_race === "" || data_point.race === filter_race ? "pointer-events: all;" : "pointer-events: none;"}`}
                 cx={tweenedXPositions[idx].current}
                 cy={yScale(data_point.median_housing)}
                 r="5"
                 fill={attributeMap[data_point.race].color[1]}
                 opacity={filter_race === "" || data_point.race === filter_race ? "1" : "0.1"}
                 onmouseover={() => {
-                    if (filter_race === "" || data_point.race === filter_race) hover = data_point;
+                    hover = data_point;
                 }}
                 onmouseleave={() => {
-                    if (filter_race === "" || data_point.race === filter_race) hover = null;
+                    hover = null;
                 }}
             />
         {/each}
