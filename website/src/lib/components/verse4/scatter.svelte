@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { data, type CountyRaces } from "$lib/data";
-    import { extent, scaleSqrt, scaleOrdinal, scaleLinear } from "d3";
+    import { attributeMap, data, type CountyRaces, type MapKeys } from "$lib/data";
+    import { extent, scaleSqrt, scaleLinear } from "d3";
     import { fade } from "svelte/transition";
     import { Info } from "$lib/components/shared";
 
@@ -8,17 +8,7 @@
     const width = 780;
     const height = 500;
     const chartMargins = { top: 20, right: 5, bottom: 20, left: 110 };
-    const racesLegend = [
-        "White",
-        "Black",
-        "Native Indian or Alaska Native",
-        "Asian",
-        "Native Hawaiian or Pacific Islander",
-        "Other Race Alone",
-        "Two or More Races",
-        "Hispanic or Latino"
-    ];
-    const racesDataAttr = [
+    const races: MapKeys[] = [
         "white_alone",
         "black_alone",
         "native_alone",
@@ -31,7 +21,7 @@
 
     // Transformed Data used by Scatterplot
     let graphValues: {
-        race: string;
+        race: MapKeys;
         median_housing: number;
         race_percent: number;
         county_name: string;
@@ -42,7 +32,7 @@
             const tmp = [];
             // for each race, add the race, median housing, race_percent
             for (const county of data.values()) {
-                for (const county_race of racesDataAttr) {
+                for (const county_race of races) {
                     tmp.push({
                         race: county_race,
                         median_housing: county.median_home_value,
@@ -58,8 +48,8 @@
     });
 
     // Race Filtering
-    let filter_race = $state("");
-    const filterBy = (race: string) => {
+    let filter_race: MapKeys | "" = $state("");
+    const filterBy = (race: MapKeys) => {
         if (filter_race === race) {
             filter_race = "";
         } else {
@@ -109,20 +99,6 @@
             .domain(xExtent)
             .range([chartMargins.left, width - chartMargins.right])
     );
-
-    // Color
-    const point_colors = scaleOrdinal<string>()
-        .range([
-            "#1f77b4",
-            "#ff7f03",
-            "#2ca02c",
-            "#d62728",
-            "#9467bd",
-            "#8c564b",
-            "#e377c2",
-            "#7f7f7f"
-        ])
-        .domain(racesLegend);
 
     // Hovering State (For Data Point Tooltips)
     let hover = $state(-1);
@@ -200,7 +176,7 @@
                     cx={xScale(data_point.race_percent)}
                     cy={yScale(data_point.median_housing)}
                     r="5"
-                    fill={point_colors(data_point.race)}
+                    fill={attributeMap[data_point.race].color[1]}
                     opacity="1"
                     transition:fade={{ duration: 500 }}
                     onmouseover={() => {
@@ -215,7 +191,7 @@
 
         <!-- Data Points Hoverable -->
         {#if hover != -1}
-            <g>
+            <g class="pointer-events-none">
                 <rect
                     x={xScale(graphValues[hover].race_percent)}
                     y={yScale(graphValues[hover].median_housing)}
@@ -232,7 +208,7 @@
                     font-size="12"
                     fill="black"
                 >
-                    Race: {racesLegend[racesDataAttr.indexOf(graphValues[hover].race)]}
+                    Race: {attributeMap[graphValues[hover].race].textLabel}
                 </text>
                 <text
                     x={xScale(graphValues[hover].race_percent) + 5}
@@ -288,41 +264,23 @@
     <!-- Chart Legend -->
     <div class="-ml-20 pr-5">
         <ul class="flex flex-col gap-1.25">
-            {#if filter_race === ""}
-                {#each racesLegend as race, idx (idx)}
-                    <li>
-                        <button
-                            class="flex cursor-pointer items-center"
-                            onclick={() => filterBy(racesDataAttr[idx])}
-                        >
-                            <div
-                                class="mr-2 h-4 w-4 shrink-0 rounded-full"
-                                style="background-color: {point_colors(race)};"
-                            ></div>
-                            <text class="">{race}</text>
-                        </button>
-                    </li>
-                {/each}
-            {:else}
-                {#each racesLegend as race, idx (idx)}
-                    <li>
-                        <button
-                            class="flex cursor-pointer items-center"
-                            style="opacity: {filter_race === racesDataAttr[idx] ||
-                            filter_race === ''
-                                ? 1
-                                : 0.4};"
-                            onclick={() => filterBy(racesDataAttr[idx])}
-                        >
-                            <div
-                                class="mr-2 h-4 w-4 shrink-0 rounded-full"
-                                style="background-color: {point_colors(race)};"
-                            ></div>
-                            <text class="">{race}</text>
-                        </button>
-                    </li>
-                {/each}
-            {/if}
+            {#each races as race, idx (idx)}
+                <li>
+                    <button
+                        class="flex cursor-pointer items-center"
+                        style="opacity: {filter_race === races[idx] || filter_race === ''
+                            ? 1
+                            : 0.4}; transition: opacity .4s ease;"
+                        onclick={() => filterBy(races[idx])}
+                    >
+                        <div
+                            class="mr-2 h-4 w-4 shrink-0 rounded-full"
+                            style="background-color: {attributeMap[race].color[1]};"
+                        ></div>
+                        <text class="">{attributeMap[race].tag}</text>
+                    </button>
+                </li>
+            {/each}
         </ul>
     </div>
 
