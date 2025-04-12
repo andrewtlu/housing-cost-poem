@@ -1,6 +1,6 @@
 <script lang="ts">
     import { getFrame, keyframe } from "$lib";
-    import { Map } from "./map";
+    import { selectedGraphState } from "./keyframe.svelte";
 
     // dashes are em dashes and quotations are curled :)
     let lines = [
@@ -9,6 +9,8 @@
         "funny—our fathers’ missteps",
         "make funding fortune perhaps..."
     ];
+
+    let SelectedGraph = $derived(selectedGraphState[0]);
 </script>
 
 <ul>
@@ -22,4 +24,9 @@
     {/each}
 </ul>
 
-<Map />
+<!-- TODO: maybe use snippets to wrap both graphs and shared elements so that less rerendering happens -->
+{#key SelectedGraph}
+    {#if SelectedGraph}
+        <SelectedGraph />
+    {/if}
+{/key}

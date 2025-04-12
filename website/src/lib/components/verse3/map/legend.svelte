@@ -3,7 +3,8 @@ legend for the map component; displays attribute name, color gradient, and gradi
  -->
 <script lang="ts">
     import { scaleLinear, type ScaleLinear } from "d3-scale";
-    import { attributeMap, attributeState } from "./store.svelte";
+    import { attributeState } from "./store.svelte";
+    import { attributeMap } from "$lib/data";
 
     let {
         color,

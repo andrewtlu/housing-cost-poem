@@ -3,8 +3,15 @@ attribute select component
  -->
 <script lang="ts">
     import { fly } from "svelte/transition";
-    import { attributeMap, setAttribute, attributes } from "./store.svelte";
     import { quadInOut } from "svelte/easing";
+    import { attributeMap, type MapKeys } from "$lib/data";
+
+    let {
+        selected,
+        attributes,
+        setAttribute
+    }: { selected: MapKeys | ""; attributes: MapKeys[]; setAttribute: (arg0: MapKeys) => void } =
+        $props();
     let hover = $state(false);
 </script>
 
@@ -22,8 +29,9 @@ attribute select component
                 </div>
             {/if}
 
+            <!-- hacky blank background to hide text flying out -->
             <div
-                class="pointer-events-auto z-20 h-7 pl-1"
+                class="pointer-events-auto z-20 flex h-7 w-7 items-center justify-center overflow-hidden rounded-xl bg-white"
                 role="group"
                 onmouseenter={() => {
                     hover = true;
@@ -33,12 +41,12 @@ attribute select component
                 }}
             >
                 <button
-                    class="btn btn-circle pointer-events-auto h-5 w-5 border-0 p-0"
+                    class="btn btn-circle pointer-events-auto h-5 w-5 border-0 p-0 transition-opacity duration-300"
+                    style={`background-color: ${attributeMap[attribute].color[1]}; opacity: ${attribute === selected || selected === "" || hover ? 1 : 0.4};`}
                     aria-label={attribute}
                     onclick={() => {
                         setAttribute(attribute);
                     }}
-                    style="background-color: {attributeMap[attribute].color[1]};"
                 ></button>
             </div>
         </div>

@@ -11,5 +11,5 @@ export { default as Nav } from "./nav.svelte";
 export { titleKeyframes } from "./title/keyframe";
 export { verse1Keyframes } from "./verse1/keyframe.svelte";
 export { verse2Keyframes } from "./verse2/keyframe";
-export { verse3Keyframes } from "./verse3/keyframe";
+export { verse3Keyframes } from "./verse3/keyframe.svelte";
 export { verse4Keyframes } from "./verse4/keyframe";
