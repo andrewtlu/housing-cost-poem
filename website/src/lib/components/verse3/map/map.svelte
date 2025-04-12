@@ -21,6 +21,7 @@ map component used in verse 3 for visualizing geographic data
     import CountyInfo from "./countyInfo.svelte";
     import Title from "./title.svelte";
     import AttributeSelect from "./attributeSelect.svelte";
+    import { untrack } from "svelte";
 
     // data
     const US = topo as unknown as Topology;
@@ -84,7 +85,7 @@ map component used in verse 3 for visualizing geographic data
     let scale = $state(1);
     let translate = $state([0, 0]);
     let transform: ZoomTransform = $state(zoomIdentity.translate(0, 0));
-    $effect(() => {
+    const zoomUpdate = (centroid: number) => {
         if (centroid == -1) {
             scale = 1;
             translate = [0, 0];
@@ -96,6 +97,10 @@ map component used in verse 3 for visualizing geographic data
 
             transform = zoomIdentity.scale(scale).translate(translate[0], translate[1]);
         }
+    };
+    $effect(() => {
+        // for some reason having raw zoomUpdate() without untrack causes infinite effect loop
+        if (centroid !== null) untrack(() => zoomUpdate(centroid));
     });
 
     // county hovering handling
