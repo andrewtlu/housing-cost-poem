@@ -14,7 +14,11 @@
     // helper variables
     let xPos = $state(0);
     let yPos = $state(0);
+    let sunMoonRadius = $state(0);
+    let rotate = $state(60);
+    const transitionStyle = "transition: all .5s ease;";
     const sunRadius = 40;
+    const moonRadius = 38;
     const totalFrames = getFramesCount();
     const nonEndingFrameCount = totalFrames - getFramesCount(4);
 
@@ -37,13 +41,7 @@
         else return sunUp(sunUpScale(keyframe.value));
     });
 
-    // sunrise
-    let rise = $state(
-        scalePow()
-            .domain([0, getFramesCount() - 1])
-            .range([0, 0])
-    );
-    let translateY = $derived(rise(keyframe.value));
+    // sun-moon rotation
 
     // refraction optical illusion size
     const size = $state(
@@ -59,7 +57,8 @@
             const styles = window.getComputedStyle(document.body);
 
             xPos = container.clientWidth / 2;
-            yPos = container.clientHeight / 4;
+            yPos = (container.clientHeight * 3) / 4;
+            sunMoonRadius = (container.clientHeight * 3) / 4;
 
             sunDown = interpolateRgbBasis([
                 styles.getPropertyValue("--color-twilight"),
@@ -70,11 +69,6 @@
                 styles.getPropertyValue("--color-dawn"),
                 styles.getPropertyValue("--color-sunrise")
             ]);
-
-            rise = scalePow()
-                .domain([0, totalFrames - 1])
-                .range([container.clientHeight, 0])
-                .exponent(4);
         }
     });
 </script>
@@ -84,17 +78,50 @@
     bind:this={container}
 >
     <svg {width} {height}>
-        <rect fill={skyColor} width="100%" height="100%" style="transition: all .5s ease;"> </rect>
+        <rect fill={skyColor} width="100%" height="100%" style={transitionStyle}> </rect>
 
         <!-- if statement prevents circle spawning in top left corner on page load -->
         {#if container}
+            <!-- inline style for rotating around center, see https://stackoverflow.com/questions/15138801/rotate-rectangle-around-its-own-center-in-svg -->
             <g
-                transform={`translate(${xPos}, ${yPos + translateY}) scale(${transformScale})`}
-                style="transition: all .5s ease;"
+                transform={`translate(${xPos}, ${yPos}) rotate(${rotate})`}
+                transform-origin="center"
+                style={`${transitionStyle} transform-box: fill-box;`}
             >
-                <circle fill="var(--color-sun-outer)" cx="0" cy="0" r={sunRadius * 3}> </circle>
-                <circle fill="var(--color-sun-mid)" cx="0" cy="0" r={sunRadius * 2}> </circle>
-                <circle fill="var(--color-sun-inner)" cx="0" cy="0" r={sunRadius}> </circle>
+                <!-- sun -->
+                <g
+                    transform={`scale(${transformScale}) translate(${sunMoonRadius}, 0)`}
+                    style={transitionStyle}
+                >
+                    <circle fill="var(--color-sun-outer)" cx="0" cy="0" r={sunRadius * 3}> </circle>
+                    <circle fill="var(--color-sun-mid)" cx="0" cy="0" r={sunRadius * 2}> </circle>
+                    <circle fill="var(--color-sun-inner)" cx="0" cy="0" r={sunRadius}> </circle>
+                </g>
+
+                <!-- moon -->
+                <g transform={`translate(-${sunMoonRadius}, 0)`} style={transitionStyle}>
+                    <defs>
+                        <mask id="moon">
+                            <circle fill="white" cx="0" cy="0" r={moonRadius}> </circle>
+                            <circle
+                                fill="black"
+                                cx={-moonRadius / 1.5}
+                                cy={-moonRadius / 3}
+                                r={moonRadius}
+                            >
+                            </circle>
+                        </mask>
+                    </defs>
+                    <circle
+                        fill="var(--color-moon)"
+                        cx="0"
+                        cy="0"
+                        r={moonRadius}
+                        mask="url(#moon)"
+                        transform={`rotate(-${rotate})`}
+                    >
+                    </circle>
+                </g>
             </g>
         {/if}
     </svg>
