@@ -8,7 +8,22 @@ const verse = 4;
 export const verse4Keyframes: Keyframe[] = [
     {
         verse: verse,
-        bolded: [],
+        bolded: [0],
+        toRun: []
+    },
+    {
+        verse: verse,
+        bolded: [1],
+        toRun: []
+    },
+    {
+        verse: verse,
+        bolded: [2],
+        toRun: []
+    },
+    {
+        verse: verse,
+        bolded: [3],
         toRun: []
     }
 ];

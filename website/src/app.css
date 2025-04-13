@@ -3,16 +3,31 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-@theme {
+@theme static {
     --font-slabo: "Slabo 27px", serif;
     --font-sans: "Funnel Sans", sans-serif;
     --color-background: white;
     --color-foreground: rgba(240, 240, 240, 0.9);
     --color-primary: black;
+
+    /* sky colors */
+    --color-twilight: #0e6ba8;
+    --color-midnight: #030436;
+    --color-dawn: #43afca;
+    --color-sunrise: #a6e1fa;
+
+    /* sun colors */
+    --color-sun-outer: #e85d04;
+    --color-sun-mid: #f48c06;
+    --color-sun-inner: #ffba08;
+
+    /* moon colors */
+    --color-moon: #e0e1dd;
+    --color-moon-crater: #778da9;
 }
 
 :root {
-    background: var(--color-background);
+    background: var(--color-twilight);
     color: var(--color-text-primary);
 }
 
