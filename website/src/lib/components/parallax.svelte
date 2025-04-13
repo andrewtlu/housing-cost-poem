@@ -6,12 +6,12 @@ Parallax component, used to render the city skyline in the background of the poe
     import { getFramesCount, keyframe } from "$lib/keyframe.svelte";
     import { scaleLinear } from "d3";
 
-    // simple logic: scroll to however far in the poem the current keyframe is
-    const scrollPosition = scaleLinear()
+    // simple logic: translate to however far in the poem the current keyframe is
+    const translatePercentage = scaleLinear()
         .domain([0, getFramesCount() - 1])
         .range([0, 1]);
     // trust me the math works
-    let translateXPercentage = $derived(25 - scrollPosition(keyframe.value) * 50);
+    let translateXPercentage = $derived(25 - translatePercentage(keyframe.value) * 50);
 </script>
 
 <div class="absolute top-0 -z-50 h-screen w-screen overflow-hidden">
