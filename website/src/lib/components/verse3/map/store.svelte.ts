@@ -7,8 +7,9 @@ import type { Feature, GeoJsonProperties, Geometry } from "geojson";
 // what to color by, list is to work around exporting non-const
 // to use attribute, do $derived(attributeState[0])
 export const attributeState: [MapKeys] = $state(["median_home_value"]);
-export const setAttribute = (attr: MapKeys) => {
-    attributeState[0] = attr;
+export const setAttribute = (attr: MapKeys | "") => {
+    if (attr === "") attributeState[0] = "total_population";
+    else attributeState[0] = attr;
 };
 const attribute = $derived(attributeState[0]);
 

@@ -6,11 +6,14 @@
 @theme {
     --font-slabo: "Slabo 27px", serif;
     --font-sans: "Funnel Sans", sans-serif;
+    --color-background: white;
+    --color-foreground: rgba(240, 240, 240, 0.9);
+    --color-primary: black;
 }
 
 :root {
-    background: white;
-    color: black;
+    background: var(--color-background);
+    color: var(--color-text-primary);
 }
 
 /*
