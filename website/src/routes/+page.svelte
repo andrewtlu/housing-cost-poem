@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import "../app.css";
-    import { getFrame, keyframe, overrideScroll } from "$lib";
+    import { getFrame, keyframe, mountNav } from "$lib";
     import { verses, Parallax, Nav } from "$lib/components";
 
     /** Main content DOM element */
@@ -10,7 +10,7 @@
     let CurrentVerse = $derived(verses[getFrame(keyframe.value).verse as 0 | 1 | 2 | 3 | 4]);
 
     onMount(() => {
-        return overrideScroll(content!);
+        return mountNav(content!);
     });
 </script>
 
