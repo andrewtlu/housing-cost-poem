@@ -166,7 +166,7 @@
                 <rect
                     x={chartMargins.left}
                     y={chartMargins.right}
-                    width={chartWidth - chartMargins.left - chartMargins.right}
+                    width={chartWidth - chartMargins.left - chartMargins.right + 5}
                     height={chartHeight - chartMargins.top - chartMargins.bottom}
                 />
             </clipPath>

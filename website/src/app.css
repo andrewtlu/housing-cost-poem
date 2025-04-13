@@ -8,6 +8,11 @@
     --font-sans: "Funnel Sans", sans-serif;
 }
 
+:root {
+    background: white;
+    color: black;
+}
+
 /*
  * https://stackoverflow.com/questions/5687035/css-bolding-some-text-without-changing-its-containers-size 
  * basically prevents bold text from changing parent div size compared to normal text
