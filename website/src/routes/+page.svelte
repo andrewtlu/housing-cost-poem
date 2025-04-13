@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import "../app.css";
     import { getFrame, keyframe, mountNav } from "$lib";
-    import { verses, Parallax, Nav } from "$lib/components";
+    import { verses, City, Sunrise, Nav } from "$lib/components";
 
     /** Main content DOM element */
     let content: Element | null = $state(null);
@@ -14,8 +14,11 @@
     });
 </script>
 
-<Parallax />
+<!-- background elements -->
+<City />
+<Sunrise />
 
+<!-- navigation bar -->
 <Nav />
 
 <div
