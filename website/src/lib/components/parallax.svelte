@@ -3,45 +3,22 @@ Parallax component, used to render the city skyline in the background of the poe
  -->
 <script lang="ts">
     import { base } from "$app/paths";
-    import { onMount } from "svelte";
+    import { getFramesCount, keyframe } from "$lib/keyframe.svelte";
+    import { scaleLinear } from "d3";
 
-    /** DOM element of scroll */
-    let { scrollContainer }: { scrollContainer: Element } = $props();
-    /** The current scroll position */
-    let scrollLeft = $state(0);
-    /** The maximum scroll position */
-    let maxScroll = $state(1);
-
-    /** Update scroll position */
-    const handleScroll = () => {
-        scrollLeft = scrollContainer.scrollLeft;
-    };
-
-    /** Update the maximum scroll position */
-    const updateMaxScroll = () => {
-        maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-    };
-
-    onMount(() => {
-        scrollContainer.addEventListener("scroll", handleScroll);
-        window.addEventListener("resize", updateMaxScroll);
-
-        updateMaxScroll();
-
-        return () => {
-            // clean listeners when component is unmounted
-            scrollContainer.removeEventListener("scroll", handleScroll);
-            window.removeEventListener("resize", updateMaxScroll);
-        };
-    });
+    // simple logic: scroll to however far in the poem the current keyframe is
+    const scrollPosition = scaleLinear()
+        .domain([0, getFramesCount() - 1])
+        .range([0, 1]);
+    // trust me the math works
+    let translateXPercentage = $derived(25 - scrollPosition(keyframe.value) * 50);
 </script>
 
 <div class="absolute top-0 -z-50 h-screen w-screen overflow-hidden">
-    <!-- trust me the math works -->
     <img
         src={`${base}/city.png`}
         alt="background parallax city"
         class="absolute bottom-0 left-0 -translate-y-1/2 scale-200"
-        style={`transform: translateX(${25 - (scrollLeft / maxScroll) * 50}%)`}
+        style={`transform: translateX(${translateXPercentage}%); transition: all .5s ease`}
     />
 </div>
