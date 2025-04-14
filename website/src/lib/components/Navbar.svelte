@@ -25,7 +25,7 @@ Navigation component on the bottom of the screen to navigate keyframes with clic
 </script>
 
 <ul
-    class="absolute bottom-10 left-1/2 z-50 flex -translate-x-1/2 flex-row items-center gap-5 rounded-full p-2 align-middle"
+    class="bg-moon/90 absolute bottom-10 left-1/2 z-50 flex -translate-x-1/2 flex-row items-center gap-5 rounded-full p-2 align-middle"
 >
     <li class="flex origin-center items-center align-middle">
         <button

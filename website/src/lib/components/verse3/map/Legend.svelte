@@ -47,7 +47,7 @@ legend for the map component; displays attribute name, color gradient, and gradi
 </script>
 
 {#key attribute}
-    <div class="border-twilight bg-moon-light/90 w-fit rounded-md border-2 px-2">
+    <div class="bg-moon/90 w-fit rounded-md px-2">
         <svg
             fill="var(--color-midnight)"
             width={legendWidth + margin.left + margin.right}

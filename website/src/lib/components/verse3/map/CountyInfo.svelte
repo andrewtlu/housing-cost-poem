@@ -11,10 +11,7 @@ hover county info; displays specific locale string value and area's education le
 </script>
 
 {#if hovered_county}
-    <div
-        class="border-twilight bg-moon-light/90 w-fit rounded-md border-2 px-5"
-        transition:fly={{ x: -500, duration: 700 }}
-    >
+    <div class="bg-moon/90 w-fit rounded-md px-5" transition:fly={{ x: -500, duration: 700 }}>
         <ul>
             <li>{hovered_county.county}</li>
             <li>

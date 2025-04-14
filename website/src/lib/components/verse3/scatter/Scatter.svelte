@@ -149,9 +149,7 @@
     });
 </script>
 
-<div
-    class="border-twilight bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md border-2 font-bold"
->
+<div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
     <!-- title -->
     <Title title="Impact of Racial Demographic on Housing Value" />
 
