@@ -2,7 +2,7 @@
 </script>
 
 <div
-    class="bg-moon-crater/95 border-twilight flex h-fit w-fit cursor-default rounded-lg border-2 pr-2.5 pb-5 pl-6 font-sans"
+    class="bg-moon-crater/95 border-midnight/90 flex h-fit w-fit cursor-default rounded-lg border-2 pr-2.5 pb-5 pl-6 font-sans"
 >
     <!-- outer div constrains subtitle and names -->
     <div>

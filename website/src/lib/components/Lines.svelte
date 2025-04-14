@@ -4,7 +4,7 @@
     let { lines }: { lines: string[] } = $props();
 </script>
 
-<ul class="">
+<ul class="bg-moon-light/90 border-twilight rounded-md border-2 px-5 py-3">
     {#each lines as line, index (index)}
         <li
             title={line}
