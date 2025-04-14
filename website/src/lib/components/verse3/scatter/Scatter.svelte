@@ -2,8 +2,10 @@
     import { attributeMap, data, type CountyRaces, type MapKeys } from "$lib/data";
     import { extent, scaleSqrt, scaleLinear } from "d3";
     import { fade } from "svelte/transition";
-    import { AttributeSelect, Info, Title } from "$lib/components/common";
+    import { AttributeSelect, Info, Title } from "$lib/components/chart-common";
     import { selectedState, setSelected } from "./store.svelte";
+    import { Tween } from "svelte/motion";
+    import { cubicInOut } from "svelte/easing";
 
     // Chart Data
     const width = 800;
@@ -85,21 +87,38 @@
         return xExtent;
     });
     let xTicks = $derived.by(() => {
-        const interval = (xExtent[1] - xExtent[0]) / 5;
-        return [
-            xExtent[0],
-            xExtent[0] + interval,
-            xExtent[0] + interval * 2,
-            xExtent[0] + interval * 3,
-            xExtent[0] + interval * 4,
-            xExtent[1]
-        ];
+        if (xExtent[0] !== undefined && xExtent[1] !== undefined) {
+            const interval = (xExtent[1] - xExtent[0]) / 5;
+            return [
+                xExtent[0],
+                xExtent[0] + interval,
+                xExtent[0] + interval * 2,
+                xExtent[0] + interval * 3,
+                xExtent[0] + interval * 4,
+                xExtent[1]
+            ];
+        } else return [0, 20, 40, 60, 80, 100];
     });
     let xScale = $derived(
         scaleSqrt()
             .domain(xExtent)
             .range([chartMargins.left, chartWidth - chartMargins.right])
     );
+
+    // tweened x position for each point on the graph
+    const tweenedXPositions: { [key: number]: Tween<number> } = $derived(
+        graphValues.map(
+            () => new Tween(chartMargins.left, { duration: 400, easing: cubicInOut, delay: 150 })
+        )
+    );
+    $effect(() => {
+        if (graphValues) {
+            graphValues.forEach((point, idx) => {
+                const xPos = xScale(point.race_percent);
+                tweenedXPositions[idx].set(xPos);
+            });
+        }
+    });
 
     // point being hovered
     let hover: GraphValue | null = $state(null);
@@ -131,7 +150,7 @@
 </script>
 
 <div
-    class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white font-bold"
+    class="border-twilight bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md border-2 font-bold"
 >
     <!-- title -->
     <Title title="Impact of Racial Demographic on Housing Value" />
@@ -141,6 +160,18 @@
         width={width + margins.left + margins.right}
         height={height + margins.top + margins.bottom}
     >
+        <!-- clipping bounds for circles in graph (so circles not within the graph axes are not shown) -->
+        <defs>
+            <clipPath id="scatter-chart-area">
+                <rect
+                    x={chartMargins.left}
+                    y={chartMargins.right}
+                    width={chartWidth - chartMargins.left - chartMargins.right + 5}
+                    height={chartHeight - chartMargins.top - chartMargins.bottom}
+                />
+            </clipPath>
+        </defs>
+
         <!-- Grid Lines (x & Y) -->
         {#each yTicks as y_val, idx (idx)}
             <g transform="translate(0, {yScale(y_val)})">
@@ -148,7 +179,7 @@
                     <line
                         x1={chartMargins.left}
                         x2={chartWidth - chartMargins.right}
-                        stroke="#d4d4d4"
+                        stroke="var(--color-dawn)"
                         style="stroke-dasharray: 2;"
                     />
                 {/if}
@@ -160,7 +191,7 @@
                     <line
                         y1={chartMargins.top}
                         y2={chartHeight - chartMargins.bottom}
-                        stroke="#d4d4d4"
+                        stroke="var(--color-dawn)"
                         style="stroke-dasharray: 2;"
                         transition:fade={{ duration: 500 }}
                     />
@@ -231,25 +262,24 @@
 
         <!-- Draw Circle for Each Point -- Y-Value = Median Income & X = Func Call  -->
         {#each graphValues as data_point, idx (idx)}
-            {#if filter_race === "" || data_point.race === filter_race}
-                <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-                <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <circle
-                    cursor="pointer"
-                    cx={xScale(data_point.race_percent)}
-                    cy={yScale(data_point.median_housing)}
-                    r="5"
-                    fill={attributeMap[data_point.race].color[1]}
-                    opacity="1"
-                    transition:fade={{ duration: 500 }}
-                    onmouseover={() => {
-                        hover = data_point;
-                    }}
-                    onmouseleave={() => {
-                        hover = null;
-                    }}
-                />
-            {/if}
+            <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <circle
+                clip-path="url(#scatter-chart-area)"
+                cursor="pointer"
+                style={`transition: opacity .4s ease; ${filter_race === "" || data_point.race === filter_race ? "pointer-events: all;" : "pointer-events: none;"}`}
+                cx={tweenedXPositions[idx].current}
+                cy={yScale(data_point.median_housing)}
+                r="5"
+                fill={attributeMap[data_point.race].color[1]}
+                opacity={filter_race === "" || data_point.race === filter_race ? "1" : "0.1"}
+                onmouseover={() => {
+                    hover = data_point;
+                }}
+                onmouseleave={() => {
+                    hover = null;
+                }}
+            />
         {/each}
 
         <!-- data point hover tooltip -->
@@ -265,9 +295,9 @@
                     y={yScale(hover.median_housing) + textYOffset}
                     width={hoverWidth}
                     height={hoverHeight}
-                    stroke="gray"
+                    stroke="var(--color-twilight)"
                     stroke-width="2px"
-                    fill="white"
+                    fill="var(--color-moon)"
                     rx="0.375rem"
                 />
                 <text
@@ -275,7 +305,7 @@
                     y={yScale(hover.median_housing) + textMargins.top + textYOffset}
                     text-anchor="left"
                     font-size="22px"
-                    fill="black"
+                    fill="var(--color-midnight)"
                     bind:this={raceLine}
                 >
                     {attributeMap[hover.race].tag}
@@ -285,7 +315,7 @@
                     y={yScale(hover.median_housing) + textMargins.top + textYOffset + lineHeight}
                     text-anchor="left"
                     font-size="16px"
-                    fill="black"
+                    fill="var(--color-midnight)"
                     bind:this={countyStateLine}
                 >
                     {hover.county_name}, {hover.city_name}
@@ -298,7 +328,7 @@
                         lineHeight * 2}
                     text-anchor="left"
                     font-size="16px"
-                    fill="black"
+                    fill="var(--color-midnight)"
                     bind:this={popProportionLine}
                 >
                     {attributeMap[hover.race].tickFormat(hover.race_percent / 100)} of county population
@@ -311,7 +341,7 @@
                         lineHeight * 3}
                     text-anchor="left"
                     font-size="16px"
-                    fill="black"
+                    fill="var(--color-midnight)"
                     bind:this={homeCostLine}
                 >
                     Median Home Cost: ${hover.median_housing.toLocaleString("en-US", {
@@ -323,7 +353,12 @@
     </svg>
 
     <!-- Chart Legend -->
-    <AttributeSelect attributes={races} setAttribute={setSelected} selected={filter_race} />
+    <AttributeSelect
+        attributes={races}
+        setAttribute={setSelected}
+        selected={filter_race}
+        canDeselect={true}
+    />
 
     <!-- Chart Tooltip -->
     <Info

@@ -8,10 +8,15 @@ attribute select component
 
     let {
         selected,
+        canDeselect = false, // should only be true if setAttribute/selected can also be "", not just mapkeys
         attributes,
         setAttribute
-    }: { selected: MapKeys | ""; attributes: MapKeys[]; setAttribute: (arg0: MapKeys) => void } =
-        $props();
+    }: {
+        selected: MapKeys | "";
+        canDeselect?: boolean;
+        attributes: MapKeys[];
+        setAttribute: (arg0: MapKeys | "") => void;
+    } = $props();
     let hover = $state(false);
 </script>
 
@@ -23,7 +28,7 @@ attribute select component
             {#if hover}
                 <div
                     transition:fly={{ duration: 250, x: 200, easing: quadInOut }}
-                    class="cursor-pointer rounded-sm bg-white/70 p-1 text-base leading-2"
+                    class="bg-moon-light/70 cursor-pointer rounded-sm p-1 text-base leading-2"
                 >
                     {attributeMap[attribute].tag}
                 </div>
@@ -31,7 +36,7 @@ attribute select component
 
             <!-- hacky blank background to hide text flying out -->
             <div
-                class="pointer-events-auto z-20 flex h-7 w-7 items-center justify-center overflow-hidden rounded-xl bg-white"
+                class="bg-moon-light pointer-events-auto z-20 flex h-7 w-7 items-center justify-center overflow-hidden rounded-xl"
                 role="group"
                 onmouseenter={() => {
                     hover = true;
@@ -45,7 +50,8 @@ attribute select component
                     style={`background-color: ${attributeMap[attribute].color[1]}; opacity: ${attribute === selected || selected === "" || hover ? 1 : 0.4};`}
                     aria-label={attribute}
                     onclick={() => {
-                        setAttribute(attribute);
+                        if (!canDeselect || attribute != selected) setAttribute(attribute);
+                        else setAttribute("");
                     }}
                 ></button>
             </div>

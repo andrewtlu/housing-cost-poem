@@ -3,6 +3,7 @@
     import points from "./verse2_data.json";
     import { select } from "d3-selection";
     import { onMount } from "svelte";
+    import { Lines } from "$lib/components";
 
     let data: {
         metro_area: string;
@@ -72,11 +73,7 @@
     });
 </script>
 
-<ul>
-    {#each lines as line, index (index)}
-        <li>{line}</li>
-    {/each}
-</ul>
+<Lines {lines} />
 
 <div class="bg-gray-100">
     <svg id="bubble-chart">

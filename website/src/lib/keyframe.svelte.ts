@@ -5,7 +5,6 @@ import {
     verse3Keyframes,
     verse4Keyframes
 } from "./components";
-import { updateScroll } from "./scroll-override";
 
 /**
  * Keyframe contains info on:
@@ -32,18 +31,20 @@ export const keyframes: Keyframe[] = [
 
 /**
  * The website's keyframe state.
- * Automatically updates the tweened scrollPosition if provided methods are used to update state.
  */
 export const keyframe = $state({
     /**
      * The current keyframe.
-     *
-     * **SHOULD NOT BE DIRECTLY SET! IF DIRECTLY SET, WILL NOT PROPERLY UPDATE SCROLL! USE set() INSTEAD!**
+     * If possible, do not directly set to this and instead use set() methods, as they automatically handle keyframe processing.
      */
     value: 0,
     /**
+     * The direction a keyframe update was in. 1 for forward, -1 for backward.
+     */
+    direction: 1,
+    /**
      * Helper function to make sure keyframe is in bounds.
-     * Should be called before accessing keyframe (ie, before updateScroll())
+     * Should be called internally after setting a value, and can replace bounds checks.
      */
     clean() {
         if (this.value >= getFramesCount() - 1) this.value = getFramesCount() - 1;
@@ -54,11 +55,11 @@ export const keyframe = $state({
      * @param frame frame to set to
      */
     set(frame: number) {
+        this.direction = frame > this.value ? 1 : -1;
         this.value = frame;
         this.clean();
 
-        // update scroll and run necessary functions
-        updateScroll();
+        // run necessary functions
         getFrame(keyframe.value).toRun.forEach((func) => func());
     },
     /**

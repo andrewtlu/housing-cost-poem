@@ -1,16 +1,10 @@
 <script lang="ts">
     import { getFrame, keyframe } from "$lib";
-    import WordChart from "./word_chart.svelte";
 
-    let lines = [
-        "Home—yes, four walls to keep warm",
-        "and safe refuge in one’s room—",
-        "a haven for kin to form",
-        "and our childhood dreams to bloom:"
-    ];
+    let { lines }: { lines: string[] } = $props();
 </script>
 
-<ul class="">
+<ul class="bg-moon-light/90 border-twilight rounded-md border-2 px-5 py-3">
     {#each lines as line, index (index)}
         <li
             title={line}
@@ -20,5 +14,3 @@
         </li>
     {/each}
 </ul>
-
-<WordChart />

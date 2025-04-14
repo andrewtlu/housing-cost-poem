@@ -1,51 +1,50 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import "../app.css";
-    import { overrideScroll } from "$lib";
-    import { Title, Verse1, Verse2, Verse3, Verse4, Parallax, Nav } from "$lib/components";
+    import { duration, getFrame, keyframe, mountNav } from "$lib";
+    import { verses, City, Sunrise, Navbar } from "$lib/components";
+    import { quadInOut } from "svelte/easing";
+    import { fly } from "svelte/transition";
 
     /** Main content DOM element */
     let content: Element | null = $state(null);
-    /** Tweened page scroll position value */
-    let scrollPosition: ReturnType<typeof overrideScroll>["scrollPosition"];
-    /** Unmount for scroll listener */
-    let unmount: ReturnType<typeof overrideScroll>["unmount"];
 
-    let verses = [Title, Verse1, Verse2, Verse3, Verse4];
+    let CurrentVerse = $derived(verses[getFrame(keyframe.value).verse as 0 | 1 | 2 | 3 | 4]);
 
+    // mount navigation
     onMount(() => {
-        // when mounted, content will not be null
-        let override = overrideScroll(content!);
-        scrollPosition = override.scrollPosition;
-        unmount = override.unmount;
-
-        return unmount;
-    });
-
-    // update content's scroll with scrollPosition, content won't be null
-    $effect(() => {
-        content!.scrollLeft = scrollPosition.current;
+        return mountNav(content!);
     });
 </script>
 
-{#if content}
-    <Parallax scrollContainer={content} />
-{/if}
+<!-- background elements -->
+<City />
+<Sunrise />
 
-<Nav />
+<!-- navigation bar -->
+<Navbar />
 
-<!-- Each element within this div MUST have w-screen due to the tweened scroll positioning -->
 <div
-    class="relative flex h-screen flex-row overflow-x-hidden bg-gray-50/90"
+    class="relative grid h-screen w-screen place-items-center overflow-hidden"
     id="content"
     bind:this={content}
 >
-    {#each verses as Verse, index (index)}
+    <!-- jumping fix: https://pita.tech/transitioning-multiple-svelte-elements-on-the-same-spot/ -->
+    {#key getFrame(keyframe.value).verse}
         <div
-            class="flex h-screen w-screen shrink-0 snap-center flex-row items-center justify-center gap-24"
-            id={index == 0 ? "title" : `verse${index}`}
+            class="col-[1] row-[1] flex flex-row items-center justify-center gap-24"
+            in:fly={{
+                x: keyframe.direction * content.clientWidth,
+                easing: quadInOut,
+                duration: duration
+            }}
+            out:fly={{
+                x: keyframe.direction * -content.clientWidth,
+                easing: quadInOut,
+                duration: duration
+            }}
         >
-            <Verse />
+            <CurrentVerse />
         </div>
-    {/each}
+    {/key}
 </div>

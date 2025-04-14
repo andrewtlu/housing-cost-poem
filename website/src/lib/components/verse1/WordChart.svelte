@@ -7,7 +7,7 @@ map component used in verse 3 for visualizing geographic data
     import { defaultWords } from "./keyframe.svelte";
     import cloud from "d3-cloud";
     import { fade } from "svelte/transition";
-    import { Title, Info } from "$lib/components/common";
+    import { Title, Info } from "$lib/components/chart-common";
 
     // chart limits
     const similarityExtent = extent(homeSimilarityData.values()) as [number, number];
@@ -74,7 +74,7 @@ map component used in verse 3 for visualizing geographic data
 </script>
 
 <div
-    class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white/80 font-bold"
+    class="border-twilight bg-moon-light/90 relative flex flex-col overflow-x-clip rounded-md border-2 font-bold"
 >
     <!-- title -->
     <Title title="What Does Home Mean to You?" />
@@ -101,13 +101,13 @@ map component used in verse 3 for visualizing geographic data
                     style={`transition: fill .4s ease; fill: ${
                         defaultWords.includes(word.text)
                             ? hoveredWord == "" || hoveredWord == word.text
-                                ? "#51a2ff"
-                                : "#b1c8e5"
+                                ? "var(--color-twilight)"
+                                : "#32b5d6"
                             : hoveredWord == word.text
-                              ? "#51a2ff"
-                              : "#d1d5dc"
+                              ? "var(--color-twilight)"
+                              : "#9fcdd8"
                     }`}
-                    class="cursor-default bg-gray-300"
+                    class="cursor-default"
                     tabindex={idx}
                     onmouseover={() => {
                         hoveredWord = word.text;

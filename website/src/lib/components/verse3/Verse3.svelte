@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getFrame, keyframe } from "$lib";
+    import { Lines } from "$lib/components";
     import { selectedGraphState } from "./keyframe.svelte";
 
     // dashes are em dashes and quotations are curled :)
@@ -13,16 +13,7 @@
     let SelectedGraph = $derived(selectedGraphState[0]);
 </script>
 
-<ul>
-    {#each lines as line, index (index)}
-        <li
-            title={line}
-            class={`opacity-50 transition-all ${getFrame(keyframe.value).bolded.includes(index) ? "font-bold opacity-100" : ""}`}
-        >
-            {line}
-        </li>
-    {/each}
-</ul>
+<Lines {lines} />
 
 <!-- TODO: maybe use snippets to wrap both graphs and shared elements so that less rerendering happens -->
 {#key SelectedGraph}
