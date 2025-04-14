@@ -25,7 +25,7 @@
 <Navbar />
 
 <div
-    class="relative grid h-screen w-screen place-items-center overflow-hidden bg-white/25"
+    class="relative grid h-screen w-screen place-items-center overflow-hidden"
     id="content"
     bind:this={content}
 >

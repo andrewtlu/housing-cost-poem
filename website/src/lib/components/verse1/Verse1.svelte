@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getFrame, keyframe } from "$lib";
+    import { Lines } from "$lib/components";
     import WordChart from "./WordChart.svelte";
 
     let lines = [
@@ -10,15 +10,6 @@
     ];
 </script>
 
-<ul class="">
-    {#each lines as line, index (index)}
-        <li
-            title={line}
-            class={`opacity-50 transition-all ${getFrame(keyframe.value).bolded.includes(index) ? "font-bold opacity-100" : ""}`}
-        >
-            {line}
-        </li>
-    {/each}
-</ul>
+<Lines {lines} />
 
 <WordChart />

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { Lines } from "$lib/components";
+
     // quotations are curled :)
     let lines = [
         "...hopeless. Yet, hopes still remain.",
@@ -8,8 +10,4 @@
     ];
 </script>
 
-<ul>
-    {#each lines as line, index (index)}
-        <li>{line}</li>
-    {/each}
-</ul>
+<Lines {lines} />
