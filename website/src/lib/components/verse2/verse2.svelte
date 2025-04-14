@@ -173,6 +173,7 @@
                 `translate(${xScale(d.median_housing_price)}, ${yScale(d.median_income)})`
             )
             .style("display", "none") // initially hidden
+            .on("click", onCircleClick)
             .each(function(d) {
                 const radius = rScale(d.total_population);
                 const localArc = d3.arc().innerRadius(0).outerRadius(radius); // <- define per pie!
