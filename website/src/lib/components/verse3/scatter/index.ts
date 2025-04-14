@@ -1,1 +1,1 @@
-export { default as ScatterPlot } from "./scatter.svelte";
+export { default as ScatterPlot } from "./Scatter.svelte";

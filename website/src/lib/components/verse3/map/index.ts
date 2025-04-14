@@ -1,1 +1,1 @@
-export { default as Map } from "./map.svelte";
+export { default as Map } from "./Map.svelte";

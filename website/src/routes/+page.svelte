@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import "../app.css";
     import { duration, getFrame, keyframe, mountNav } from "$lib";
-    import { verses, City, Sunrise, Nav } from "$lib/components";
+    import { verses, City, Sunrise, Navbar } from "$lib/components";
     import { quadInOut } from "svelte/easing";
     import { fly } from "svelte/transition";
 
@@ -22,31 +22,29 @@
 <Sunrise />
 
 <!-- navigation bar -->
-<Nav />
+<Navbar />
 
 <div
-    class="relative flex h-screen w-screen shrink-0 flex-row items-center justify-center overflow-hidden bg-white/25"
+    class="relative grid h-screen w-screen place-items-center overflow-hidden bg-white/25"
     id="content"
     bind:this={content}
 >
     <!-- jumping fix: https://pita.tech/transitioning-multiple-svelte-elements-on-the-same-spot/ -->
-    <div class="grid place-items-center">
-        {#key getFrame(keyframe.value).verse}
-            <div
-                class="col-[1] row-[1] flex flex-row items-center justify-center gap-24"
-                in:fly={{
-                    x: keyframe.direction * content.clientWidth,
-                    easing: quadInOut,
-                    duration: duration
-                }}
-                out:fly={{
-                    x: keyframe.direction * -content.clientWidth,
-                    easing: quadInOut,
-                    duration: duration
-                }}
-            >
-                <CurrentVerse />
-            </div>
-        {/key}
-    </div>
+    {#key getFrame(keyframe.value).verse}
+        <div
+            class="col-[1] row-[1] flex flex-row items-center justify-center gap-24"
+            in:fly={{
+                x: keyframe.direction * content.clientWidth,
+                easing: quadInOut,
+                duration: duration
+            }}
+            out:fly={{
+                x: keyframe.direction * -content.clientWidth,
+                easing: quadInOut,
+                duration: duration
+            }}
+        >
+            <CurrentVerse />
+        </div>
+    {/key}
 </div>

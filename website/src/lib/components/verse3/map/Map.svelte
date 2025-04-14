@@ -24,9 +24,9 @@ map component used in verse 3 for visualizing geographic data
         setAttribute
     } from "./store.svelte";
 
-    import Legend from "./legend.svelte";
-    import CountyInfo from "./countyInfo.svelte";
-    import { Title, Info, AttributeSelect } from "$lib/components/common";
+    import Legend from "./Legend.svelte";
+    import CountyInfo from "./CountyInfo.svelte";
+    import { Title, Info, AttributeSelect } from "$lib/components/chart-common";
 
     // data
     const US = topo as unknown as Topology;

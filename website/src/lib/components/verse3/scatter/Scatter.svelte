@@ -2,7 +2,7 @@
     import { attributeMap, data, type CountyRaces, type MapKeys } from "$lib/data";
     import { extent, scaleSqrt, scaleLinear } from "d3";
     import { fade } from "svelte/transition";
-    import { AttributeSelect, Info, Title } from "$lib/components/common";
+    import { AttributeSelect, Info, Title } from "$lib/components/chart-common";
     import { selectedState, setSelected } from "./store.svelte";
     import { Tween } from "svelte/motion";
     import { cubicInOut } from "svelte/easing";

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { getFrame, keyframe } from "$lib";
-    import WordChart from "./word_chart.svelte";
+    import WordChart from "./WordChart.svelte";
 
     let lines = [
         "Home—yes, four walls to keep warm",
