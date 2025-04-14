@@ -54,36 +54,77 @@
 
         const onCircleClick = (d) => {
             console.log("circle clicked");
-            svg.selectAll(".pie-group")
-                .style("display", "block")
-                .selectAll("path")
-                .transition()
-                .duration(800)
-                .attrTween("d", function(d) {
-                    const radius = d3.select(this.parentNode).datum()
-                        ? rScale(d3.select(this.parentNode).datum().total_population)
-                        : 20; // default fallback
 
-                    const arc = d3.arc().innerRadius(0).outerRadius(radius);
+            const pieGroups = svg.selectAll(".pie-group");
 
-                    // Explicitly ensure clockwise direction by adjusting angles
-                    const startAngle = d.startAngle >= 0 ? d.startAngle : (d.startAngle + 2 * Math.PI); // Make sure it's positive
-                    const endAngle = d.endAngle >= 0 ? d.endAngle : (d.endAngle + 2 * Math.PI); // Make sure it's positive
+            // Check current display style
+            const isVisible = pieGroups.style("display") !== "none";
 
-                    // Ensure start is less than end for clockwise
-                    const adjustedStartAngle = Math.min(startAngle, endAngle);
-                    const adjustedEndAngle = Math.max(startAngle, endAngle);
+            if (isVisible) {
+                // Hide the pie groups
+                pieGroups.selectAll("path")
+                    .transition()
+                    .duration(500)
+                    .attrTween("d", function(d) {
+                        const radius = d3.select(this.parentNode).datum()
+                            ? rScale(d3.select(this.parentNode).datum().total_population)
+                            : 20;
 
-                    const interpolate = d3.interpolate(
-                        { startAngle: 0, endAngle: 0 }, // Start at 0
-                        { startAngle: adjustedStartAngle, endAngle: adjustedEndAngle } // Animate to the target angles
-                    );
+                        const arc = d3.arc().innerRadius(0).outerRadius(radius);
 
-                    return function(t) {
-                        return arc(interpolate(t)); // Animate using arc path
-                    };
-                });
+                        const startAngle = d.startAngle >= 0 ? d.startAngle : (d.startAngle + 2 * Math.PI);
+                        const endAngle = d.endAngle >= 0 ? d.endAngle : (d.endAngle + 2 * Math.PI);
+
+                        const adjustedStartAngle = Math.min(startAngle, endAngle);
+                        const adjustedEndAngle = Math.max(startAngle, endAngle);
+
+                        const interpolate = d3.interpolate(
+                            { startAngle: adjustedStartAngle, endAngle: adjustedEndAngle },
+                            { startAngle: 0, endAngle: 0 }
+                        );
+
+                        return function(t) {
+                            return arc(interpolate(t));
+                        };
+                    })
+                    .on("end", function(_, i, nodes) {
+                        if (i === nodes.length - 1) {
+                            // Once all transitions end, hide the group
+                            pieGroups.style("display", "none");
+                        }
+                    });
+            } else {
+                // Show and animate the pie groups
+                pieGroups
+                    .style("display", "block")
+                    .selectAll("path")
+                    .transition()
+                    .duration(800)
+                    .attrTween("d", function(d) {
+                        const radius = d3.select(this.parentNode).datum()
+                            ? rScale(d3.select(this.parentNode).datum().total_population)
+                            : 20;
+
+                        const arc = d3.arc().innerRadius(0).outerRadius(radius);
+
+                        const startAngle = d.startAngle >= 0 ? d.startAngle : (d.startAngle + 2 * Math.PI);
+                        const endAngle = d.endAngle >= 0 ? d.endAngle : (d.endAngle + 2 * Math.PI);
+
+                        const adjustedStartAngle = Math.min(startAngle, endAngle);
+                        const adjustedEndAngle = Math.max(startAngle, endAngle);
+
+                        const interpolate = d3.interpolate(
+                            { startAngle: 0, endAngle: 0 },
+                            { startAngle: adjustedStartAngle, endAngle: adjustedEndAngle }
+                        );
+
+                        return function(t) {
+                            return arc(interpolate(t));
+                        };
+                    });
+            }
         };
+
 
 
         // Add bubbles
@@ -109,6 +150,19 @@
         const pieColor = d3.scaleOrdinal()
             .domain([0, 1])
             .range(["lightgray", "darkgreen"]); // 4-year degree vs. not
+
+        // Add labels
+        svg.selectAll("text.metro")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("x", (d) => xScale(d.median_housing_price)) // Center horizontally
+            .attr("y", (d) => yScale(d.median_income) + rScale(d.total_population) + 10)
+            .attr("text-anchor", "middle") // Center text horizontally
+            .attr("dominant-baseline", "middle") // Center text vertically
+            .attr("font-size", "16px")
+            .attr("fill", "#333")
+            .text((d) => d.metro_area);
 
         svg.selectAll(".pie-group")
             .data(data)
@@ -149,9 +203,9 @@
                             .attr("height", 18) // Set height of the background rectangle
                             .attr("rx", 5)
                             .attr("ry", 5)
-                            .attr("fill", "darkgreen") // Set the fill color to white for the background
+                            .attr("fill", "#86b586") // Set the fill color to white for the background
                             .attr("stroke", "none") // No border for the background
-                            .attr("opacity", 0.4);
+                            .attr("opacity", 1);
                         d3.select(this.parentNode) // Select the group containing the pie slice
                             .append("text")
                             .attr("class", "hover-text") // Add a class to style the text
@@ -162,24 +216,23 @@
                             .attr("font-size", "16px")
                             .attr("fill", "black")
                             .text(d3.format(".0%")(d.education_attainment / 100))
-                        d3.select(this.parentNode)
+                        d3.select(this.parentNode) // rect for education_attainment_population
                             .append("rect")
-                            .attr("class", "text-background") // Class to style the background
-                            .attr("x", 0.78*(radius + 20) + 21) // Adjust position (x) for padding
-                            .attr("y", 0.78*(-radius) + 14) // Adjust position (y) for padding attr("y", -radius / 2 - (radius / 4) + 10)
-                            .attr("width", 110) // Set width of the background rectangle
-                            .attr("height", 12) // Set height of the background rectangle
+                            .attr("class", "text-background")
+                            .attr("x", 0.78*(radius - 20) + 2)
+                            .attr("y", 0.78*(-radius) - 21.5)
+                            .attr("width", 58)
+                            .attr("height", 12)
                             .attr("rx", 5)
                             .attr("ry", 5)
-                            .attr("fill", "white") // Set the fill color to white for the background
-                            .attr("stroke", "none") // No border for the background
-                            .attr("opacity", 0.7);
-                        d3.select(this.parentNode)
+                            .attr("fill", "#86b586")
+                            .attr("stroke", "none")
+                            .attr("opacity", 1);
+                        d3.select(this.parentNode) // education_attainment_population
                             .append("text")
                             .attr("class", "hover-text")
-                            .attr("x", 0.78*(radius + 21))
-                            .attr("y", 0.78*(-radius) + 14)
-                            .attr("text-anchor", "middle")
+                            .attr("x", 0.78*(radius + 20))
+                            .attr("y", 0.78*(-radius) - 14)
                             .attr("dominant-baseline", "middle")
                             .attr("font-size", "12px")
                             .attr("fill", "black")
@@ -225,18 +278,7 @@
             })
 
 
-        // Add labels
-        svg.selectAll("text.metro")
-            .data(data)
-            .enter()
-            .append("text")
-            .attr("x", (d) => xScale(d.median_housing_price)) // Center horizontally
-            .attr("y", (d) => yScale(d.median_income) + rScale(d.total_population) + 10)
-            .attr("text-anchor", "middle") // Center text horizontally
-            .attr("dominant-baseline", "middle") // Center text vertically
-            .attr("font-size", "16px")
-            .attr("fill", "#333")
-            .text((d) => d.metro_area);
+        
     });
 
 </script>
@@ -247,7 +289,10 @@
     {/each}
 </ul>
 
-<div class="bg-gray-100">
+<div class="bg-gray-100 w-[700px]">
+    <h2 class="mb-2.5 text-center text-lg font-bold break-words">
+    Total Population and Total Population with 4 Year College Degree or Equivalent, by Metro Area
+    </h2>
     <svg id="bubble-chart">
         <!-- y-axis -->
         <g>

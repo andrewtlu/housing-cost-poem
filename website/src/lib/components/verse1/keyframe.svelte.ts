@@ -1,5 +1,5 @@
 import { type Keyframe } from "$lib/keyframe.svelte";
-import { trueMedianIncome, falseMedianIncome, trueHousingPrice, falseHousingPrice, trueProportion, falseProportion, toggleTextOpacity } from '$lib/actions';
+import { trueMedianIncome, falseMedianIncome, trueHousingPrice, falseHousingPrice, trueProportion, falseProportion, trueTextOpacity, falseTextOpacity } from '$lib/actions';
 
 const verse = 1;
 /**
@@ -19,11 +19,11 @@ export const verse1Keyframes: Keyframe[] = [
     {
         verse: verse,
         bolded: [2],
-        toRun: [falseHousingPrice, trueProportion]
+        toRun: [falseHousingPrice, trueProportion, falseTextOpacity]
     },
     {
         verse: verse,
         bolded: [3],
-        toRun: [trueHousingPrice, trueMedianIncome, trueProportion, toggleTextOpacity]
+        toRun: [trueHousingPrice, trueMedianIncome, trueProportion, trueTextOpacity]
     }
 ];

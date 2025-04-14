@@ -4,6 +4,7 @@ export const showMedianIncome = writable(false);
 export const showMedianHousingPrice = writable(false);
 export const showProportion = writable(false);
 export const textOpacity = writable(false);
+export const showPieChart = writable(false);
 
 export function toggleMedianIncome() {
     showMedianIncome.update(value => !value);
@@ -50,7 +51,17 @@ export function toggleProportion() {
     console.log("showProportion clicked" + { showProportion });
 }
 
-export function toggleTextOpacity() {
+export function trueTextOpacity() {
     textOpacity.update(value => true);
     console.log("textOpacity clicked" + { textOpacity });
+}
+
+export function falseTextOpacity() {
+    textOpacity.update(value => false);
+    console.log("textOpacity clicked" + { textOpacity });
+}
+
+export function trueShowPieChart() {
+    showPieChart.update(value => true);
+    console.log("showPieChart true" + { textOpacity });
 }

@@ -65,7 +65,11 @@
     {/each}
 </ul>
 
-<div class="bg-gray-100" bind:clientWidth={width}>
+<div class="bg-gray-100 w-[700px]" bind:clientWidth={width}>
+    <h2 class="mb-2.5 text-center text-lg font-bold break-words">
+    Comparing Median Income and Median Housing Value by Metro Area
+    </h2>
+
     <svg {width} {height}>
         <!-- Left Y-axis -->
         <g class="axis">
@@ -188,10 +192,22 @@
 
         <!-- Legend -->
         <g class="legend" transform="translate({width - padding.right - 150}, {padding.top})">
+            <!-- bg rectangle -->
+            <rect
+                x="-10"
+                y="10"
+                width="185"
+                height="50"
+                fill="white"
+                stroke="black"
+                stroke-width="1"
+                rx="5"
+                ry="5"
+            />
             <!-- Median Housing Price -->
             <g transform="translate(0, 20)" on:click={toggleHousingPrice} style="cursor: pointer;">
                 <circle cx="0" cy="5" r="7" fill="black" />
-                <text x="10" y="10" font-size="16px">Median Housing Price</text>
+                <text x="10" y="10" font-size="16px">Median Housing Value</text>
             </g>
 
             <!-- Median Income -->
