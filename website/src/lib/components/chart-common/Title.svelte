@@ -7,7 +7,7 @@ title for graph
 
 <!-- title -->
 <div
-    class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md bg-white/70 text-center text-xl"
+    class="bg-moon-light/70 absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md text-center text-xl"
 >
     {title}
 </div>

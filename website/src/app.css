@@ -23,13 +23,14 @@
     --color-sun-inner: #ffba08;
 
     /* moon colors */
+    --color-moon-light: #f6f7f3;
     --color-moon: #e0e1dd;
     --color-moon-crater: #ccd2da;
 }
 
 :root {
     background: var(--color-twilight);
-    color: var(--color-text-primary);
+    color: var(--color-midnight);
 }
 
 /*

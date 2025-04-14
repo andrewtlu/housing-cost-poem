@@ -10,7 +10,7 @@ info/disclaimer tooltip
     data-tip={tooltip}
 >
     <svg
-        fill="#000000"
+        fill="var(--color-midnight)"
         xmlns="http://www.w3.org/2000/svg"
         width="25px"
         height="25px"
