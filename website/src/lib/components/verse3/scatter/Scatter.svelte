@@ -150,7 +150,7 @@
 </script>
 
 <div
-    class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white font-bold"
+    class="border-twilight bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md border-2 font-bold"
 >
     <!-- title -->
     <Title title="Impact of Racial Demographic on Housing Value" />
@@ -179,7 +179,7 @@
                     <line
                         x1={chartMargins.left}
                         x2={chartWidth - chartMargins.right}
-                        stroke="#d4d4d4"
+                        stroke="var(--color-dawn)"
                         style="stroke-dasharray: 2;"
                     />
                 {/if}
@@ -191,7 +191,7 @@
                     <line
                         y1={chartMargins.top}
                         y2={chartHeight - chartMargins.bottom}
-                        stroke="#d4d4d4"
+                        stroke="var(--color-dawn)"
                         style="stroke-dasharray: 2;"
                         transition:fade={{ duration: 500 }}
                     />
@@ -295,9 +295,9 @@
                     y={yScale(hover.median_housing) + textYOffset}
                     width={hoverWidth}
                     height={hoverHeight}
-                    stroke="gray"
+                    stroke="var(--color-twilight)"
                     stroke-width="2px"
-                    fill="white"
+                    fill="var(--color-moon)"
                     rx="0.375rem"
                 />
                 <text
@@ -305,7 +305,7 @@
                     y={yScale(hover.median_housing) + textMargins.top + textYOffset}
                     text-anchor="left"
                     font-size="22px"
-                    fill="black"
+                    fill="var(--color-midnight)"
                     bind:this={raceLine}
                 >
                     {attributeMap[hover.race].tag}
@@ -315,7 +315,7 @@
                     y={yScale(hover.median_housing) + textMargins.top + textYOffset + lineHeight}
                     text-anchor="left"
                     font-size="16px"
-                    fill="black"
+                    fill="var(--color-midnight)"
                     bind:this={countyStateLine}
                 >
                     {hover.county_name}, {hover.city_name}
@@ -328,7 +328,7 @@
                         lineHeight * 2}
                     text-anchor="left"
                     font-size="16px"
-                    fill="black"
+                    fill="var(--color-midnight)"
                     bind:this={popProportionLine}
                 >
                     {attributeMap[hover.race].tickFormat(hover.race_percent / 100)} of county population
@@ -341,7 +341,7 @@
                         lineHeight * 3}
                     text-anchor="left"
                     font-size="16px"
-                    fill="black"
+                    fill="var(--color-midnight)"
                     bind:this={homeCostLine}
                 >
                     Median Home Cost: ${hover.median_housing.toLocaleString("en-US", {

@@ -126,7 +126,7 @@ map component used in verse 3 for visualizing geographic data
 </script>
 
 <div
-    class="relative flex flex-col overflow-x-clip rounded-md border-2 border-[gray] bg-white/80 font-bold"
+    class="border-twilight bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md border-2 font-bold"
 >
     <Title title={`${attributeMap[attribute].textLabel} Compared to Metro Area Maximum`} />
 
@@ -139,7 +139,7 @@ map component used in verse 3 for visualizing geographic data
             transition:fly={{ x: -500, duration: 700 }}
         >
             <svg
-                fill="#000000"
+                fill="var(--color-midnight)"
                 width="25px"
                 height="25px"
                 viewBox="0 0 200 200"
@@ -164,7 +164,7 @@ map component used in verse 3 for visualizing geographic data
                     color={cluster_colors[centroid]}
                 />
                 <div
-                    class="text-md w-fit rounded-md border-2 border-[gray] bg-white/80 px-5 text-wrap"
+                    class="text-md border-twilight bg-moon-light/90 w-fit rounded-md border-2 px-5 text-wrap"
                 >
                     Metro Area:
                     {centroidNames[centroid]}
@@ -179,7 +179,7 @@ map component used in verse 3 for visualizing geographic data
     />
 
     <!-- graph -->
-    <div class="border-gray overflow-hidden rounded-md">
+    <div class="overflow-hidden rounded-md">
         {#if width}
             <svg
                 width={width + margin.left + margin.right}

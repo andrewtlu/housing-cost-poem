@@ -28,7 +28,7 @@ attribute select component
             {#if hover}
                 <div
                     transition:fly={{ duration: 250, x: 200, easing: quadInOut }}
-                    class="cursor-pointer rounded-sm bg-white/70 p-1 text-base leading-2"
+                    class="bg-moon-light/70 cursor-pointer rounded-sm p-1 text-base leading-2"
                 >
                     {attributeMap[attribute].tag}
                 </div>
@@ -36,7 +36,7 @@ attribute select component
 
             <!-- hacky blank background to hide text flying out -->
             <div
-                class="pointer-events-auto z-20 flex h-7 w-7 items-center justify-center overflow-hidden rounded-xl bg-white"
+                class="bg-moon-light pointer-events-auto z-20 flex h-7 w-7 items-center justify-center overflow-hidden rounded-xl"
                 role="group"
                 onmouseenter={() => {
                     hover = true;
