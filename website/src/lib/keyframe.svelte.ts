@@ -39,6 +39,10 @@ export const keyframe = $state({
      */
     value: 0,
     /**
+     * The direction a keyframe update was in. 1 for forward, -1 for backward.
+     */
+    direction: 1,
+    /**
      * Helper function to make sure keyframe is in bounds.
      * Should be called internally after setting a value, and can replace bounds checks.
      */
@@ -51,6 +55,7 @@ export const keyframe = $state({
      * @param frame frame to set to
      */
     set(frame: number) {
+        this.direction = frame > this.value ? 1 : -1;
         this.value = frame;
         this.clean();
 

@@ -5,10 +5,10 @@
     // svg sizing
     let container: Element | null = $state(null);
     let width = $derived.by(() => {
-        return container === null ? Infinity : container.clientWidth;
+        return container === null ? 1920 : container.clientWidth;
     });
     let height = $derived.by(() => {
-        return container === null ? Infinity : container.clientHeight;
+        return container === null ? 963 : container.clientHeight;
     });
 
     // helper variables
