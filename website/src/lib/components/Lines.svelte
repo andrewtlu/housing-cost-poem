@@ -1,17 +1,10 @@
 <script lang="ts">
     import { getFrame, keyframe } from "$lib";
-    import { Map } from "./map";
 
-    // dashes are em dashes and quotations are curled :)
-    let lines = [
-        "First, redlining carved us up;",
-        "now, though, housing builds gaps—",
-        "funny—our fathers’ missteps",
-        "make funding fortune perhaps..."
-    ];
+    let { lines }: { lines: string[] } = $props();
 </script>
 
-<ul>
+<ul class="bg-moon-light/90 border-twilight rounded-md border-2 px-5 py-3">
     {#each lines as line, index (index)}
         <li
             title={line}
@@ -21,5 +14,3 @@
         </li>
     {/each}
 </ul>
-
-<Map />

@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 export const showMedianIncome = writable(false);
 export const showMedianHousingPrice = writable(false);
@@ -7,61 +7,61 @@ export const textOpacity = writable(false);
 export const showPieChart = writable(false);
 
 export function toggleMedianIncome() {
-    showMedianIncome.update(value => !value);
+    showMedianIncome.update((value) => !value);
     console.log("Median Income clicked" + { showMedianIncome });
     showMedianHousingPrice.set(false);
     showProportion.set(false);
 }
 
 export function trueMedianIncome() {
-    showMedianIncome.update(value => true);
+    showMedianIncome.update(() => true);
 }
 
 export function falseMedianIncome() {
-    showMedianIncome.update(value => false);
+    showMedianIncome.update(() => false);
 }
 
 export function toggleHousingPrice() {
-    showMedianHousingPrice.update(value => !value);
+    showMedianHousingPrice.update((value) => !value);
     // Use update method to toggle
     console.log("Median Housing Price clicked" + { showMedianHousingPrice });
     showMedianIncome.set(false);
     showProportion.set(false);
 }
 
-export function trueHousingPrice() {
-    showMedianHousingPrice.update(value => true);
+export function cctrtrueHousingPrice() {
+    showMedianHousingPrice.update(() => true);
 }
 
 export function falseHousingPrice() {
-    showMedianHousingPrice.update(value => false);
+    showMedianHousingPrice.update(() => false);
 }
 
 export function trueProportion() {
-    showProportion.update(value => true);
+    showProportion.update(() => true);
     console.log("showProportion clicked" + { showProportion });
 }
 
 export function falseProportion() {
-    showProportion.update(value => false);
+    showProportion.update(() => false);
 }
 
 export function toggleProportion() {
-    showProportion.update(value => !value);
+    showProportion.update((value) => !value);
     console.log("showProportion clicked" + { showProportion });
 }
 
 export function trueTextOpacity() {
-    textOpacity.update(value => true);
+    textOpacity.update(() => true);
     console.log("textOpacity clicked" + { textOpacity });
 }
 
 export function falseTextOpacity() {
-    textOpacity.update(value => false);
+    textOpacity.update(() => false);
     console.log("textOpacity clicked" + { textOpacity });
 }
 
 export function trueShowPieChart() {
-    showPieChart.update(value => true);
+    showPieChart.update(() => true);
     console.log("showPieChart true" + { textOpacity });
 }

@@ -1,0 +1,78 @@
+[
+    {
+        "word": "refuge",
+        "similarity": 0.4168596565723419
+    },
+    {
+        "word": "family",
+        "similarity": 0.36614203453063965
+    },
+    {
+        "word": "security",
+        "similarity": 0.30291855335235596
+    },
+    {
+        "word": "safety",
+        "similarity": 0.2621229887008667
+    },
+    {
+        "word": "abode",
+        "similarity": 0.40978848934173584
+    },
+    {
+        "word": "comfort",
+        "similarity": 0.33364346623420715
+    },
+    {
+        "word": "future",
+        "similarity": 0.34264135360717773
+    },
+    {
+        "word": "stability",
+        "similarity": 0.2529067397117615
+    },
+    {
+        "word": "unity",
+        "similarity": 0.29040971398353577
+    },
+    {
+        "word": "foundation",
+        "similarity": 0.2495940774679184
+    },
+    {
+        "word": "base",
+        "similarity": 0.26484400033950806
+    },
+    {
+        "word": "beginning",
+        "similarity": 0.30472928285598755
+    },
+    {
+        "word": "memories",
+        "similarity": 0.28091341257095337
+    },
+    {
+        "word": "sharing",
+        "similarity": 0.2214355766773224
+    },
+    {
+        "word": "hope",
+        "similarity": 0.22896823287010193
+    },
+    {
+        "word": "love",
+        "similarity": 0.23767106235027313
+    },
+    {
+        "word": "haven",
+        "similarity": 0.40485453605651855
+    },
+    {
+        "word": "shelter",
+        "similarity": 0.3814731240272522
+    },
+    {
+        "word": "sanctuary",
+        "similarity": 0.38550934195518494
+    }
+]

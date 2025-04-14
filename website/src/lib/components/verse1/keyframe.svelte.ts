@@ -1,7 +1,8 @@
 import { type Keyframe } from "$lib/keyframe.svelte";
-import { trueMedianIncome, falseMedianIncome, trueHousingPrice, falseHousingPrice, trueProportion, falseProportion, trueTextOpacity, falseTextOpacity } from '$lib/actions';
 
 const verse = 1;
+export const defaultWords = $state([""]);
+
 /**
  * The keyframes for verse 1.
  */
@@ -9,21 +10,48 @@ export const verse1Keyframes: Keyframe[] = [
     {
         verse: verse,
         bolded: [0],
-        toRun: [trueHousingPrice, falseMedianIncome, falseProportion]
+        toRun: [
+            () => {
+                defaultWords.length = 0;
+                defaultWords.push("shelter", "abode");
+            }
+        ]
     },
     {
         verse: verse,
         bolded: [1],
-        toRun: [falseHousingPrice, trueMedianIncome, falseProportion]
+        toRun: [
+            () => {
+                defaultWords.length = 0;
+                defaultWords.push("refuge", "sanctuary");
+            }
+        ]
     },
     {
         verse: verse,
         bolded: [2],
-        toRun: [falseHousingPrice, trueProportion, falseTextOpacity]
+        toRun: [
+            () => {
+                defaultWords.length = 0;
+                defaultWords.push("haven", "family");
+            }
+        ]
     },
     {
         verse: verse,
         bolded: [3],
-        toRun: [trueHousingPrice, trueMedianIncome, trueProportion, trueTextOpacity]
+        toRun: [
+            () => {
+                defaultWords.length = 0;
+                defaultWords.push(
+                    "foundation",
+                    "beginning",
+                    "stability",
+                    "comfort",
+                    "hope",
+                    "future"
+                );
+            }
+        ]
     }
 ];
