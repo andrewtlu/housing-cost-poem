@@ -1,0 +1,42 @@
+[
+    {
+        "metro_area": "ATL",
+        "median_home_value": 165900.0,
+        "median_income": 61307.0,
+        "education_attainment": 24.24,
+        "total_population": 5700990,
+        "education_attainment_population": 1381821.0
+    },
+    {
+        "metro_area": "BALT",
+        "median_home_value": 245300.0,
+        "median_income": 73625.0,
+        "education_attainment": 26.6,
+        "total_population": 2792050,
+        "education_attainment_population": 742819.0
+    },
+    {
+        "metro_area": "NYC",
+        "median_home_value": 419650.0,
+        "median_income": 71566.5,
+        "education_attainment": 26.7,
+        "total_population": 20192042,
+        "education_attainment_population": 5390286.0
+    },
+    {
+        "metro_area": "SF",
+        "median_home_value": 687400.0,
+        "median_income": 95681.5,
+        "education_attainment": 33.97,
+        "total_population": 4641820,
+        "education_attainment_population": 1576939.0
+    },
+    {
+        "metro_area": "DC",
+        "median_home_value": 356900.0,
+        "median_income": 91489.0,
+        "education_attainment": 33.41,
+        "total_population": 4257324,
+        "education_attainment_population": 1422342.0
+    }
+]

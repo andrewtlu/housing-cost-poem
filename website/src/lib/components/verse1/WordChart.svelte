@@ -73,9 +73,7 @@ map component used in verse 3 for visualizing geographic data
     });
 </script>
 
-<div
-    class="border-twilight bg-moon-light/90 relative flex flex-col overflow-x-clip rounded-md border-2 font-bold"
->
+<div class="bg-moon-light/90 relative flex flex-col overflow-x-clip rounded-md font-bold">
     <!-- title -->
     <Title title="What Does Home Mean to You?" />
 

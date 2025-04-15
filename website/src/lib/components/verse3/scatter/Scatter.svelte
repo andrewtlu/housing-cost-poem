@@ -149,9 +149,7 @@
     });
 </script>
 
-<div
-    class="border-twilight bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md border-2 font-bold"
->
+<div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
     <!-- title -->
     <Title title="Impact of Racial Demographic on Housing Value" />
 
@@ -179,7 +177,7 @@
                     <line
                         x1={chartMargins.left}
                         x2={chartWidth - chartMargins.right}
-                        stroke="var(--color-dawn)"
+                        stroke="var(--color-moon-far)"
                         style="stroke-dasharray: 2;"
                     />
                 {/if}
@@ -191,7 +189,7 @@
                     <line
                         y1={chartMargins.top}
                         y2={chartHeight - chartMargins.bottom}
-                        stroke="var(--color-dawn)"
+                        stroke="var(--color-moon-far)"
                         style="stroke-dasharray: 2;"
                         transition:fade={{ duration: 500 }}
                     />
@@ -356,7 +354,7 @@
     <AttributeSelect
         attributes={races}
         setAttribute={setSelected}
-        selected={filter_race}
+        selected={[filter_race]}
         canDeselect={true}
     />
 

@@ -125,9 +125,7 @@ map component used in verse 3 for visualizing geographic data
     });
 </script>
 
-<div
-    class="border-twilight bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md border-2 font-bold"
->
+<div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
     <Title title={`${attributeMap[attribute].textLabel} Compared to Metro Area Maximum`} />
 
     <!-- reset zoom button -->
@@ -163,9 +161,7 @@ map component used in verse 3 for visualizing geographic data
                     width={width + margin.left + margin.right}
                     color={cluster_colors[centroid]}
                 />
-                <div
-                    class="text-md border-twilight bg-moon-light/90 w-fit rounded-md border-2 px-5 text-wrap"
-                >
+                <div class="text-md bg-moon/90 w-fit rounded-md px-5 text-wrap">
                     Metro Area:
                     {centroidNames[centroid]}
                 </div>
@@ -251,5 +247,5 @@ map component used in verse 3 for visualizing geographic data
         {/if}
     </div>
 
-    <AttributeSelect {attributes} {setAttribute} selected={attribute} />
+    <AttributeSelect {attributes} {setAttribute} selected={[attribute]} />
 </div>
