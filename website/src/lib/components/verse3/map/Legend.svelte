@@ -70,7 +70,7 @@ legend for the map component; displays attribute name, color gradient, and gradi
                     transform="translate({legendWidth / 2}, 0)"
                     text-anchor="middle"
                     fill="currentColor"
-                    class="font-medium">{attributeMap[attribute].textLabel}</text
+                    class="text-md font-medium">{attributeMap[attribute].textLabel}</text
                 >
 
                 <!-- color gradient -->
