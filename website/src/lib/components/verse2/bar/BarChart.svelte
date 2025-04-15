@@ -8,13 +8,13 @@
         showMedianHousingPrice,
         showProportion,
         textOpacity
-    } from "$lib/actions";
+    } from "$lib/components/verse2/actions";
 
     let data: CountyUnder25[] = under25Data;
 
     const xTicks = ["ATL", "BALT", "NYC", "SF", "DC"];
-    const yTicks = ["$0", "$200,000", "$400,000", "$600,000", "$800,000", "$1,000,000"];
     const yTickValues = [0, 200000, 400000, 600000, 800000, 1000000];
+    const yTicks = yTickValues.map((val) => `$${val.toLocaleString("en-US")}`);
     const padding = { top: 20, right: 50, bottom: 40, left: 50 };
 
     let width = $state(700);
@@ -37,8 +37,6 @@
     function formatMobile(tick: string) {
         return "'" + tick.slice(-2);
     }
-
-    // Create a writable store for the variable
 </script>
 
 <div class="w-[700px] bg-gray-100" bind:clientWidth={width}>

@@ -29,7 +29,7 @@ export function toggleHousingPrice() {
     showProportion.set(false);
 }
 
-export function cctrtrueHousingPrice() {
+export function trueHousingPrice() {
     showMedianHousingPrice.update(() => true);
 }
 
