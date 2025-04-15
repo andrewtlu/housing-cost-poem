@@ -2,16 +2,7 @@ import { type Keyframe } from "$lib/keyframe.svelte";
 import type { Component } from "svelte";
 import { BarChart } from "./bar";
 import { BubbleChart } from "./bubble";
-import {
-    falseHousingPrice,
-    falseMedianIncome,
-    falseProportion,
-    falseTextOpacity,
-    trueHousingPrice,
-    trueMedianIncome,
-    trueProportion,
-    trueTextOpacity
-} from "$lib/components/verse2/actions";
+import { setFocusHome, setFocusIncome, setProportion } from "./bubble/store.svelte";
 
 const verse = 2;
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -47,9 +38,9 @@ export const verse2Keyframes: Keyframe[] = [
         toRun: [
             () => {
                 selectedGraphState[0] = BarChart;
-                trueHousingPrice();
-                falseMedianIncome();
-                falseProportion();
+                setFocusHome(true);
+                setFocusIncome(false);
+                setProportion(false);
             }
         ]
     },
@@ -59,21 +50,9 @@ export const verse2Keyframes: Keyframe[] = [
         toRun: [
             () => {
                 selectedGraphState[0] = BarChart;
-                falseHousingPrice();
-                trueMedianIncome();
-                falseProportion();
-            }
-        ]
-    },
-    {
-        verse: verse,
-        bolded: [2],
-        toRun: [
-            () => {
-                selectedGraphState[0] = BarChart;
-                falseHousingPrice();
-                trueProportion();
-                falseTextOpacity();
+                setFocusHome(false);
+                setFocusIncome(true);
+                setProportion(true);
             }
         ]
     },
@@ -83,10 +62,9 @@ export const verse2Keyframes: Keyframe[] = [
         toRun: [
             () => {
                 selectedGraphState[0] = BarChart;
-                trueHousingPrice();
-                trueMedianIncome();
-                trueProportion();
-                trueTextOpacity();
+                setFocusHome(true);
+                setFocusIncome(true);
+                setProportion(true);
             }
         ]
     }
