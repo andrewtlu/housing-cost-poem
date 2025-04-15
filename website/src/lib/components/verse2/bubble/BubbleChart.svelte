@@ -3,8 +3,25 @@
     import { educationData, type MetroEducation } from "$lib/data";
     import { arc, ascending, extent, pie, type PieArcDatum } from "d3";
     import { Info, Title } from "$lib/components/chart-common";
+    import { Tween } from "svelte/motion";
+    import { duration } from "$lib/navListeners";
+    import { cubicInOut } from "svelte/easing";
+    import { onMount } from "svelte";
 
     let data: MetroEducation[] = educationData;
+    // helper function to query info given a metro area
+    const popFromMetro = (area: string) => {
+        const idx = data.findIndex((v) => v.metro_area == area);
+        return data[idx].total_population;
+    };
+    const homeFromMetro = (area: string) => {
+        const idx = data.findIndex((v) => v.metro_area == area);
+        return data[idx].median_home_value;
+    };
+    const incomeFromMetro = (area: string) => {
+        const idx = data.findIndex((v) => v.metro_area == area);
+        return data[idx].median_income;
+    };
 
     // prepped data for the pie charts
     // value field should be out of 100
@@ -18,6 +35,16 @@
     };
     // [0] is without, [1] is with
     const educationTypes = ["W/out College Degree", "W College Degree"];
+
+    // animate tween property
+    const openAnimationPercentage = new Tween(0, {
+        duration: duration * 4,
+        easing: cubicInOut
+    });
+    onMount(() => {
+        openAnimationPercentage.set(2 * Math.PI);
+    });
+    // $inspect(openAnimationPercentage.current).with(console.log);
 
     // graph properties
     const width = 820;
@@ -84,6 +111,11 @@
     const arcGenerator = arc<PieArcDatum<PieData>>()
         .innerRadius(0)
         .outerRadius((d) => rScale(d.data.total_population));
+
+    // hover handling
+    let hover = $state("");
+    const onHover = (metro: string) => (hover = metro);
+    // $inspect(hover).with(console.log);
 </script>
 
 <div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
@@ -171,22 +203,58 @@
             </g>
         </g>
 
+        <!-- masks for intro opening animation -->
+        <!-- <defs>
+            {#each Object.keys(metroPieData) as key, idx (idx)}
+                {#each metroPieData[key] as data, idx (idx)}
+                    <mask id="mask-{idx}">
+                        <circle r={rScale(data.data.value)} fill="white" />
+                        <path rx={rScale(data.data.value)} fill="black" transform="rotate(-90)" />
+                    </mask>
+                {/each}
+            {/each}
+        </defs> -->
+
+        <!-- bubbles -->
         {#each Object.keys(metroPieData) as key, idx (idx)}
-            {#each metroPieData[key] as data, idx (idx)}
-                <g
-                    transform="translate({xScale(data.data.median_home_value)}, {yScale(
-                        data.data.median_income
-                    )})"
-                >
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <g
+                transform="translate({xScale(homeFromMetro(key))}, {yScale(incomeFromMetro(key))})"
+                onmouseenter={() => onHover(key)}
+                onmouseleave={() => onHover("")}
+                style="transition: all .4s ease"
+                opacity={hover == "" || hover == key ? "1" : "0.4"}
+            >
+                {#each metroPieData[key] as data, idx (idx)}
                     <path
                         pointer-events="all"
                         cursor="pointer"
                         d={arcGenerator(data)}
                         stroke="none"
                         stroke-width="2"
+                        style="transition: all .4s ease"
                         fill={pieColor(data.data.education_type)}
                     />
-                </g>{/each}
+                {/each}
+                <text
+                    y={rScale(popFromMetro(key)) + 15}
+                    x="0"
+                    text-anchor="middle"
+                    class="font-light"
+                >
+                    {key}
+                </text>
+                {#if hover == key}
+                    <text
+                        y={rScale(popFromMetro(key)) + 32}
+                        x="0"
+                        text-anchor="middle"
+                        class="font-light"
+                    >
+                        Population: {popFromMetro(key).toLocaleString("en-US")}
+                    </text>
+                {/if}
+            </g>
         {/each}
     </svg>
 </div>
