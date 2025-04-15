@@ -1,7 +1,7 @@
 <script lang="ts">
     import { scaleLinear, scaleOrdinal } from "d3-scale";
     import { educationData, type MetroEducation } from "$lib/data";
-    import { arc, extent, pie, type PieArcDatum } from "d3";
+    import { arc, ascending, extent, pie, type PieArcDatum } from "d3";
     import { Info, Title } from "$lib/components/chart-common";
 
     let data: MetroEducation[] = educationData;
@@ -42,9 +42,11 @@
         .range([0, 80]);
     const pieColor = scaleOrdinal<string>()
         .domain(educationTypes)
-        .range(["lightgray", "darkgreen"]); // 4-year degree vs. not
+        .range(["steelblue", "darkgreen"]); // 4-year degree vs. not
 
-    const pieGenerator = pie<PieData>().value((d) => d.value);
+    const pieGenerator = pie<PieData>()
+        .value((d) => d.value)
+        .sort((a, b) => ascending(a.education_type, b.education_type));
     let metroPieData = $derived.by(() => {
         // key is the metro area, value is the pieGenerator
         const pieDataPerMetro: { [key: string]: PieArcDatum<PieData>[] } = {};
@@ -145,7 +147,7 @@
                     x="-8"
                     y="-5"
                     width="145"
-                    height="100"
+                    height="133"
                     fill="white"
                     stroke="black"
                     stroke-width="1"
@@ -154,15 +156,17 @@
                 />
                 <circle cx="0" cy="5" r="5" fill="steelblue" />
                 <text x="10" y="10" font-size="12px">
-                    <tspan x="10" dy="0">Population by Metro</tspan>
-                    <tspan x="10" dy="15">Area </tspan>
+                    <tspan x="10" dy="0">Population without</tspan>
+                    <tspan x="10" dy="15">a 4 Year College</tspan>
+                    <tspan x="10" dy="15">Degree or Equivalent</tspan>
+                    <tspan x="10" dy="15">by Metro Area</tspan>
                 </text>
-                <circle cx="0" cy="40" r="5" fill="darkgreen" />
-                <text x="10" y="40" font-size="12px">
+                <circle cx="0" cy="70" r="5" fill="darkgreen" />
+                <text x="10" y="75" font-size="12px">
                     <tspan x="10" dy="0">Population with 4 Year</tspan>
-                    <tspan x="10" dy="15"> College Degree Or</tspan>
-                    <tspan x="10" dy="15"> Equivalent by Metro</tspan>
-                    <tspan x="10" dy="15"> Area</tspan>
+                    <tspan x="10" dy="15">College Degree Or</tspan>
+                    <tspan x="10" dy="15">Equivalent by Metro</tspan>
+                    <tspan x="10" dy="15">Area</tspan>
                 </text>
             </g>
         </g>
