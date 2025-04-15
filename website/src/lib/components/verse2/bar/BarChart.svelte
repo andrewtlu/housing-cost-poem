@@ -14,15 +14,18 @@ Bar chart used in verse 2 for comparing median housing value to median income
     } from "$lib/components/verse2/actions";
     import { Info, Title } from "$lib/components/chart-common";
 
+    // Chart info
+    const width = 800;
+    const height = 640;
+    /* padding between svg and axes */
+    const padding = { top: 40, right: 60, bottom: 40, left: 50 };
+
+    // Data
     let data: CountyUnder25[] = under25Data;
 
+    // Axes
     const xTicks = ["ATL", "BALT", "NYC", "SF", "DC"];
     const yTickValues = [0, 200000, 400000, 600000, 800000, 1000000];
-    const yTicks = yTickValues.map((val) => `$${val.toLocaleString("en-US")}`);
-    const padding = { top: 20, right: 50, bottom: 40, left: 50 };
-
-    let width = $state(700);
-    let height = 500;
 
     // scales
     let xScale = $derived(
@@ -37,10 +40,6 @@ Bar chart used in verse 2 for comparing median housing value to median income
         .range([height - padding.bottom, padding.top]);
 
     let barWidth = $derived(xScale.bandwidth() / 2);
-
-    function formatMobile(tick: string) {
-        return "'" + tick.slice(-2);
-    }
 </script>
 
 <div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
@@ -51,27 +50,28 @@ Bar chart used in verse 2 for comparing median housing value to median income
         tooltip="Click on the legend to change the focused data! Data collected from US Census Bureau, censusreporter.org, and Logan et al.'s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
     />
 
+    <!-- TODO: use attribute select component -->
+
     <svg {width} {height}>
-        <!-- Left Y-axis -->
-        <g class="axis">
+        <!-- Axes -->
+        <g>
             {#each yTickValues as tick, i (i)}
-                <g class="tick tick-{tick}" transform="translate(3, {yScale(tick)})">
-                    <line x2="100%" />
-                    <text y="-4" class="text-xs">{yTicks[i]}</text>
-                    <!-- Display string tick from yTicks -->
+                <g transform="translate(3, {yScale(tick)})">
+                    <line x2="100%" style="stroke: var(--color-moon-dark); stroke-dasharray: 2;" />
+                    <text y="-4" class="text-xs">{`$${tick.toLocaleString("en-US")}`}</text>
                 </g>
             {/each}
         </g>
-        <!-- X-axis -->
-        <g class="axis x-axis">
+        <g>
             {#each xTicks as tick, i (i)}
                 <g class="tick" transform="translate({xScale(tick)}, {height})">
                     <text class="text-start text-sm" x={barWidth - 25} y="-20">
-                        {width > 380 ? tick : formatMobile(tick)}
+                        {tick}
                     </text>
                 </g>
             {/each}
         </g>
+
         <!-- Bars -->
         <g class="bars">
             {#each data as point, i (i)}
@@ -205,13 +205,3 @@ Bar chart used in verse 2 for comparing median housing value to median income
         </g>
     </svg>
 </div>
-
-<style>
-    .y2-axis text {
-        fill: darkgreen;
-    }
-    .tick line {
-        stroke: #e2e2e2;
-        stroke-dasharray: 2;
-    }
-</style>
