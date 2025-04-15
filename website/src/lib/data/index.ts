@@ -5,8 +5,8 @@ export { data as homeSimilarityData } from "./habitatHomeSimilarity.svelte";
 export {
     educationData,
     under25Data,
-    type CountyEducation,
-    type CountyUnder25
+    type MetroEducation as CountyEducation,
+    type MetroHomeVsIncome as CountyUnder25
 } from "./metroData.svelte";
 
 // attribute of aggregate data to color by

@@ -1,3 +1,6 @@
+<!-- @component
+Bar chart used in verse 2 for comparing median housing value to median income
+ -->
 <script lang="ts">
     import { scaleBand, scaleLinear } from "d3-scale";
     import { under25Data, type CountyUnder25 } from "$lib/data";
@@ -9,6 +12,7 @@
         showProportion,
         textOpacity
     } from "$lib/components/verse2/actions";
+    import { Info, Title } from "$lib/components/chart-common";
 
     let data: CountyUnder25[] = under25Data;
 
@@ -39,10 +43,13 @@
     }
 </script>
 
-<div class="w-[700px] bg-gray-100" bind:clientWidth={width}>
-    <h2 class="mb-2.5 text-center text-lg font-bold break-words">
-        Comparing Median Income and Median Housing Value by Metro Area
-    </h2>
+<div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
+    <Title title="Median Income vs. Median Home Value by Metro Area" />
+
+    <!-- info tooltip -->
+    <Info
+        tooltip="Click on the legend to change the focused data! Data collected from US Census Bureau, censusreporter.org, and Logan et al.'s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
+    />
 
     <svg {width} {height}>
         <!-- Left Y-axis -->
@@ -71,9 +78,9 @@
                 <g>
                     <rect
                         x={Number(xScale(xTicks[i])) + barWidth * 0}
-                        y={yScale(point.median_housing_price)}
+                        y={yScale(point.median_home_value)}
                         width={barWidth * 0.9}
-                        height={yScale(0) - yScale(point.median_housing_price)}
+                        height={yScale(0) - yScale(point.median_home_value)}
                         fill={$showMedianHousingPrice ? "black" : "white"}
                         style="transition: fill 0.5s;"
                     />
@@ -90,7 +97,7 @@
                     />
                     <!-- Additional Rectangles on top of the Median Income bar -->
                     <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-                    {#each Array(Math.floor(point.median_housing_price / point.median_income) - 1).fill() as _, index (index)}
+                    {#each Array(Math.floor(point.median_home_value / point.median_income) - 1).fill() as _, index (index)}
                         <rect
                             x={Number(xScale(xTicks[i])) + barWidth * 1}
                             y={yScale(point.median_income) -
@@ -105,26 +112,26 @@
                         />
                     {/each}
                     <!-- Fractional Rectangle (if there's a remainder) -->
-                    {#if (point.median_housing_price / point.median_income) % 1 !== 0}
+                    {#if (point.median_home_value / point.median_income) % 1 !== 0}
                         <rect
                             x={Number(xScale(xTicks[i])) + barWidth * 1}
                             y={yScale(point.median_income) -
-                                (point.median_housing_price / point.median_income - 1) *
+                                (point.median_home_value / point.median_income - 1) *
                                     (yScale(0) - yScale(point.median_income))}
                             width={barWidth * 0.9}
                             height={(yScale(0) - yScale(point.median_income)) *
-                                ((point.median_housing_price / point.median_income) % 1)}
+                                ((point.median_home_value / point.median_income) % 1)}
                             fill="lightgray"
                             stroke="gray"
                             stroke-width="1"
-                            style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${$showProportion ? Math.floor(point.median_housing_price / point.median_income) * 0.15 + "s" : "0s"};`}
+                            style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${$showProportion ? Math.floor(point.median_home_value / point.median_income) * 0.15 + "s" : "0s"};`}
                             opacity={$showProportion ? 1 : 0}
                         />
                     {/if}
 
                     <text
                         x={Number(xScale(xTicks[i])) + barWidth * 1}
-                        y={yScale(point.median_housing_price) - 45}
+                        y={yScale(point.median_home_value) - 45}
                         text-anchor="middle"
                         font-size="12px"
                         fill="black"
@@ -135,7 +142,7 @@
                     </text>
                     <text
                         x={Number(xScale(xTicks[i])) + barWidth * 1}
-                        y={yScale(point.median_housing_price) - 20}
+                        y={yScale(point.median_home_value) - 20}
                         text-anchor="middle"
                         font-size="12px"
                         fill="black"
@@ -143,12 +150,12 @@
                         opacity={$textOpacity ? 1 : 0}
                     >
                         <tspan font-size="24px"
-                            >{(point.median_housing_price / point.median_income).toFixed(1)}</tspan
+                            >{(point.median_home_value / point.median_income).toFixed(1)}</tspan
                         ><tspan font-size="14px">x</tspan>
                     </text>
                     <text
                         x={Number(xScale(xTicks[i])) + barWidth * 1}
-                        y={yScale(point.median_housing_price) - 5}
+                        y={yScale(point.median_home_value) - 5}
                         text-anchor="middle"
                         font-size="12px"
                         fill="black"

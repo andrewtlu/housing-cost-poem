@@ -12,7 +12,7 @@
     const padding = { top: 50, right: 100, bottom: 50, left: 70 };
 
     const xScale = scaleLinear()
-        .domain([0, Math.max(...data.map((d) => d.median_housing_price))])
+        .domain([0, Math.max(...data.map((d) => d.median_home_value))])
         .range([padding.left, width - padding.right - 50]);
 
     const yScale = scaleLinear()
@@ -115,7 +115,7 @@
             .data(data)
             .enter()
             .append("circle")
-            .attr("cx", (d) => xScale(d.median_housing_price))
+            .attr("cx", (d) => xScale(d.median_home_value))
             .attr("cy", (d) => yScale(d.median_income))
             .attr("r", (d) => rScale(d.total_population))
             .attr("fill", "steelblue")
@@ -136,7 +136,7 @@
             .data(data)
             .enter()
             .append("text")
-            .attr("x", (d) => xScale(d.median_housing_price)) // Center horizontally
+            .attr("x", (d) => xScale(d.median_home_value)) // Center horizontally
             .attr("y", (d) => yScale(d.median_income) + rScale(d.total_population) + 10)
             .attr("text-anchor", "middle") // Center text horizontally
             .attr("dominant-baseline", "middle") // Center text vertically
@@ -151,7 +151,7 @@
             .attr("class", "pie-group")
             .attr(
                 "transform",
-                (d) => `translate(${xScale(d.median_housing_price)}, ${yScale(d.median_income)})`
+                (d) => `translate(${xScale(d.median_home_value)}, ${yScale(d.median_income)})`
             )
             .style("display", "none") // initially hidden
             .on("click", onCircleClick)

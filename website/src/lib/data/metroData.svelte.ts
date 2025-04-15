@@ -1,23 +1,23 @@
 import educationDataRaw from "./metroEducation.json";
-import under25DataRaw from "./metroUnder25.json";
+import homeVsIncomeDataRaw from "./metroHomeVsIncome.json";
 
-export type CountyEducation = {
+export type MetroEducation = {
     metro_area: string;
-    median_housing_price: number;
+    median_home_value: number;
     median_income: number;
     education_attainment: number;
     total_population: number;
     education_attainment_population: number;
 };
 
-export const educationData = $state<CountyEducation[]>(educationDataRaw);
+export const educationData = $state<MetroEducation[]>(educationDataRaw);
 
-export type CountyUnder25 = {
+export type MetroHomeVsIncome = {
     metro_area: string;
-    median_housing_price: number;
+    median_home_value: number;
     median_income: number;
     median_home_value_to_income: number;
     proportion_under_25: number;
 };
 
-export const under25Data = $state<CountyUnder25[]>(under25DataRaw);
+export const under25Data = $state<MetroHomeVsIncome[]>(homeVsIncomeDataRaw);

@@ -1,35 +1,35 @@
 [
     {
         "metro_area": "Atlanta-Sandy Springs-Alpharetta",
-        "median_housing_price": 165900.0,
+        "median_home_value": 165900.0,
         "median_income": 61307.0,
         "median_home_value_to_income": 2.706053,
         "proportion_under_25": 34.454
     },
     {
         "metro_area": "Baltimore-Columbia-Towson",
-        "median_housing_price": 245300.0,
+        "median_home_value": 245300.0,
         "median_income": 73625.0,
         "median_home_value_to_income": 3.331749,
         "proportion_under_25": 31.311
     },
     {
         "metro_area": "New York-Newark-Jersey City",
-        "median_housing_price": 419650.0,
+        "median_home_value": 419650.0,
         "median_income": 71566.5,
         "median_home_value_to_income": 5.863777,
         "proportion_under_25": 30.951
     },
     {
         "metro_area": "San Francisco-Oakland-Berkeley",
-        "median_housing_price": 687400.0,
+        "median_home_value": 687400.0,
         "median_income": 95681.5,
         "median_home_value_to_income": 7.184252,
         "proportion_under_25": 28.374
     },
     {
         "metro_area": "Washington-Arlington-Alexandria",
-        "median_housing_price": 356900.0,
+        "median_home_value": 356900.0,
         "median_income": 91489.0,
         "median_home_value_to_income": 3.901015,
         "proportion_under_25": 31.461
