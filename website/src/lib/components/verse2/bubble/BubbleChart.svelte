@@ -44,7 +44,6 @@
     onMount(() => {
         openAnimationPercentage.set(2 * Math.PI);
     });
-    // $inspect(openAnimationPercentage.current).with(console.log);
 
     // graph properties
     const width = 820;
@@ -66,10 +65,10 @@
         .range([height - padding.bottom, padding.top]);
     const rScale = scaleLinear()
         .domain(extent([0, ...data.map((d) => d.total_population)]) as [number, number])
-        .range([0, 80]);
+        .range([5, 80]);
     const pieColor = scaleOrdinal<string>()
         .domain(educationTypes)
-        .range(["steelblue", "darkgreen"]); // 4-year degree vs. not
+        .range(["var(--color-sun-inner)", "var(--color-sun-outer)"]); // 4-year degree vs. not
 
     const pieGenerator = pie<PieData>()
         .value((d) => d.value)
@@ -115,7 +114,6 @@
     // hover handling
     let hover = $state("");
     const onHover = (metro: string) => (hover = metro);
-    // $inspect(hover).with(console.log);
 </script>
 
 <div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
@@ -180,20 +178,20 @@
                     y="-5"
                     width="145"
                     height="133"
-                    fill="white"
-                    stroke="black"
+                    fill="var(--color-moon-light)"
+                    stroke="var(--color-midnight)"
                     stroke-width="1"
                     rx="5"
                     ry="5"
                 />
-                <circle cx="0" cy="5" r="5" fill="steelblue" />
+                <circle cx="0" cy="5" r="5" fill="var(--color-sun-inner)" />
                 <text x="10" y="10" font-size="12px">
                     <tspan x="10" dy="0">Population without</tspan>
                     <tspan x="10" dy="15">a 4 Year College</tspan>
                     <tspan x="10" dy="15">Degree or Equivalent</tspan>
                     <tspan x="10" dy="15">by Metro Area</tspan>
                 </text>
-                <circle cx="0" cy="70" r="5" fill="darkgreen" />
+                <circle cx="0" cy="70" r="5" fill="var(--color-sun-outer)" />
                 <text x="10" y="75" font-size="12px">
                     <tspan x="10" dy="0">Population with 4 Year</tspan>
                     <tspan x="10" dy="15">College Degree Or</tspan>
@@ -223,7 +221,7 @@
                 onmouseenter={() => onHover(key)}
                 onmouseleave={() => onHover("")}
                 style="transition: all .4s ease"
-                opacity={hover == "" || hover == key ? "1" : "0.4"}
+                opacity={hover == "" || hover == key ? "1" : "0.25"}
             >
                 {#each metroPieData[key] as data, idx (idx)}
                     <path
@@ -234,13 +232,38 @@
                         stroke-width="2"
                         style="transition: all .4s ease"
                         fill={pieColor(data.data.education_type)}
+                        transform={hover == key && data.data.education_type == educationTypes[1]
+                            ? `translate(${rScale(data.data.total_population) / 10}, -${rScale(data.data.total_population) / 10})`
+                            : ""}
                     />
+                    {#if hover == key && data.data.education_type == educationTypes[1]}
+                        <text
+                            x={rScale(data.data.total_population) + 25}
+                            y={0.6 * -rScale(data.data.total_population) + 8}
+                            text-anchor="middle"
+                            class="text-sm font-bold"
+                        >
+                            {data.data.value.toLocaleString("en-US")}%
+                        </text>
+                        <text
+                            x={rScale(data.data.total_population) + 25}
+                            y={0.6 * -rScale(data.data.total_population) - 8}
+                            text-anchor="middle"
+                            cursor="default"
+                            class="text-sm font-light"
+                        >
+                            {Math.round(
+                                (data.data.total_population * data.data.value) / 100
+                            ).toLocaleString("en-US")}
+                        </text>
+                    {/if}
                 {/each}
                 <text
                     y={rScale(popFromMetro(key)) + 15}
                     x="0"
                     text-anchor="middle"
-                    class="font-light"
+                    cursor="default"
+                    class="text-sm font-light"
                 >
                     {key}
                 </text>
@@ -249,7 +272,8 @@
                         y={rScale(popFromMetro(key)) + 32}
                         x="0"
                         text-anchor="middle"
-                        class="font-light"
+                        cursor="default"
+                        class="text-sm font-light"
                     >
                         Population: {popFromMetro(key).toLocaleString("en-US")}
                     </text>
