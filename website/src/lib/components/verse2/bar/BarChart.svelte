@@ -57,7 +57,7 @@ Bar chart used in verse 2 for comparing median housing value to median income
         setAttribute={setFocusAttr as (arg0: "" | MapKeys) => void}
         colorOverrides={{
             median_home_value: "var(--color-midnight)",
-            median_income: "var(--color-moon-crater)"
+            median_income: "var(--color-moon-dark)"
         }}
     />
 
@@ -112,8 +112,8 @@ Bar chart used in verse 2 for comparing median housing value to median income
                         width={barWidth * 0.9}
                         height={yScale(0) - yScale(point.median_income)}
                         style="transition: fill 0.5s;"
-                        fill={focusIncome ? "var(--color-moon-crater)" : "var(--color-moon)"}
-                        stroke="var(--color-moon-dark)"
+                        fill={focusIncome ? "var(--color-moon-dark)" : "var(--color-moon)"}
+                        stroke="var(--color-moon-far)"
                         stroke-width="1"
                         stroke-opacity={showProportion ? 1 : 0}
                     />
@@ -127,8 +127,8 @@ Bar chart used in verse 2 for comparing median housing value to median income
                                 (index + 1) * (yScale(0) - yScale(point.median_income))}
                             width={barWidth * 0.9}
                             height={yScale(0) - yScale(point.median_income)}
-                            fill="var(--color-moon-crater)"
-                            stroke="var(--color-moon-dark)"
+                            fill="var(--color-moon-dark)"
+                            stroke="var(--color-moon-far)"
                             stroke-width="1"
                             style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${showProportion ? (index + 1) * 0.15 + "s" : "0s"};`}
                             opacity={showProportion ? 1 : 0}
@@ -144,8 +144,8 @@ Bar chart used in verse 2 for comparing median housing value to median income
                             width={barWidth * 0.9}
                             height={(yScale(0) - yScale(point.median_income)) *
                                 ((point.median_home_value / point.median_income) % 1)}
-                            fill="var(--color-moon-crater)"
-                            stroke="var(--color-moon-dark)"
+                            fill="var(--color-moon-dark)"
+                            stroke="var(--color-moon-far)"
                             stroke-width="1"
                             style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${showProportion ? Math.floor(point.median_home_value / point.median_income) * 0.15 + "s" : "0s"};`}
                             opacity={showProportion ? 1 : 0}
