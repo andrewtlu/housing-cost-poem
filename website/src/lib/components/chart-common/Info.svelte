@@ -2,11 +2,13 @@
 info/disclaimer tooltip
  -->
 <script lang="ts">
-    const { tooltip }: { tooltip: string } = $props();
+    const { tooltip, top = false }: { tooltip: string; top?: boolean } = $props();
 </script>
 
 <div
-    class="tooltip tooltip-left absolute right-5 bottom-5 z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
+    class="tooltip tooltip-left absolute right-5 {top
+        ? 'top-5'
+        : 'bottom-5'} z-10 h-fit w-fit rounded-full p-0 hover:cursor-pointer"
     data-tip={tooltip}
 >
     <svg

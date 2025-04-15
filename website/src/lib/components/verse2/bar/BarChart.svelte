@@ -47,6 +47,7 @@ Bar chart used in verse 2 for comparing median housing value to median income
     <!-- info tooltip -->
     <Info
         tooltip="Click on the legend to change the focused data! Data collected from US Census Bureau, censusreporter.org, and Logan et al.'s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
+        top={true}
     />
 
     <!-- "legend" (jank type assertions are cuz i'm too lazy to set up attribute subset of mapkeys) -->
