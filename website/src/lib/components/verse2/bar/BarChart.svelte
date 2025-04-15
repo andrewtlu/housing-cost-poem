@@ -3,18 +3,18 @@ Bar chart used in verse 2 for comparing median housing value to median income
  -->
 <script lang="ts">
     import { scaleBand, scaleLinear } from "d3-scale";
-    import { under25Data, type CountyUnder25, type MapKeys } from "$lib/data";
+    import { under25Data, type MetroHomeVsIncome, type MapKeys } from "$lib/data";
     import { AttributeSelect, Info, Title } from "$lib/components/chart-common";
     import { showProportionState, focusState, attributeList, setFocusAttr } from "./store.svelte";
 
     // Chart info
-    const width = 800;
-    const height = 640;
+    const width = 820;
+    const height = 660;
     /* padding between svg and axes */
     const padding = { top: 40, right: 60, bottom: 40, left: 50 };
 
     // Data
-    let data: CountyUnder25[] = under25Data;
+    let data: MetroHomeVsIncome[] = under25Data;
 
     // Axes
     const xTicks = ["ATL", "BALT", "NYC", "SF", "DC"];
