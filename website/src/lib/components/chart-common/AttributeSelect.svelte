@@ -1,5 +1,5 @@
 <!-- @component
-attribute select component
+attribute select component, to enable multiselect setAttribute and selected have to handle multiselect instead of toggle 
  -->
 <script lang="ts">
     import { fly } from "svelte/transition";
@@ -10,12 +10,16 @@ attribute select component
         selected,
         canDeselect = false, // should only be true if setAttribute/selected can also be "", not just mapkeys
         attributes,
-        setAttribute
+        setAttribute,
+        colorOverrides = {}
     }: {
-        selected: MapKeys | "";
+        selected: (MapKeys | "")[];
         canDeselect?: boolean;
         attributes: MapKeys[];
         setAttribute: (arg0: MapKeys | "") => void;
+        colorOverrides: {
+            [K in MapKeys]?: string;
+        };
     } = $props();
     let hover = $state(false);
 </script>
@@ -47,10 +51,10 @@ attribute select component
             >
                 <button
                     class="btn btn-circle pointer-events-auto h-5 w-5 border-0 p-0 transition-opacity duration-300"
-                    style={`background-color: ${attributeMap[attribute].color[1]}; opacity: ${attribute === selected || selected === "" || hover ? 1 : 0.4};`}
+                    style={`background-color: ${attribute in colorOverrides ? colorOverrides[attribute] : attributeMap[attribute].color[1]}; opacity: ${selected.includes(attribute) || hover ? 1 : 0.4};`}
                     aria-label={attribute}
                     onclick={() => {
-                        if (!canDeselect || attribute != selected) setAttribute(attribute);
+                        if (!canDeselect || !selected.includes(attribute)) setAttribute(attribute);
                         else setAttribute("");
                     }}
                 ></button>

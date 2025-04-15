@@ -247,5 +247,5 @@ map component used in verse 3 for visualizing geographic data
         {/if}
     </div>
 
-    <AttributeSelect {attributes} {setAttribute} selected={attribute} />
+    <AttributeSelect {attributes} {setAttribute} selected={[attribute]} />
 </div>

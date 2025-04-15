@@ -3,14 +3,13 @@ Bar chart used in verse 2 for comparing median housing value to median income
  -->
 <script lang="ts">
     import { scaleBand, scaleLinear } from "d3-scale";
-    import { under25Data, type CountyUnder25 } from "$lib/data";
-    import { Info, Title } from "$lib/components/chart-common";
+    import { under25Data, type CountyUnder25, type MapKeys } from "$lib/data";
+    import { AttributeSelect, Info, Title } from "$lib/components/chart-common";
     import {
-        proportionState as showProportionState,
-        focusHomeState,
-        focusIncomeState,
-        setFocusHome,
-        setFocusIncome
+        showProportionState,
+        focusState,
+        attributeList,
+        setFocusAttr
     } from "../bubble/store.svelte";
 
     // Chart info
@@ -41,8 +40,8 @@ Bar chart used in verse 2 for comparing median housing value to median income
     let barWidth = $derived(xScale.bandwidth() / 2);
 
     // state attributes
-    let focusHome = $derived(focusHomeState[0]);
-    let focusIncome = $derived(focusIncomeState[0]);
+    let focusHome = $derived(focusState.includes("median_home_value"));
+    let focusIncome = $derived(focusState.includes("median_income"));
     let showProportion = $derived(showProportionState[0]);
     let compare = $derived(focusHome && focusIncome);
 </script>
@@ -53,6 +52,17 @@ Bar chart used in verse 2 for comparing median housing value to median income
     <!-- info tooltip -->
     <Info
         tooltip="Click on the legend to change the focused data! Data collected from US Census Bureau, censusreporter.org, and Logan et al.'s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
+    />
+
+    <!-- "legend" (jank type assertions are cuz i'm too lazy to set up attribute subset of mapkeys) -->
+    <AttributeSelect
+        selected={focusState}
+        attributes={attributeList}
+        setAttribute={setFocusAttr as (arg0: "" | MapKeys) => void}
+        colorOverrides={{
+            median_home_value: "var(--color-midnight)",
+            median_income: "var(--color-moon-crater)"
+        }}
     />
 
     <!-- TODO: use attribute select component -->
@@ -186,40 +196,6 @@ Bar chart used in verse 2 for comparing median housing value to median income
                     {/if}
                 </g>
             {/each}
-        </g>
-
-        <!-- Legend -->
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <g class="legend" transform="translate({width - padding.right - 150}, {padding.top})">
-            <!-- bg rectangle -->
-            <rect
-                x="-10"
-                y="10"
-                width="185"
-                height="50"
-                fill="white"
-                stroke="black"
-                stroke-width="1"
-                rx="5"
-                ry="5"
-            />
-            <!-- Median Housing Price -->
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <g transform="translate(0, 20)" onclick={() => setFocusHome()} style="cursor: pointer;">
-                <circle cx="0" cy="5" r="7" fill="black" />
-                <text x="10" y="10" font-size="16px">Median Housing Value</text>
-            </g>
-
-            <!-- Median Income -->
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <g
-                transform="translate(0, 40)"
-                onclick={() => setFocusIncome()}
-                style="cursor: pointer;"
-            >
-                <circle cx="0" cy="5" r="7" fill="lightgray" />
-                <text x="10" y="10" font-size="16px">Median Income</text>
-            </g>
         </g>
     </svg>
 </div>

@@ -354,7 +354,7 @@
     <AttributeSelect
         attributes={races}
         setAttribute={setSelected}
-        selected={filter_race}
+        selected={[filter_race]}
         canDeselect={true}
     />
 
