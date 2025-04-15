@@ -1,7 +1,13 @@
-import type { County } from "./county_data.svelte";
+import type { County } from "./countyData.svelte";
 
-export { data, type County, type CountyRaces } from "./county_data.svelte";
-export { data as homeSimilarityData } from "./habitat-similar-home.svelte";
+export { data, type County, type CountyRaces } from "./countyData.svelte";
+export { data as homeSimilarityData } from "./habitatHomeSimilarity.svelte";
+export {
+    educationData,
+    under25Data,
+    type CountyEducation,
+    type CountyUnder25
+} from "./metroData.svelte";
 
 // attribute of aggregate data to color by
 export type MapKeys =

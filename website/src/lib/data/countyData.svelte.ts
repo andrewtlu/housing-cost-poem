@@ -1,4 +1,4 @@
-import dataRaw from "$lib/data/county_aggregated.json";
+import dataRaw from "$lib/data/countyData.json";
 
 export const data = $state(
     new Map(

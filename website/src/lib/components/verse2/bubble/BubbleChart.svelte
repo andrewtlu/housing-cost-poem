@@ -1,18 +1,11 @@
 <script lang="ts">
     import { scaleLinear } from "d3-scale";
-    import points from "./verse2_data.json";
+    import { educationData, type CountyEducation } from "$lib/data";
     import { select } from "d3-selection";
     import { onMount } from "svelte";
     import * as d3 from "d3";
 
-    let data: {
-        metro_area: string;
-        median_housing_price: number;
-        median_income: number;
-        education_attainment: number;
-        total_population: number;
-        education_attainment_population: number;
-    }[] = points;
+    let data: CountyEducation[] = educationData;
 
     const width = 700;
     const height = 500;
