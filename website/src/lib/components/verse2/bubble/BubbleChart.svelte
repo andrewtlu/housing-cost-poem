@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { scaleLinear } from "d3-scale";
+    import { scaleLinear, scaleOrdinal } from "d3-scale";
     import { educationData, type MetroEducation } from "$lib/data";
     import { arc, extent, pie, type PieArcDatum } from "d3";
     import { Info, Title } from "$lib/components/chart-common";
-    import { onMount } from "svelte";
 
     let data: MetroEducation[] = educationData;
 
@@ -11,11 +10,14 @@
     // value field should be out of 100
     type PieData = {
         metro_area: string;
+        median_home_value: number;
+        median_income: number;
         total_population: number;
         education_type: string;
         value: number;
     };
-    let dataPrepped = $state<PieData[]>([]);
+    // [0] is without, [1] is with
+    const educationTypes = ["W/out College Degree", "W College Degree"];
 
     // graph properties
     const width = 820;
@@ -38,36 +40,48 @@
     const rScale = scaleLinear()
         .domain(extent([0, ...data.map((d) => d.total_population)]) as [number, number])
         .range([0, 80]);
-    // const pieColor = d3.scaleLinear<string>().domain([0, 1]).range(["lightgray", "darkgreen"]); // 4-year degree vs. not
+    const pieColor = scaleOrdinal<string>()
+        .domain(educationTypes)
+        .range(["lightgray", "darkgreen"]); // 4-year degree vs. not
 
-    // TODO: all data is being conglomerated into the same pie shart, need a separate pieData for each metro area
     const pieGenerator = pie<PieData>().value((d) => d.value);
-    let pieData = $derived(pieGenerator(dataPrepped));
-    const arcGenerator = arc<PieArcDatum<PieData>>()
-        .innerRadius(0)
-        .outerRadius((d) => rScale(d.data.total_population));
+    let metroPieData = $derived.by(() => {
+        // key is the metro area, value is the pieGenerator
+        const pieDataPerMetro: { [key: string]: PieArcDatum<PieData>[] } = {};
 
-    // $inspect(pieData).with(console.log);
-
-    onMount(() => {
-        dataPrepped = [];
+        // load prepped data
+        const dataPrepped = [];
         for (const education of data) {
             dataPrepped.push(
                 {
                     metro_area: education.metro_area,
+                    median_home_value: education.median_home_value,
+                    median_income: education.median_income,
                     total_population: education.total_population,
-                    education_type: "W/ College Degree",
+                    education_type: educationTypes[1],
                     value: education.education_attainment
                 },
                 {
                     metro_area: education.metro_area,
+                    median_home_value: education.median_home_value,
+                    median_income: education.median_income,
                     total_population: education.total_population,
-                    education_type: "W/out College Degree",
+                    education_type: educationTypes[0],
                     value: 100 - education.education_attainment
                 }
             );
         }
+
+        // create pie generator for each metro area
+        for (const point of data) {
+            const pieData = dataPrepped.filter((d) => d.metro_area == point.metro_area);
+            pieDataPerMetro[point.metro_area] = pieGenerator(pieData);
+        }
+        return pieDataPerMetro;
     });
+    const arcGenerator = arc<PieArcDatum<PieData>>()
+        .innerRadius(0)
+        .outerRadius((d) => rScale(d.data.total_population));
 </script>
 
 <div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
@@ -153,47 +167,22 @@
             </g>
         </g>
 
-        {#if dataPrepped.length > 0}
-            <g transform="translate({width / 2}, {height / 2})">
-                <path
-                    pointer-events="all"
-                    cursor="pointer"
-                    d={arcGenerator(pieData[4])}
-                    stroke="none"
-                    stroke-width="2"
-                    fill="#FFF84A"
-                />
-            </g>
-        {/if}
-
-        <!-- {#each pieData as data, idx (idx)}
-            <path
-                pointer-events="all"
-                cursor="pointer"
-                d={arcGenerator(data.data.)}
-                stroke="none"
-                stroke-width="2"
-                fill={pieColor(data.)}
-            />
-            <text
-                x="0"
-                y="0"
-                text-anchor="middle"
-                font-size="0.8em"
-                class="fill-gray-100"
-                transform="translate({labelArcs.centroid(d).join(' ')})"
-                >{d.data.type}
-            </text>
-            <text
-                x="0"
-                y="1.2em"
-                text-anchor="middle"
-                font-size="0.8em"
-                font-weight="700"
-                class="fill-gray-100"
-                transform="translate({labelArcs.centroid(d).join(' ')})"
-                >{d.data.value + " kg"}
-            </text>
-        {/each} -->
+        {#each Object.keys(metroPieData) as key, idx (idx)}
+            {#each metroPieData[key] as data, idx (idx)}
+                <g
+                    transform="translate({xScale(data.data.median_home_value)}, {yScale(
+                        data.data.median_income
+                    )})"
+                >
+                    <path
+                        pointer-events="all"
+                        cursor="pointer"
+                        d={arcGenerator(data)}
+                        stroke="none"
+                        stroke-width="2"
+                        fill={pieColor(data.data.education_type)}
+                    />
+                </g>{/each}
+        {/each}
     </svg>
 </div>
