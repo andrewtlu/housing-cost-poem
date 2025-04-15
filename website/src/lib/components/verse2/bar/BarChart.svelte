@@ -5,12 +5,7 @@ Bar chart used in verse 2 for comparing median housing value to median income
     import { scaleBand, scaleLinear } from "d3-scale";
     import { under25Data, type CountyUnder25, type MapKeys } from "$lib/data";
     import { AttributeSelect, Info, Title } from "$lib/components/chart-common";
-    import {
-        showProportionState,
-        focusState,
-        attributeList,
-        setFocusAttr
-    } from "../bubble/store.svelte";
+    import { showProportionState, focusState, attributeList, setFocusAttr } from "./store.svelte";
 
     // Chart info
     const width = 800;

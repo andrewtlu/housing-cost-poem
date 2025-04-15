@@ -17,7 +17,7 @@ attribute select component, to enable multiselect setAttribute and selected have
         canDeselect?: boolean;
         attributes: MapKeys[];
         setAttribute: (arg0: MapKeys | "") => void;
-        colorOverrides: {
+        colorOverrides?: {
             [K in MapKeys]?: string;
         };
     } = $props();
@@ -25,14 +25,14 @@ attribute select component, to enable multiselect setAttribute and selected have
 </script>
 
 <div
-    class="pointer-events-none absolute top-1/2 right-5 flex -translate-y-1/2 flex-col p-2 transition-all"
+    class="pointer-events-none absolute right-5 top-1/2 flex -translate-y-1/2 flex-col p-2 transition-all"
 >
     {#each attributes as attribute (attribute)}
         <div class="flex h-7 flex-row items-center justify-end overflow-hidden">
             {#if hover}
                 <div
                     transition:fly={{ duration: 250, x: 200, easing: quadInOut }}
-                    class="bg-moon-light/70 cursor-pointer rounded-sm p-1 text-base leading-2"
+                    class="bg-moon-light/70 leading-2 cursor-pointer rounded-sm p-1 text-base"
                 >
                     {attributeMap[attribute].tag}
                 </div>

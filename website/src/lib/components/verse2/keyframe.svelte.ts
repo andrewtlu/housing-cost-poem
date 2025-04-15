@@ -2,7 +2,7 @@ import { type Keyframe } from "$lib/keyframe.svelte";
 import type { Component } from "svelte";
 import { BarChart } from "./bar";
 import { BubbleChart } from "./bubble";
-import { setFocusHome, setFocusIncome, setProportion } from "./bubble/store.svelte";
+import { setFocusHome, setFocusIncome, setProportion } from "./bar/store.svelte";
 
 const verse = 2;
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
