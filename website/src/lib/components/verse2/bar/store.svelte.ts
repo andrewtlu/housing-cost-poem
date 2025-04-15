@@ -3,7 +3,6 @@ export const attributeList: Attribute[] = ["median_home_value", "median_income"]
 
 // overcomplicated focus handling is to allow for playing well with attributeselect component :)
 export const focusState = $state<Attribute[]>([]);
-export const showProportionState = $state([false]);
 
 export const setFocusHome = (val?: boolean) => {
     const currVal = focusState.includes("median_home_value");
@@ -37,9 +36,4 @@ export const setFocusAttr = (val: Attribute) => {
     const median_home_value = val == "median_home_value";
     if (median_home_value) setFocusHome();
     else setFocusIncome();
-};
-
-export const setProportion = (val?: boolean) => {
-    if (val !== undefined) showProportionState[0] = val;
-    else showProportionState[0] = !showProportionState[0];
 };

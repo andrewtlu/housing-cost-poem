@@ -6,8 +6,6 @@ title for graph
 </script>
 
 <!-- title -->
-<div
-    class="bg-moon-light/70 absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md text-center text-xl"
->
+<div class="absolute top-0 left-1/2 z-10 -translate-x-1/2 rounded-md text-center text-xl">
     {title}
 </div>

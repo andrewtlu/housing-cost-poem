@@ -33,6 +33,7 @@
 :root {
     background: var(--color-twilight);
     color: var(--color-midnight);
+    -webkit-tap-highlight-color: transparent;
 }
 
 /*

@@ -177,7 +177,7 @@
                     <line
                         x1={chartMargins.left}
                         x2={chartWidth - chartMargins.right}
-                        stroke="var(--color-dawn)"
+                        stroke="var(--color-moon-far)"
                         style="stroke-dasharray: 2;"
                     />
                 {/if}
@@ -189,7 +189,7 @@
                     <line
                         y1={chartMargins.top}
                         y2={chartHeight - chartMargins.bottom}
-                        stroke="var(--color-dawn)"
+                        stroke="var(--color-moon-far)"
                         style="stroke-dasharray: 2;"
                         transition:fade={{ duration: 500 }}
                     />

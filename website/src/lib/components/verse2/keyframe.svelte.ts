@@ -2,7 +2,7 @@ import { type Keyframe } from "$lib/keyframe.svelte";
 import type { Component } from "svelte";
 import { BarChart } from "./bar";
 import { BubbleChart } from "./bubble";
-import { setFocusHome, setFocusIncome, setProportion } from "./bar/store.svelte";
+import { setFocusHome, setFocusIncome } from "./bar/store.svelte";
 import { setHover } from "./bubble/store.svelte";
 
 const verse = 2;
@@ -33,7 +33,6 @@ export const verse2Keyframes: Keyframe[] = [
                 selectedGraphState[0] = BarChart;
                 setFocusHome(true);
                 setFocusIncome(false);
-                setProportion(false);
             }
         ]
     },
@@ -45,7 +44,6 @@ export const verse2Keyframes: Keyframe[] = [
                 selectedGraphState[0] = BarChart;
                 setFocusHome(false);
                 setFocusIncome(true);
-                setProportion(false);
             }
         ]
     },
@@ -57,7 +55,6 @@ export const verse2Keyframes: Keyframe[] = [
                 selectedGraphState[0] = BarChart;
                 setFocusHome(true);
                 setFocusIncome(true);
-                setProportion(true);
             }
         ]
     }

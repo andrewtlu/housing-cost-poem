@@ -5,7 +5,7 @@ Bar chart used in verse 2 for comparing median housing value to median income
     import { scaleBand, scaleLinear } from "d3-scale";
     import { under25Data, type MetroHomeVsIncome, type MapKeys } from "$lib/data";
     import { AttributeSelect, Info, Title } from "$lib/components/chart-common";
-    import { showProportionState, focusState, attributeList, setFocusAttr } from "./store.svelte";
+    import { focusState, attributeList, setFocusAttr } from "./store.svelte";
 
     // Chart info
     const width = 820;
@@ -37,7 +37,6 @@ Bar chart used in verse 2 for comparing median housing value to median income
     // state attributes
     let focusHome = $derived(focusState.includes("median_home_value"));
     let focusIncome = $derived(focusState.includes("median_income"));
-    let showProportion = $derived(showProportionState[0]);
     let compare = $derived(focusHome && focusIncome);
 </script>
 
@@ -115,7 +114,7 @@ Bar chart used in verse 2 for comparing median housing value to median income
                         fill={focusIncome ? "var(--color-moon-dark)" : "var(--color-moon)"}
                         stroke="var(--color-moon-far)"
                         stroke-width="1"
-                        stroke-opacity={showProportion ? 1 : 0}
+                        stroke-opacity={compare ? 1 : 0}
                     />
 
                     <!-- stacked rectangles on median income bar to match with median home value height -->
@@ -130,8 +129,8 @@ Bar chart used in verse 2 for comparing median housing value to median income
                             fill="var(--color-moon-dark)"
                             stroke="var(--color-moon-far)"
                             stroke-width="1"
-                            style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${showProportion ? (index + 1) * 0.15 + "s" : "0s"};`}
-                            opacity={showProportion ? 1 : 0}
+                            style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${compare ? (index + 1) * 0.15 + "s" : "0s"};`}
+                            opacity={compare ? 1 : 0}
                         />
                     {/each}
                     <!-- remainder -->
@@ -147,8 +146,8 @@ Bar chart used in verse 2 for comparing median housing value to median income
                             fill="var(--color-moon-dark)"
                             stroke="var(--color-moon-far)"
                             stroke-width="1"
-                            style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${showProportion ? Math.floor(point.median_home_value / point.median_income) * 0.15 + "s" : "0s"};`}
-                            opacity={showProportion ? 1 : 0}
+                            style={`transition: fill 0.5s, opacity 0.5s; transition-delay: ${compare ? Math.floor(point.median_home_value / point.median_income) * 0.15 + "s" : "0s"};`}
+                            opacity={compare ? 1 : 0}
                         />
                     {/if}
 
