@@ -119,7 +119,10 @@
 
 <div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">
     <Title title="Proportion of Metro Area w/ College Degree or Equivalent" />
-    <Info tooltip="todo" top={true} />
+    <Info
+        tooltip="Mouse over a pie chart to view specific stats!  Data collected from US Census Bureau, censusreporter.org, and Logan et al.'s Longitudinal Tract Data Base (2000) and compiled on Kaggle."
+        top={true}
+    />
 
     <svg id="bubble-chart" {width} {height}>
         <!-- axes -->

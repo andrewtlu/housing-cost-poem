@@ -32,7 +32,7 @@
     <!-- jumping fix: https://pita.tech/transitioning-multiple-svelte-elements-on-the-same-spot/ -->
     {#key getFrame(keyframe.value).verse}
         <div
-            class="col-[1] row-[1] flex flex-row items-center justify-center gap-24"
+            class="col-[1] row-[1] flex flex-row items-center justify-center gap-12"
             in:fly={{
                 x: keyframe.direction * content.clientWidth,
                 easing: quadInOut,
