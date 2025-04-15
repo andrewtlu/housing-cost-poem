@@ -14,11 +14,9 @@ CS441 Info Vis Project
 
 ## Notes
 
-Currently, we're planning on keyframing graph 1 and 2 to be both on verse 2 and create a word chart of words people associate with Home in the first verse.
+Unfortunately, we didn't have enough time to optimize the website for a variety of device screens and browsers. The main development was done on Firefox at a screen resolution of ~1080x1000, so if graphics show up funky, try zooming out for the original experience.
 
-We're also planning on introducing historic redlining data to verse 3 and doing a "guided tour" of Atlanta's historic redlining to the current housing costs in Atlanta.
-
-Verse 4's charts' centroids are oversight on our part - since each `median_housing_cost` occurs for each race point, since they are from the same county, the comparison is pointless - instead, we'll rework the chart to show some more meaningful trends in data.
+Additionally, some visual bugs are present (especially with the map) on Google Chrome - we were unable to override the select functionality.
 
 ## Reminders
 
