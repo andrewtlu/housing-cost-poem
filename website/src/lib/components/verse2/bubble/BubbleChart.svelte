@@ -7,6 +7,7 @@
     import { duration } from "$lib/navListeners";
     import { cubicInOut } from "svelte/easing";
     import { onMount } from "svelte";
+    import { hoverState, setHover } from "./store.svelte";
 
     let data: MetroEducation[] = educationData;
     // helper function to query info given a metro area
@@ -112,8 +113,8 @@
         .outerRadius((d) => rScale(d.data.total_population));
 
     // hover handling
-    let hover = $state("");
-    const onHover = (metro: string) => (hover = metro);
+    let hover = $derived(hoverState[0]);
+    const onHover = (metro: string) => setHover(metro);
 </script>
 
 <div class="bg-moon-light/95 relative flex flex-col overflow-x-clip rounded-md font-bold">

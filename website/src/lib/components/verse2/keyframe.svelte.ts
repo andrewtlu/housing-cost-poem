@@ -3,6 +3,7 @@ import type { Component } from "svelte";
 import { BarChart } from "./bar";
 import { BubbleChart } from "./bubble";
 import { setFocusHome, setFocusIncome, setProportion } from "./bar/store.svelte";
+import { setHover } from "./bubble/store.svelte";
 
 const verse = 2;
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -19,15 +20,7 @@ export const verse2Keyframes: Keyframe[] = [
         bolded: [0],
         toRun: [
             () => {
-                selectedGraphState[0] = BubbleChart;
-            }
-        ]
-    },
-    {
-        verse: verse,
-        bolded: [1],
-        toRun: [
-            () => {
+                setHover("NYC");
                 selectedGraphState[0] = BubbleChart;
             }
         ]
@@ -52,7 +45,7 @@ export const verse2Keyframes: Keyframe[] = [
                 selectedGraphState[0] = BarChart;
                 setFocusHome(false);
                 setFocusIncome(true);
-                setProportion(true);
+                setProportion(false);
             }
         ]
     },
